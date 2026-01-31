@@ -50,7 +50,6 @@
             pointer-events: none;
         }
 
-        /* Jądro galaktyki */
         .galaxy-core {
             position: absolute;
             top: 50%; left: 50%;
@@ -63,7 +62,6 @@
             animation: core-pulse 10s infinite alternate;
         }
 
-        /* Ramiona spiralne */
         .spiral-arms {
             position: absolute;
             top: -50%; left: -50%;
@@ -162,34 +160,42 @@
     </div>
     <div class="nebula-overlay"></div>
 
-    <div id="dynamic-nav-container" class="fixed z-50 transition-all duration-500 w-full top-0">
-        </div>
+    <nav class="fixed top-6 left-0 w-full z-50 flex justify-center px-4">
+        <div class="relative group">
+            <div class="glass-dark rounded-full border border-white/10 px-6 py-3 md:px-8 flex items-center gap-6 md:gap-8 shadow-[0_0_30px_rgba(0,0,0,0.9)] backdrop-blur-xl z-50 relative transition-all duration-300 hover:border-scarlet/50">
+                
+                <a href="#" class="text-white font-bold text-lg tracking-tight uppercase hover:text-scarlet transition">
+                    G<span class="text-scarlet">.</span>Tech
+                </a>
 
-    <div class="fixed bottom-6 right-6 z-[60]">
-        <button id="config-btn" class="glass-dark p-4 rounded-full text-white hover:text-scarlet border border-white/20 hover:border-scarlet transition duration-300 shadow-[0_0_15px_rgba(0,0,0,0.5)] group bg-black">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 group-hover:rotate-90 transition duration-500">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.157.92c.447.1.879.293 1.28.567l.882-.369c.532-.224 1.15.066 1.35.61l.546 1.363c.201.543-.07 1.155-.584 1.383l-.936.417c.05.474.05.955 0 1.428l.936.417c.513.228.785.84.584 1.383l-.546 1.363c-.2.544-.818.834-1.35.61l-.882-.369a6.29 6.29 0 0 1-1.28.567l-.157.92c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.02-.398-1.11-.94l-.157-.92a6.293 6.293 0 0 1-1.28-.567l-.882.369c-.532.224-1.15-.066-1.35-.61l-.546-1.363c-.201-.543.07-1.155.584-1.383l.936-.417a6.415 6.415 0 0 1 0-1.428l-.936-.417c-.513-.228-.785-.84-.584-1.383l.546-1.363c.2-.544.818-.834 1.35-.61l.882.369c.401-.274.833-.467 1.28-.567l.157-.92Z" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-            </svg>
-        </button>
+                <div class="hidden md:flex gap-6 text-[10px] font-bold uppercase tracking-widest text-gray-400 border-l border-white/10 pl-6">
+                    <a href="#o-mnie" class="hover:text-white hover:text-glow transition">O mnie</a>
+                    <a href="#projekty" class="hover:text-white hover:text-glow transition">Projekty</a>
+                    <a href="#stack" class="hover:text-white hover:text-glow transition">Narzędzia</a>
+                </div>
 
-        <div id="config-panel" class="absolute bottom-16 right-0 w-64 glass-dark border border-scarlet/30 p-4 rounded-sm hidden flex-col gap-3 transform transition-all duration-300 origin-bottom-right bg-black/90">
-            <h3 class="text-scarlet text-xs font-bold uppercase tracking-widest mb-2 border-b border-white/10 pb-2">Styl Nawigacji</h3>
-            
-            <button onclick="setLayout('standard')" class="text-left text-xs font-bold text-gray-400 hover:text-white hover:bg-white/5 p-2 rounded transition uppercase tracking-wider flex items-center gap-2">
-                <span class="w-2 h-2 bg-scarlet rounded-full"></span> Standard
-            </button>
-            <button onclick="setLayout('central')" class="text-left text-xs font-bold text-gray-400 hover:text-white hover:bg-white/5 p-2 rounded transition uppercase tracking-wider flex items-center gap-2">
-                <span class="w-2 h-2 bg-blue-500 rounded-full"></span> Central Core
-            </button>
-            <button onclick="setLayout('minimal')" class="text-left text-xs font-bold text-gray-400 hover:text-white hover:bg-white/5 p-2 rounded transition uppercase tracking-wider flex items-center gap-2">
-                <span class="w-2 h-2 bg-green-500 rounded-full"></span> Stealth / Pill
-            </button>
-            <button onclick="setLayout('deck')" class="text-left text-xs font-bold text-gray-400 hover:text-white hover:bg-white/5 p-2 rounded transition uppercase tracking-wider flex items-center gap-2">
-                <span class="w-2 h-2 bg-yellow-500 rounded-full"></span> Flight Deck
-            </button>
+                <a href="#kontakt" class="bg-scarlet hover:bg-white hover:text-black text-white rounded-full p-2 transition duration-300 shadow-[0_0_15px_rgba(220,20,60,0.4)]">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                    </svg>
+                </a>
+
+                <button id="mobile-menu-btn" class="md:hidden text-white ml-2 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+
+            <div id="mobile-menu" class="hidden absolute top-full mt-4 left-1/2 -translate-x-1/2 glass-dark border border-white/10 px-8 py-6 rounded-xl md:hidden text-center w-64 shadow-2xl flex-col gap-4 animate-fade-in-down z-40">
+                <a href="#o-mnie" class="block text-white text-xs font-bold uppercase tracking-widest hover:text-scarlet transition">O mnie</a>
+                <div class="h-px bg-white/5 w-full"></div>
+                <a href="#projekty" class="block text-white text-xs font-bold uppercase tracking-widest hover:text-scarlet transition">Projekty</a>
+                <div class="h-px bg-white/5 w-full"></div>
+                <a href="#stack" class="block text-white text-xs font-bold uppercase tracking-widest hover:text-scarlet transition">Narzędzia</a>
+                <div class="h-px bg-white/5 w-full"></div>
+                <a href="#kontakt" class="block text-scarlet text-xs font-bold uppercase tracking-widest hover:text-white transition">Kontakt</a>
+            </div>
         </div>
-    </div>
+    </nav>
 
     <section class="min-h-screen flex flex-col justify-center items-center text-center px-4 pt-20 relative">
         <div class="space-y-8 max-w-4xl z-10">
@@ -367,159 +373,19 @@
     </footer>
 
     <script>
-        // --- LOGIKA KONFIGURATORA UI ---
-        const navContainer = document.getElementById('dynamic-nav-container');
-        const configBtn = document.getElementById('config-btn');
-        const configPanel = document.getElementById('config-panel');
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
 
-        // Obsługa otwierania panelu ustawień
-        configBtn.addEventListener('click', () => {
-            configPanel.classList.toggle('hidden');
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
         });
 
-        // DEFINICJE UKŁADÓW (LAYOUTS)
-        const layouts = {
-            // 1. STANDARD
-            standard: `
-                <div class="max-w-7xl mx-auto glass-dark border-b border-white/10 px-6 py-4">
-                    <div class="flex justify-between items-center">
-                        <a href="#" class="text-white font-bold text-xl tracking-spectral uppercase hover:text-scarlet transition duration-300 z-50">
-                            GRZEGORZ<span class="text-scarlet">.TECH</span>
-                        </a>
-                        <div class="hidden md:flex gap-12 text-xs font-bold uppercase tracking-spectral text-gray-400 items-center">
-                            <a href="#o-mnie" class="hover:text-white hover:text-glow transition">O mnie</a>
-                            <a href="#projekty" class="hover:text-white hover:text-glow transition">Projekty</a>
-                            <a href="#stack" class="hover:text-white hover:text-glow transition">Narzędzia</a>
-                            <a href="#kontakt" class="btn-scarlet px-6 py-2 text-xs font-bold rounded-sm ml-4">Kontakt</a>
-                        </div>
-                        <button id="mobile-menu-btn" class="md:hidden text-white p-2 border border-white/20"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg></button>
-                    </div>
-                    <div id="mobile-menu" class="hidden border-t border-scarlet/20 mt-4 pt-4 flex-col items-center space-y-4 md:hidden">
-                         <a href="#o-mnie" class="text-white text-sm uppercase tracking-widest">O mnie</a>
-                         <a href="#projekty" class="text-white text-sm uppercase tracking-widest">Projekty</a>
-                         <a href="#stack" class="text-white text-sm uppercase tracking-widest">Narzędzia</a>
-                         <a href="#kontakt" class="text-scarlet text-sm uppercase tracking-widest">Kontakt</a>
-                    </div>
-                </div>
-            `,
-
-            // 2. CENTRAL CORE
-            central: `
-                <div class="w-full glass-dark border-b border-scarlet/30 py-6">
-                    <div class="flex flex-col items-center justify-center gap-4">
-                        <a href="#" class="text-3xl font-bold text-white tracking-[0.3em] uppercase hover:text-scarlet transition duration-300 text-glow">
-                            GRZEGORZ<span class="text-scarlet">.TECH</span>
-                        </a>
-                        <div class="w-24 h-0.5 bg-gradient-to-r from-transparent via-scarlet to-transparent"></div>
-                        <div class="hidden md:flex gap-16 text-xs font-bold uppercase tracking-[0.25em] text-gray-300">
-                            <a href="#o-mnie" class="hover:text-scarlet transition duration-300">O mnie</a>
-                            <a href="#projekty" class="hover:text-scarlet transition duration-300">Projekty</a>
-                            <a href="#stack" class="hover:text-scarlet transition duration-300">Narzędzia</a>
-                            <a href="#kontakt" class="hover:text-scarlet transition duration-300">Kontakt</a>
-                        </div>
-                         <button id="mobile-menu-btn" class="md:hidden text-white mt-2 text-xs uppercase tracking-widest border border-white/20 px-4 py-1">Menu</button>
-                    </div>
-                     <div id="mobile-menu" class="hidden mt-4 text-center md:hidden bg-black/50 p-4">
-                         <a href="#projekty" class="block text-white py-2">Projekty</a>
-                         <a href="#stack" class="block text-white py-2">Narzędzia</a>
-                         <a href="#kontakt" class="block text-scarlet py-2">Kontakt</a>
-                    </div>
-                </div>
-            `,
-
-            // 3. MINIMAL / STEALTH
-            minimal: `
-                <div class="flex justify-center pt-6">
-                    <div class="glass-dark rounded-full border border-white/10 px-8 py-3 flex items-center gap-8 shadow-[0_0_20px_rgba(0,0,0,0.8)] backdrop-blur-xl">
-                        <a href="#" class="text-white font-bold text-lg tracking-tight uppercase">
-                            G<span class="text-scarlet">.</span>Tech
-                        </a>
-                        <div class="hidden md:flex gap-6 text-[10px] font-bold uppercase tracking-widest text-gray-400 border-l border-white/10 pl-6">
-                            <a href="#o-mnie" class="hover:text-white transition">O mnie</a>
-                            <a href="#projekty" class="hover:text-white transition">Projekty</a>
-                        </div>
-                        <a href="#kontakt" class="bg-scarlet hover:bg-white hover:text-black text-white rounded-full p-2 transition duration-300">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
-                            </svg>
-                        </a>
-                        <button id="mobile-menu-btn" class="md:hidden text-white ml-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg></button>
-                    </div>
-                     <div id="mobile-menu" class="hidden absolute top-20 left-1/2 -translate-x-1/2 glass-dark px-8 py-4 rounded-xl md:hidden text-center w-64">
-                         <a href="#projekty" class="block text-white py-2 border-b border-white/10">Projekty</a>
-                         <a href="#stack" class="block text-white py-2 border-b border-white/10">Narzędzia</a>
-                         <a href="#kontakt" class="block text-white py-2">Kontakt</a>
-                    </div>
-                </div>
-            `,
-
-            // 4. FLIGHT DECK
-            deck: `
-                <div class="absolute bottom-0 w-full glass-dark border-t border-scarlet/50 px-6 py-4 shadow-[0_-10px_30px_rgba(220,20,60,0.1)]">
-                    <div class="max-w-5xl mx-auto flex justify-between items-center">
-                        <div class="flex items-center gap-2">
-                             <div class="w-2 h-2 bg-scarlet rounded-full animate-pulse"></div>
-                             <a href="#" class="text-white font-bold text-xl tracking-spectral uppercase">
-                                SYSTEM<span class="text-scarlet">.OS</span>
-                            </a>
-                        </div>
-                        
-                        <div class="hidden md:flex gap-1 bg-black/40 p-1 rounded-sm border border-white/10">
-                            <a href="#o-mnie" class="px-6 py-2 hover:bg-white/10 text-xs font-bold uppercase tracking-widest text-gray-300 transition">Info</a>
-                            <a href="#projekty" class="px-6 py-2 hover:bg-white/10 text-xs font-bold uppercase tracking-widest text-gray-300 transition">Misje</a>
-                            <a href="#stack" class="px-6 py-2 hover:bg-white/10 text-xs font-bold uppercase tracking-widest text-gray-300 transition">Tech</a>
-                        </div>
-
-                        <a href="#kontakt" class="border border-scarlet text-scarlet px-6 py-2 text-xs font-bold uppercase tracking-widest hover:bg-scarlet hover:text-white transition">
-                            Connect
-                        </a>
-                         <button id="mobile-menu-btn" class="md:hidden text-white p-2"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg></button>
-                    </div>
-                     <div id="mobile-menu" class="hidden absolute bottom-full left-0 w-full bg-black border-t border-white/20 p-4 md:hidden text-center">
-                         <a href="#projekty" class="block text-white py-3">Projekty</a>
-                         <a href="#kontakt" class="block text-scarlet py-3">Kontakt</a>
-                    </div>
-                </div>
-            `
-        };
-
-        // FUNKCJA ZMIANY UKŁADU
-        function setLayout(styleName) {
-            navContainer.innerHTML = layouts[styleName];
-
-            if (styleName === 'deck') {
-                navContainer.classList.remove('top-0');
-                navContainer.classList.add('bottom-0');
-            } else {
-                navContainer.classList.remove('bottom-0');
-                navContainer.classList.add('top-0');
-            }
-
-            attachMobileLogic();
-            localStorage.setItem('preferredLayout', styleName);
-            configPanel.classList.add('hidden');
-        }
-
-        // FUNKCJA OBSŁUGI MOBILNEJ
-        function attachMobileLogic() {
-            const mobBtn = document.getElementById('mobile-menu-btn');
-            const mobMenu = document.getElementById('mobile-menu');
-            
-            if(mobBtn && mobMenu) {
-                mobBtn.addEventListener('click', () => {
-                    mobMenu.classList.toggle('hidden');
-                });
-                mobMenu.querySelectorAll('a').forEach(link => {
-                    link.addEventListener('click', () => {
-                        mobMenu.classList.add('hidden');
-                    });
-                });
-            }
-        }
-
-        // START: Załaduj zapamiętany layout
-        const savedLayout = localStorage.getItem('preferredLayout') || 'standard';
-        setLayout(savedLayout);
+        // Zamykanie menu po kliknięciu w link
+        menu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.add('hidden');
+            });
+        });
     </script>
 </body>
 </html>
