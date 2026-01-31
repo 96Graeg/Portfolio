@@ -180,19 +180,29 @@
                     </svg>
                 </a>
 
-                <button id="mobile-menu-btn" class="md:hidden text-white ml-2 focus:outline-none">
+                <button id="mobile-menu-btn" class="md:hidden text-white ml-2 focus:outline-none p-1">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                 </button>
             </div>
 
-            <div id="mobile-menu" class="hidden absolute top-full mt-4 left-1/2 -translate-x-1/2 glass-dark border border-white/10 px-8 py-6 rounded-xl md:hidden text-center w-64 shadow-2xl flex-col gap-4 animate-fade-in-down z-40">
-                <a href="#o-mnie" class="block text-white text-xs font-bold uppercase tracking-widest hover:text-scarlet transition">O mnie</a>
-                <div class="h-px bg-white/5 w-full"></div>
-                <a href="#projekty" class="block text-white text-xs font-bold uppercase tracking-widest hover:text-scarlet transition">Projekty</a>
-                <div class="h-px bg-white/5 w-full"></div>
-                <a href="#stack" class="block text-white text-xs font-bold uppercase tracking-widest hover:text-scarlet transition">Narzędzia</a>
-                <div class="h-px bg-white/5 w-full"></div>
-                <a href="#kontakt" class="block text-scarlet text-xs font-bold uppercase tracking-widest hover:text-white transition">Kontakt</a>
+            <div id="mobile-menu" class="hidden absolute top-full mt-4 left-1/2 -translate-x-1/2 glass-dark border border-white/10 px-6 py-6 rounded-2xl md:hidden text-center w-80 shadow-[0_10px_40px_rgba(0,0,0,0.95)] flex-col z-40 animate-fade-in-down backdrop-blur-xl">
+                
+                <a href="#o-mnie" class="block text-white text-sm font-bold uppercase tracking-[0.2em] hover:text-scarlet transition py-4">
+                    O mnie
+                </a>
+                
+                <div class="h-px bg-white/10 w-full mx-auto"></div>
+                
+                <a href="#projekty" class="block text-white text-sm font-bold uppercase tracking-[0.2em] hover:text-scarlet transition py-4">
+                    Projekty
+                </a>
+                
+                <div class="h-px bg-white/10 w-full mx-auto"></div>
+                
+                <a href="#stack" class="block text-white text-sm font-bold uppercase tracking-[0.2em] hover:text-scarlet transition py-4">
+                    Narzędzia
+                </a>
+                
             </div>
         </div>
     </nav>
