@@ -114,7 +114,7 @@
         .toggle-checkbox:checked { right: 0; border-color: #DC143C; }
         .toggle-checkbox:checked + .toggle-label { background-color: #DC143C; }
 
-        #ar-modal, #story-modal, #offline-screen { transition: opacity 0.3s ease-in-out; }
+        #ar-modal, #story-modal, #game-modal { transition: opacity 0.3s ease-in-out; }
 
         /* --- STYLIZACJA SAPERA --- */
         .saper-cell {
@@ -148,24 +148,21 @@
 
     <div class="scanlines"></div>
 
-    <div id="offline-screen" class="hidden fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center p-4">
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(220,20,60,0.15),_transparent)] pointer-events-none"></div>
-        <div class="absolute inset-0 bg-[linear-gradient(rgba(20,0,0,0.5)_2px,transparent_2px)] bg-[length:100%_4px] opacity-50 pointer-events-none"></div>
+    <div id="game-modal" class="hidden fixed inset-0 z-[130] bg-black/95 flex flex-col items-center justify-center p-4 backdrop-blur-sm">
         
-        <div class="z-10 text-center mb-8 animate-pulse">
-            <div class="flex items-center justify-center gap-4 mb-2">
-                <svg class="w-12 h-12 text-scarlet" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
-            </div>
-            <h1 class="text-4xl md:text-6xl font-bold font-mono text-scarlet tracking-widest uppercase glitch-text">CONNECTION LOST</h1>
-            <p class="text-gray-500 font-mono mt-2 tracking-wider text-xs md:text-sm uppercase">/// SYSTEM OFFLINE. UTRACONO POŁĄCZENIE Z SIECIĄ.</p>
+        <button onclick="toggleGameModal()" class="absolute top-6 right-6 text-gray-400 hover:text-white hover:rotate-90 transition duration-300 z-50 p-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+
+        <div class="z-10 text-center mb-6">
+            <h1 class="text-2xl md:text-4xl font-bold font-mono text-scarlet tracking-widest uppercase">TACTICAL SIMULATION</h1>
+            <p class="text-gray-500 font-mono mt-1 tracking-wider text-[10px] md:text-xs uppercase">/// PROTOKÓŁ TRENINGOWY: MINESWEEPER</p>
         </div>
 
-        <div class="z-10 bg-black/80 border border-scarlet/50 p-6 rounded-lg shadow-[0_0_50px_rgba(220,20,60,0.2)] max-w-md w-full relative overflow-hidden backdrop-blur-md">
+        <div class="z-10 bg-black/80 border border-scarlet/50 p-6 rounded-lg shadow-[0_0_50px_rgba(220,20,60,0.2)] max-w-md w-full relative overflow-hidden">
             <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-2">
-                <span class="text-xs text-scarlet font-mono font-bold uppercase">MINESWEEPER.EXE</span>
-                <button onclick="initMinesweeper()" class="text-[10px] bg-white/10 hover:bg-scarlet hover:text-white px-2 py-1 rounded transition uppercase font-mono">Restart Systemu</button>
+                <span class="text-xs text-scarlet font-mono font-bold uppercase">SAPER.EXE</span>
+                <button onclick="initMinesweeper()" class="text-[10px] bg-white/10 hover:bg-scarlet hover:text-white px-2 py-1 rounded transition uppercase font-mono">Restart</button>
             </div>
             
             <div id="minesweeper-board" class="grid grid-cols-10 gap-1 w-full aspect-square bg-white/5 border border-white/10 p-1">
@@ -175,10 +172,6 @@
                 LPM: Odkryj | PPM: Flaga
             </div>
         </div>
-        
-        <button id="force-online-btn" onclick="simulateOnline()" class="hidden mt-8 text-xs text-gray-600 hover:text-white underline font-mono z-50">
-            [DEBUG] WYMUŚ TRYB ONLINE
-        </button>
     </div>
     <div id="story-modal" class="hidden fixed inset-0 z-[120] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 transition-opacity duration-300">
         <div class="relative w-full max-w-2xl bg-black/90 border border-scarlet/50 shadow-[0_0_50px_rgba(220,20,60,0.2)] rounded-lg overflow-hidden transform transition-all scale-100">
@@ -389,9 +382,9 @@
                 Tryb Imersyjny
             </button>
             
-            <button onclick="simulateOffline()" class="w-full text-left text-xs font-bold text-gray-400 hover:text-white hover:bg-scarlet/20 p-2 rounded transition uppercase tracking-wider flex items-center gap-2 border border-white/10 group">
-                <svg class="w-4 h-4 text-gray-500 group-hover:text-scarlet" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                Symuluj Brak Sieci
+            <button onclick="toggleGameModal()" class="w-full text-left text-xs font-bold text-gray-400 hover:text-white hover:bg-scarlet/20 p-2 rounded transition uppercase tracking-wider flex items-center gap-2 border border-white/10 group">
+                <svg class="w-4 h-4 text-gray-500 group-hover:text-scarlet" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Uruchom Saper.exe
             </button>
 
             <div class="h-px bg-white/10 w-full my-1"></div>
@@ -961,14 +954,25 @@
             }
         }
 
-        // --- [NOWOŚĆ] LOGIKA SAPERA (OFFLINE GAME) ---
+        // --- [ZMIANA] LOGIKA SAPERA (MINIGRA NA ŻĄDANIE) ---
+        const gameModal = document.getElementById('game-modal');
         const boardElement = document.getElementById('minesweeper-board');
-        const offlineScreen = document.getElementById('offline-screen');
         const gameStatus = document.getElementById('game-status');
         const BOARD_SIZE = 10;
         const MINES_COUNT = 15;
         let board = [];
         let gameOver = false;
+
+        function toggleGameModal() {
+            gameModal.classList.toggle('hidden');
+            gameModal.classList.toggle('flex');
+            // Zamknij ustawienia, jeśli otwierasz grę
+            if(gameModal.classList.contains('flex')) {
+                settingsPanel.classList.add('hidden');
+                settingsPanel.classList.remove('flex');
+                initMinesweeper();
+            }
+        }
 
         function initMinesweeper() {
             board = [];
@@ -1115,40 +1119,6 @@
                 gameOver = true;
             }
         }
-
-        // --- OBSŁUGA POŁĄCZENIA INTERNETOWEGO ---
-        function handleConnectionChange() {
-            if (!navigator.onLine) {
-                offlineScreen.classList.remove('hidden');
-                offlineScreen.classList.add('flex');
-                document.getElementById('force-online-btn').classList.add('hidden'); // Ukryj przycisk debugowania w prawdziwym offline
-                initMinesweeper();
-            } else {
-                offlineScreen.classList.add('hidden');
-                offlineScreen.classList.remove('flex');
-            }
-        }
-
-        window.addEventListener('online', handleConnectionChange);
-        window.addEventListener('offline', handleConnectionChange);
-
-        // Funkcja debugująca dla Ciebie (podpięta w menu settings)
-        function simulateOffline() {
-            offlineScreen.classList.remove('hidden');
-            offlineScreen.classList.add('flex');
-            document.getElementById('force-online-btn').classList.remove('hidden'); // Pokaż przycisk powrotu tylko przy symulacji
-            initMinesweeper();
-        }
-
-        function simulateOnline() {
-            offlineScreen.classList.add('hidden');
-            offlineScreen.classList.remove('flex');
-        }
-
-        // Sprawdź status przy ładowaniu
-        if(!navigator.onLine) handleConnectionChange();
-
     </script>
 </body>
 </html>
-                        
