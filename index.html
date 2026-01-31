@@ -75,6 +75,10 @@
 
         .widgets-container { position: fixed; bottom: 20px; left: 20px; z-index: 100; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
         .tech-widget { font-family: 'Space Grotesk', monospace; font-size: 10px; color: rgba(255, 255, 255, 0.7); background: rgba(0, 0, 0, 0.8); padding: 8px 12px; border-left: 2px solid #DC143C; backdrop-filter: blur(5px); pointer-events: none; }
+
+        /* SWITCH TOGGLE STYLE */
+        .toggle-checkbox:checked { right: 0; border-color: #DC143C; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #DC143C; }
     </style>
 </head>
 <body class="antialiased selection:bg-scarlet selection:text-white relative">
@@ -104,6 +108,47 @@
             <div id="scroll-progress" class="absolute bottom-0 left-0 w-full bg-scarlet shadow-[0_0_15px_#DC143C] transition-all duration-100 ease-out" style="height: 0%"></div>
         </div>
         <span id="scroll-percent" class="text-[10px] font-mono text-gray-400 mt-2">0%</span>
+    </div>
+
+    <div class="fixed bottom-6 right-6 z-[60]">
+        <button id="settings-btn" class="glass-dark p-4 rounded-full text-white hover:text-scarlet border border-white/20 hover:border-scarlet transition duration-300 shadow-[0_0_15px_rgba(0,0,0,0.5)] bg-black group">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 group-hover:rotate-90 transition duration-500">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.157.92c.447.1.879.293 1.28.567l.882-.369c.532-.224 1.15.066 1.35.61l.546 1.363c.201.543-.07 1.155-.584 1.383l-.936.417c.05.474.05.955 0 1.428l.936.417c.513.228.785.84.584 1.383l-.546 1.363c-.2.544-.818.834-1.35.61l-.882-.369a6.29 6.29 0 0 1-1.28.567l-.157.92c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.02-.398-1.11-.94l-.157-.92a6.293 6.293 0 0 1-1.28-.567l-.882.369c-.532.224-1.15-.066-1.35-.61l-.546-1.363c-.201-.543.07-1.155.584-1.383l.936-.417a6.415 6.415 0 0 1 0-1.428l-.936-.417c-.513-.228-.785-.84-.584-1.383l.546-1.363c.2-.544.818-.834 1.35-.61l.882.369c.401-.274.833-.467 1.28-.567l.157-.92Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+            </svg>
+        </button>
+
+        <div id="settings-panel" class="hidden absolute bottom-16 right-0 w-64 glass-dark border border-scarlet/30 p-5 rounded-lg flex-col gap-4 transform transition-all duration-300 origin-bottom-right bg-black/95">
+            <h3 class="text-scarlet text-xs font-bold uppercase tracking-widest mb-1 border-b border-white/10 pb-2">Konfiguracja Systemu</h3>
+            
+            <div class="flex justify-between items-center">
+                <span class="text-xs font-bold uppercase text-gray-400">System Audio</span>
+                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                    <input type="checkbox" name="toggle" id="audio-toggle" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-900 left-0 transition-all duration-300"/>
+                    <label for="audio-toggle" class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-700 cursor-pointer"></label>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center">
+                <span class="text-xs font-bold uppercase text-gray-400">Wysoka Wydajność</span>
+                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                    <input type="checkbox" name="toggle" id="perf-toggle" checked class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-900 left-0 transition-all duration-300 checked:right-0 checked:border-scarlet"/>
+                    <label for="perf-toggle" class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-700 cursor-pointer checked:bg-scarlet"></label>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center">
+                <span class="text-xs font-bold uppercase text-gray-400">Powiadomienia</span>
+                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                    <input type="checkbox" name="toggle" id="notif-toggle" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-900 left-0 transition-all duration-300"/>
+                    <label for="notif-toggle" class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-700 cursor-pointer"></label>
+                </div>
+            </div>
+            
+            <div class="text-[9px] text-gray-600 mt-2 text-center font-mono">
+                v2.4.0 // SYS.ADMIN
+            </div>
+        </div>
     </div>
 
     <nav class="fixed top-6 left-0 w-full z-50 flex justify-center px-4">
@@ -265,7 +310,7 @@
         <div class="max-w-4xl mx-auto px-4 text-center z-10 relative">
             <h2 class="text-4xl md:text-5xl font-bold text-white mb-8 uppercase tracking-spectral">Centrum Połączeń</h2>
             <p class="text-gray-400 mb-10 max-w-lg mx-auto font-light">
-                Znajdź mnie w przestrzeni cyfrowej. Wszystkie kanały komunikacji w jednym miejscu.
+                Kliknij poniżej, aby skopiować email lub przejdź do Linktree.
             </p>
             
             <a href="https://linktr.ee/96graeg" target="_blank" class="magnetic-btn inline-block px-16 py-5 bg-scarlet text-white font-bold text-lg uppercase tracking-[0.2em] hover:bg-white hover:text-black transition duration-500 shadow-[0_0_20px_rgba(220,20,60,0.4)] hover:shadow-[0_0_40px_rgba(255,255,255,0.6)] mb-12">
@@ -284,12 +329,23 @@
             
             <div class="mt-20 text-[10px] text-gray-800 font-mono">
                 // SYSTEM STATUS: STABLE <br>
-                &copy; 2024 GRZEGORZ. ANDROMEDA SECTOR.
+                &copy; <span id="current-year"></span> GRZEGORZ. ANDROMEDA SECTOR.
             </div>
         </div>
     </footer>
 
     <script>
+        // UPDATE YEAR
+        document.getElementById('current-year').innerText = new Date().getFullYear();
+
+        // SETTINGS WIDGET TOGGLE
+        const settingsBtn = document.getElementById('settings-btn');
+        const settingsPanel = document.getElementById('settings-panel');
+        settingsBtn.addEventListener('click', () => {
+            settingsPanel.classList.toggle('hidden');
+            settingsPanel.classList.toggle('flex');
+        });
+
         // MENU
         const btn = document.getElementById('mobile-menu-btn');
         const menu = document.getElementById('mobile-menu');
