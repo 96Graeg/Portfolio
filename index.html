@@ -171,7 +171,7 @@
             </div>
             
             <div class="text-[9px] text-gray-500 mt-2 text-center font-mono">
-                SYSTEM VER. 3.0 // <span id="current-year-mini"></span>
+                SYSTEM VER. 3.2 // <span id="current-year-mini"></span>
             </div>
         </div>
     </div>
@@ -187,7 +187,7 @@
                     <a href="#o-mnie" class="hover:text-white hover:text-glow transition">O mnie</a>
                     <a href="#archiwa" class="hover:text-white hover:text-glow transition">Archiwa</a>
                     <a href="#projekty" class="hover:text-white hover:text-glow transition">Projekty</a>
-                    <a href="#stack" class="hover:text-white hover:text-glow transition">Narzędzia</a>
+                    <a href="#stack" class="hover:text-white hover:text-glow transition">Arsenał</a>
                 </div>
 
                 <button id="mobile-menu-btn" class="md:hidden text-white ml-2 focus:outline-none p-1">
@@ -202,7 +202,7 @@
                 <div class="h-px bg-white/10 w-full mx-auto"></div>
                 <a href="#projekty" class="block text-white text-sm font-bold uppercase tracking-[0.2em] hover:text-scarlet transition py-4">Projekty</a>
                 <div class="h-px bg-white/10 w-full mx-auto"></div>
-                <a href="#stack" class="block text-white text-sm font-bold uppercase tracking-[0.2em] hover:text-scarlet transition py-4">Narzędzia</a>
+                <a href="#stack" class="block text-white text-sm font-bold uppercase tracking-[0.2em] hover:text-scarlet transition py-4">Arsenał</a>
             </div>
         </div>
     </nav>
@@ -289,11 +289,12 @@
         <div class="max-w-6xl mx-auto px-4 text-center">
             <h2 class="text-xs text-scarlet uppercase tracking-[0.5em] mb-16 font-bold">Arsenał Inżyniera</h2>
             <div class="flex flex-wrap justify-center gap-6">
-                <div class="group glass-dark px-10 py-5 hover:-translate-y-2 transition duration-300 cursor-default"><span class="text-white font-bold tracking-widest group-hover:text-scarlet transition">Unity / Unreal</span></div>
-                <div class="group glass-dark px-10 py-5 hover:-translate-y-2 transition duration-300 cursor-default"><span class="text-white font-bold tracking-widest group-hover:text-scarlet transition">Fusion 360 / CAD</span></div>
-                <div class="group glass-dark px-10 py-5 hover:-translate-y-2 transition duration-300 cursor-default"><span class="text-white font-bold tracking-widest group-hover:text-scarlet transition">3D Printing / Slicing</span></div>
-                <div class="group glass-dark px-10 py-5 hover:-translate-y-2 transition duration-300 cursor-default"><span class="text-white font-bold tracking-widest group-hover:text-scarlet transition">Python / C++</span></div>
-                <div class="group glass-dark px-10 py-5 hover:-translate-y-2 transition duration-300 cursor-default"><span class="text-white font-bold tracking-widest group-hover:text-scarlet transition">ROS / Telemetria</span></div>
+                <div class="group glass-dark px-10 py-5 hover:-translate-y-2 transition duration-300 cursor-default"><span class="text-white font-bold tracking-widest group-hover:text-scarlet transition">Python / Scripting</span></div>
+                <div class="group glass-dark px-10 py-5 hover:-translate-y-2 transition duration-300 cursor-default"><span class="text-white font-bold tracking-widest group-hover:text-scarlet transition">AutoCAD</span></div>
+                <div class="group glass-dark px-10 py-5 hover:-translate-y-2 transition duration-300 cursor-default"><span class="text-white font-bold tracking-widest group-hover:text-scarlet transition">Autodesk Fusion 360</span></div>
+                <div class="group glass-dark px-10 py-5 hover:-translate-y-2 transition duration-300 cursor-default"><span class="text-white font-bold tracking-widest group-hover:text-scarlet transition">Additive Mfg / 3D Print</span></div>
+                <div class="group glass-dark px-10 py-5 hover:-translate-y-2 transition duration-300 cursor-default"><span class="text-white font-bold tracking-widest group-hover:text-scarlet transition">CAD Systems Design</span></div>
+                <div class="group glass-dark px-10 py-5 hover:-translate-y-2 transition duration-300 cursor-default"><span class="text-white font-bold tracking-widest group-hover:text-scarlet transition">AI / Machine Learning</span></div>
             </div>
         </div>
     </section>
@@ -348,7 +349,6 @@
         function toggleARModal() {
             arModal.classList.toggle('hidden');
             arModal.classList.toggle('flex');
-            // Zamknij panel ustawień jeśli otwarty
             settingsPanel.classList.add('hidden');
             settingsPanel.classList.remove('flex');
         }
