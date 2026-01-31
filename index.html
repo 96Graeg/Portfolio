@@ -3,23 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio | Grzegorz</title>
-    <meta name="description" content="Nowoczesne portfolio stworzone w HTML">
+    <title>Portfolio | Grzegorz Wojtalczyk</title>
+    <meta name="description" content="Kosmiczne portfolio w stylu Spectral">
     
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
     
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
+                        sans: ['Space Grotesk', 'sans-serif'],
                     },
                     colors: {
-                        primary: '#6366f1', // Indigo
-                        dark: '#0f172a',    // Slate 900
+                        primary: '#a855f7', // Purple 500
+                        secondary: '#3b82f6', // Blue 500
+                        deep: '#050510',    // Very dark blue/black
+                    },
+                    letterSpacing: {
+                        'spectral': '0.15em', // Charakterystyczne dla Spectral szerokie litery
                     }
                 }
             }
@@ -27,163 +31,242 @@
     </script>
 
     <style>
-        /* Dodatkowe style dla efektu szkła i gradientów */
-        .glass {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        /* --- GALAXY ANIMATION START --- */
+        /* Generujemy gwiazdy za pomocą box-shadow, żeby nie ładować obrazków */
+        body {
+            background-color: #050510;
+            overflow-x: hidden;
         }
+
+        /* Funkcja tworząca gwiazdy w tle */
+        @keyframes move-twink-back {
+            from {background-position:0 0;}
+            to {background-position:-10000px 5000px;}
+        }
+        @keyframes stars-pulse {
+            0% {opacity: 0.8;}
+            50% {opacity: 1;}
+            100% {opacity: 0.8;}
+        }
+
+        .stars, .twinkling {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100%; height: 100%;
+            display: block;
+        }
+
+        .stars {
+            background: #000 url('http://www.script-tutorials.com/demos/360/images/stars.png') repeat top center;
+            z-index: -2;
+        }
+
+        .twinkling{
+            background: transparent url('http://www.script-tutorials.com/demos/360/images/twinkling.png') repeat top center;
+            z-index: -1;
+            animation: move-twink-back 200s linear infinite;
+            opacity: 0.6;
+        }
+
+        /* --- GLASS & GLOW EFFECTS --- */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .neon-glow {
+            text-shadow: 0 0 10px rgba(168, 85, 247, 0.5), 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+
         .gradient-text {
-            background: linear-gradient(to right, #818cf8, #c084fc, #f472b6);
+            background: linear-gradient(135deg, #a855f7, #3b82f6, #06b6d4);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .blob {
-            position: absolute;
-            filter: blur(80px);
-            opacity: 0.4;
-            z-index: -1;
+        
+        /* Styl przycisków á la Spectral */
+        .btn-spectral {
+            transition: all 0.3s ease;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+        .btn-spectral:hover {
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.6);
+            transform: scale(1.05);
         }
     </style>
 </head>
-<body class="bg-dark text-slate-300 antialiased selection:bg-primary selection:text-white relative overflow-x-hidden">
+<body class="text-slate-300 antialiased selection:bg-primary selection:text-white relative">
 
-    <div class="blob bg-purple-600 w-96 h-96 rounded-full top-0 left-0 -translate-x-1/2 -translate-y-1/2"></div>
-    <div class="blob bg-blue-600 w-96 h-96 rounded-full bottom-0 right-0 translate-x-1/2 translate-y-1/2"></div>
+    <div class="stars"></div>
+    <div class="twinkling"></div>
 
-    <nav class="fixed w-full z-50 top-0 transition-all duration-300 p-4">
-        <div class="max-w-6xl mx-auto glass rounded-full px-6 py-3 flex justify-between items-center">
-            <a href="#" class="text-white font-bold text-xl tracking-tight">Portfolio<span class="text-primary">.</span></a>
+    <nav class="fixed w-full z-50 top-0 transition-all duration-300 p-6">
+        <div class="max-w-7xl mx-auto glass-panel rounded-none border-t-0 border-x-0 border-b border-white/10 px-8 py-4 flex justify-between items-center">
+            <a href="#" class="text-white font-bold text-xl tracking-spectral uppercase hover:text-primary transition">
+                Grzegorz<span class="text-primary">.dev</span>
+            </a>
             
-            <div class="hidden md:flex gap-8 text-sm font-medium">
-                <a href="#o-mnie" class="hover:text-white transition">O mnie</a>
-                <a href="#projekty" class="hover:text-white transition">Projekty</a>
-                <a href="#stack" class="hover:text-white transition">Umiejętności</a>
+            <div class="hidden md:flex gap-10 text-xs font-bold uppercase tracking-spectral">
+                <a href="#o-mnie" class="hover:text-primary transition">O mnie</a>
+                <a href="#projekty" class="hover:text-primary transition">Projekty</a>
+                <a href="#stack" class="hover:text-primary transition">Umiejętności</a>
             </div>
 
-            <a href="#kontakt" class="hidden md:block bg-white text-dark px-5 py-2 rounded-full text-sm font-bold hover:bg-slate-200 transition">
+            <a href="#kontakt" class="hidden md:block border border-primary text-primary px-6 py-2 text-xs font-bold uppercase tracking-spectral hover:bg-primary hover:text-white transition rounded-sm">
                 Kontakt
             </a>
-
-            <button class="md:hidden text-white" onclick="alert('Tu możesz dodać menu mobilne!')">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-            </button>
         </div>
     </nav>
 
-    <section class="min-h-screen flex flex-col justify-center items-center text-center px-4 pt-20">
-        <div class="space-y-6 max-w-3xl animate-fade-in-up">
-            <span class="inline-block px-4 py-1.5 rounded-full border border-slate-700 bg-slate-900/50 text-xs font-medium text-primary tracking-wide uppercase">
-                Dostępny do współpracy
-            </span>
-            <h1 class="text-5xl md:text-7xl font-extrabold text-white leading-tight">
-                Tworzę cyfrowe <br>
-                <span class="gradient-text">doświadczenia jutra</span>
+    <section class="min-h-screen flex flex-col justify-center items-center text-center px-4 pt-20 relative overflow-hidden">
+        <div class="absolute w-[600px] h-[600px] bg-primary/20 rounded-full blur-[120px] -z-10"></div>
+
+        <div class="space-y-8 max-w-4xl animate-fade-in-up z-10">
+            <h2 class="text-sm md:text-base text-primary tracking-[0.3em] uppercase font-bold mb-4">
+                Full Stack Developer
+            </h2>
+            <h1 class="text-5xl md:text-8xl font-bold text-white leading-tight uppercase tracking-tight neon-glow">
+                Tworzę <br>
+                <span class="gradient-text">Cyfrowy Kosmos</span>
             </h1>
-            <p class="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto">
-                Cześć, jestem [Twoje Imię]. Specjalizuję się w tworzeniu nowoczesnych stron, aplikacji i designu, który zapada w pamięć.
+            <p class="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto font-light leading-relaxed">
+                Przekraczam granice kodu, tworząc interfejsy przyszłości. Nowoczesne technologie, minimalistyczny design i wydajność nie z tej ziemi.
             </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-                <a href="#projekty" class="px-8 py-3.5 bg-primary text-white rounded-full font-semibold hover:bg-indigo-600 transition shadow-lg shadow-indigo-500/30">
-                    Zobacz moje prace
+            
+            <div class="flex flex-col sm:flex-row gap-6 justify-center pt-8">
+                <a href="#projekty" class="btn-spectral px-10 py-4 bg-primary text-white font-bold text-sm rounded-sm">
+                    Moje Misje
                 </a>
-                <a href="#kontakt" class="px-8 py-3.5 glass text-white rounded-full font-semibold hover:bg-white/10 transition">
-                    Napisz do mnie
+                <a href="#kontakt" class="btn-spectral px-10 py-4 glass-panel text-white border border-white/20 font-bold text-sm rounded-sm hover:bg-white/10">
+                    Nawiąż Kontakt
                 </a>
             </div>
         </div>
     </section>
 
-    <section id="o-mnie" class="py-20 px-4">
-        <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+    <section id="o-mnie" class="py-24 px-4 bg-black/30 backdrop-blur-sm border-y border-white/5">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+            
             <div class="relative group">
-                <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-500"></div>
-                <img src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Profile" class="relative rounded-2xl w-full object-cover shadow-2xl grayscale hover:grayscale-0 transition duration-500">
+                <div class="absolute -inset-4 bg-gradient-to-r from-primary to-secondary rounded-lg blur opacity-40 group-hover:opacity-75 transition duration-500"></div>
+                <div class="relative glass-panel p-2 rounded-lg transform group-hover:rotate-1 transition duration-500">
+                    <img src="https://images.unsplash.com/photo-1531297461136-82lw9z1p7962?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Space Work" class="w-full h-auto rounded grayscale group-hover:grayscale-0 transition duration-500">
+                </div>
             </div>
-            <div>
-                <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Więcej niż tylko kod</h2>
-                <p class="text-slate-400 mb-6 leading-relaxed">
-                    Jestem pasjonatem technologii z [Liczba] latami doświadczenia. Moim celem jest łączenie estetyki z funkcjonalnością. Każdy projekt traktuję jako nowe wyzwanie, w którym mogę wykazać się kreatywnością.
+
+            <div class="space-y-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-white uppercase tracking-spectral border-l-4 border-primary pl-6">
+                    Architekt Systemów
+                </h2>
+                <p class="text-slate-300 leading-relaxed text-lg">
+                    Moja praca to nie tylko pisanie kodu. To eksploracja nowych rozwiązań. Łączę technologiczną precyzję z artystycznym zacięciem, tworząc strony, które żyją własnym życiem.
                 </p>
-                <p class="text-slate-400 mb-8 leading-relaxed">
-                    Kiedy nie pracuję, interesuję się [Twoje Hobby], co pozwala mi zachować świeże spojrzenie na trendy w branży.
+                <p class="text-slate-400">
+                    Specjalizuję się w React, Next.js i animacjach CSS. Każdy projekt traktuję jak start rakiety – musi być perfekcyjnie przygotowany do lotu.
                 </p>
 
-                <div class="grid grid-cols-3 gap-4 border-t border-slate-800 pt-8">
+                <div class="grid grid-cols-3 gap-6 pt-8 border-t border-white/10">
                     <div>
-                        <h3 class="text-2xl font-bold text-white">30+</h3>
-                        <p class="text-xs text-slate-500 uppercase tracking-wider">Projektów</p>
+                        <span class="block text-3xl font-bold text-primary">30+</span>
+                        <span class="text-xs uppercase tracking-widest text-slate-500">Projektów</span>
                     </div>
                     <div>
-                        <h3 class="text-2xl font-bold text-white">5+</h3>
-                        <p class="text-xs text-slate-500 uppercase tracking-wider">Lat exp</p>
+                        <span class="block text-3xl font-bold text-secondary">100%</span>
+                        <span class="text-xs uppercase tracking-widest text-slate-500">Uptime</span>
                     </div>
                     <div>
-                        <h3 class="text-2xl font-bold text-white">100%</h3>
-                        <p class="text-xs text-slate-500 uppercase tracking-wider">Zadowolenia</p>
+                        <span class="block text-3xl font-bold text-white">∞</span>
+                        <span class="text-xs uppercase tracking-widest text-slate-500">Pasji</span>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="stack" class="py-10 bg-black/20">
+    <section id="stack" class="py-24 relative">
         <div class="max-w-6xl mx-auto px-4 text-center">
-            <p class="text-sm text-slate-500 uppercase tracking-widest mb-8">Narzędzia z których korzystam</p>
-            <div class="flex flex-wrap justify-center gap-4">
-                <span class="px-6 py-3 glass rounded-xl text-slate-300 font-medium hover:text-white hover:border-primary/50 transition cursor-default">HTML5 & CSS3</span>
-                <span class="px-6 py-3 glass rounded-xl text-slate-300 font-medium hover:text-white hover:border-primary/50 transition cursor-default">JavaScript (ES6+)</span>
-                <span class="px-6 py-3 glass rounded-xl text-slate-300 font-medium hover:text-white hover:border-primary/50 transition cursor-default">React / Next.js</span>
-                <span class="px-6 py-3 glass rounded-xl text-slate-300 font-medium hover:text-white hover:border-primary/50 transition cursor-default">Tailwind CSS</span>
-                <span class="px-6 py-3 glass rounded-xl text-slate-300 font-medium hover:text-white hover:border-primary/50 transition cursor-default">Figma</span>
-                <span class="px-6 py-3 glass rounded-xl text-slate-300 font-medium hover:text-white hover:border-primary/50 transition cursor-default">Git</span>
-            </div>
-        </div>
-    </section>
-
-    <section id="projekty" class="py-24 px-4">
-        <div class="max-w-6xl mx-auto">
-            <h2 class="text-3xl md:text-5xl font-bold text-white mb-12 text-center">Wybrane <span class="text-primary">Realizacje</span></h2>
+            <h2 class="text-sm text-primary uppercase tracking-[0.4em] mb-12">Panel Sterowania</h2>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="flex flex-wrap justify-center gap-6">
+                <div class="group glass-panel px-8 py-4 rounded-none border border-white/10 hover:border-primary/50 transition cursor-default relative overflow-hidden">
+                    <div class="absolute inset-0 bg-primary/20 translate-y-full group-hover:translate-y-0 transition duration-300"></div>
+                    <span class="relative z-10 text-white font-bold tracking-widest">HTML5 & CSS3</span>
+                </div>
                 
-                <div class="md:col-span-2 group relative overflow-hidden rounded-3xl glass min-h-[300px] border border-slate-800">
-                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Project 1" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-110 opacity-60 group-hover:opacity-40">
-                    <div class="absolute bottom-0 left-0 p-8">
-                        <h3 class="text-2xl font-bold text-white mb-2">E-commerce Dashboard</h3>
-                        <p class="text-slate-300 text-sm mb-4">Kompleksowy panel administracyjny dla sklepu online.</p>
-                        <div class="flex gap-2 text-xs">
-                            <span class="bg-white/10 px-3 py-1 rounded-full text-white">React</span>
-                            <span class="bg-white/10 px-3 py-1 rounded-full text-white">Tailwind</span>
+                <div class="group glass-panel px-8 py-4 rounded-none border border-white/10 hover:border-primary/50 transition cursor-default relative overflow-hidden">
+                    <div class="absolute inset-0 bg-primary/20 translate-y-full group-hover:translate-y-0 transition duration-300"></div>
+                    <span class="relative z-10 text-white font-bold tracking-widest">JavaScript ES6+</span>
+                </div>
+
+                <div class="group glass-panel px-8 py-4 rounded-none border border-white/10 hover:border-secondary/50 transition cursor-default relative overflow-hidden">
+                    <div class="absolute inset-0 bg-secondary/20 translate-y-full group-hover:translate-y-0 transition duration-300"></div>
+                    <span class="relative z-10 text-white font-bold tracking-widest">React / Next.js</span>
+                </div>
+
+                <div class="group glass-panel px-8 py-4 rounded-none border border-white/10 hover:border-primary/50 transition cursor-default relative overflow-hidden">
+                    <div class="absolute inset-0 bg-primary/20 translate-y-full group-hover:translate-y-0 transition duration-300"></div>
+                    <span class="relative z-10 text-white font-bold tracking-widest">Tailwind</span>
+                </div>
+                
+                <div class="group glass-panel px-8 py-4 rounded-none border border-white/10 hover:border-white/50 transition cursor-default relative overflow-hidden">
+                    <div class="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition duration-300"></div>
+                    <span class="relative z-10 text-white font-bold tracking-widest">Figma</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projekty" class="py-24 px-4 bg-gradient-to-b from-transparent to-black/80">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-6xl font-bold text-white uppercase tracking-tight mb-4">
+                    Galeria <span class="text-primary">Wdrożeń</span>
+                </h2>
+                <div class="h-1 w-24 bg-primary mx-auto"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <div class="md:col-span-2 group relative overflow-hidden glass-panel border border-white/10 min-h-[350px]">
+                    <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Retro Tech" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-110 opacity-50 group-hover:opacity-30">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+                    <div class="absolute bottom-0 left-0 p-8 w-full">
+                        <div class="transform translate-y-4 group-hover:translate-y-0 transition duration-300">
+                            <h3 class="text-2xl font-bold text-white mb-2 tracking-wide uppercase">Cyber Dashboard</h3>
+                            <p class="text-slate-300 text-sm mb-4 opacity-0 group-hover:opacity-100 transition delay-100">Interfejs zarządzania danymi w czasie rzeczywistym.</p>
+                            <span class="text-primary text-xs font-bold uppercase tracking-widest border border-primary px-3 py-1">React System</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="group relative overflow-hidden rounded-3xl glass min-h-[300px] border border-slate-800">
-                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Project 2" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-110 opacity-60 group-hover:opacity-40">
+                <div class="group relative overflow-hidden glass-panel border border-white/10 min-h-[350px]">
+                    <img src="https://images.unsplash.com/photo-1614728853913-1e2211f9ca52?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Neon App" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-110 opacity-50 group-hover:opacity-30">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
                     <div class="absolute bottom-0 left-0 p-8">
-                        <h3 class="text-xl font-bold text-white mb-2">Finance App</h3>
-                        <p class="text-slate-300 text-sm">Aplikacja mobilna.</p>
+                        <h3 class="text-xl font-bold text-white mb-2 tracking-wide uppercase">Neon Finance</h3>
+                        <span class="text-secondary text-xs font-bold uppercase tracking-widest border border-secondary px-3 py-1">Mobile App</span>
                     </div>
                 </div>
 
-                <div class="group relative overflow-hidden rounded-3xl glass min-h-[300px] border border-slate-800">
-                    <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Project 3" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-110 opacity-60 group-hover:opacity-40">
+                <div class="group relative overflow-hidden glass-panel border border-white/10 min-h-[350px]">
+                    <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Earth Data" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-110 opacity-50 group-hover:opacity-30">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
                     <div class="absolute bottom-0 left-0 p-8">
-                        <h3 class="text-xl font-bold text-white mb-2">Social Media</h3>
-                        <p class="text-slate-300 text-sm">Kampania marketingowa.</p>
+                        <h3 class="text-xl font-bold text-white mb-2 tracking-wide uppercase">Global Net</h3>
+                        <span class="text-primary text-xs font-bold uppercase tracking-widest border border-primary px-3 py-1">Web Platform</span>
                     </div>
                 </div>
 
-                <div class="md:col-span-2 group relative overflow-hidden rounded-3xl glass min-h-[300px] border border-slate-800">
-                    <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Project 4" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-110 opacity-60 group-hover:opacity-40">
+                <div class="md:col-span-2 group relative overflow-hidden glass-panel border border-white/10 min-h-[350px]">
+                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Abstract Art" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-110 opacity-50 group-hover:opacity-30">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
                     <div class="absolute bottom-0 left-0 p-8">
-                        <h3 class="text-2xl font-bold text-white mb-2">Portfolio Agencyjne</h3>
-                        <p class="text-slate-300 text-sm mb-4">Minimalistyczna strona wizytówka dla agencji kreatywnej.</p>
-                        <div class="flex gap-2 text-xs">
-                            <span class="bg-white/10 px-3 py-1 rounded-full text-white">HTML/CSS</span>
-                            <span class="bg-white/10 px-3 py-1 rounded-full text-white">JS</span>
-                        </div>
+                         <h3 class="text-2xl font-bold text-white mb-2 tracking-wide uppercase">Art of Code</h3>
+                         <p class="text-slate-300 text-sm mb-4 opacity-0 group-hover:opacity-100 transition delay-100">Eksperymentalne portfolio dla artystów cyfrowych.</p>
+                         <span class="text-white text-xs font-bold uppercase tracking-widest border border-white px-3 py-1">Concept</span>
                     </div>
                 </div>
 
@@ -191,25 +274,28 @@
         </div>
     </section>
 
-    <footer id="kontakt" class="border-t border-slate-800 bg-black/40 pt-20 pb-10">
-        <div class="max-w-4xl mx-auto px-4 text-center">
-            <h2 class="text-4xl font-bold text-white mb-6">Masz pomysł na projekt?</h2>
-            <p class="text-slate-400 mb-10">
-                Jestem otwarty na propozycje współpracy. Napisz do mnie, a wspólnie stworzymy coś wyjątkowego.
+    <footer id="kontakt" class="border-t border-white/10 bg-black pt-20 pb-10 relative overflow-hidden">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-1 bg-gradient-to-r from-transparent via-primary to-transparent blur-[50px]"></div>
+
+        <div class="max-w-4xl mx-auto px-4 text-center z-10 relative">
+            <h2 class="text-4xl font-bold text-white mb-6 uppercase tracking-spectral">Rozpocznijmy Transmisję</h2>
+            <p class="text-slate-400 mb-10 max-w-xl mx-auto">
+                Systemy gotowe. Czekam na sygnał od Ciebie. Stwórzmy razem projekt, który podbije orbitę internetu.
             </p>
             
-            <a href="mailto:twoj@email.com" class="inline-block px-10 py-4 bg-white text-dark rounded-full font-bold text-lg hover:bg-slate-200 transition mb-12">
-                Wyślij e-mail
+            <a href="mailto:twoj@email.com" class="inline-block px-12 py-4 bg-white text-black font-bold text-lg uppercase tracking-widest hover:bg-primary hover:text-white transition duration-300 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(168,85,247,0.6)]">
+                Wyślij Sygnał
             </a>
 
-            <div class="flex justify-center gap-8 text-slate-400">
-                <a href="#" class="hover:text-white transition">LinkedIn</a>
-                <a href="#" class="hover:text-white transition">GitHub</a>
-                <a href="#" class="hover:text-white transition">Instagram</a>
+            <div class="flex justify-center gap-10 mt-16 text-slate-500 uppercase text-xs tracking-[0.2em]">
+                <a href="#" class="hover:text-primary transition hover:scale-110 transform">LinkedIn</a>
+                <a href="#" class="hover:text-primary transition hover:scale-110 transform">GitHub</a>
+                <a href="#" class="hover:text-primary transition hover:scale-110 transform">Instagram</a>
             </div>
             
-            <div class="mt-16 text-sm text-slate-600">
-                &copy; 2024 Twoje Imię. Wszelkie prawa zastrzeżone.
+            <div class="mt-16 text-xs text-slate-700 font-mono">
+                // SYSTEM STATUS: ONLINE <br>
+                &copy; 2026 GRZEGORZ. ALL SYSTEMS GO.
             </div>
         </div>
     </footer>
