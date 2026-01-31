@@ -100,9 +100,9 @@
 
         /* --- UI ELEMENTS --- */
         .glass-dark {
-            background: rgba(5, 0, 0, 0.7); /* Bardzo ciemne szkło */
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(220, 20, 60, 0.3); /* Szkarłatny obrys */
+            background: rgba(5, 0, 0, 0.85); /* Ciemniejsze tło dla lepszej czytelności menu */
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(220, 20, 60, 0.3);
             box-shadow: 0 0 15px rgba(220, 20, 60, 0.05);
         }
         
@@ -163,21 +163,35 @@
     </div>
     <div class="nebula-overlay"></div>
 
-    <nav class="fixed w-full z-50 top-0 p-6">
-        <div class="max-w-7xl mx-auto glass-dark rounded-none border-t-0 border-x-0 border-b px-8 py-4 flex justify-between items-center">
-            <a href="#" class="text-white font-bold text-xl tracking-spectral uppercase hover:text-scarlet transition duration-300">
-                Grzegorz<span class="text-scarlet">.dev</span>
-            </a>
-            
-            <div class="hidden md:flex gap-12 text-xs font-bold uppercase tracking-spectral text-gray-400">
-                <a href="#o-mnie" class="hover:text-white hover:text-glow transition duration-300">O mnie</a>
-                <a href="#projekty" class="hover:text-white hover:text-glow transition duration-300">Projekty</a>
-                <a href="#stack" class="hover:text-white hover:text-glow transition duration-300">Tech</a>
+    <nav class="fixed w-full z-50 top-0 p-4 md:p-6 transition-all duration-300">
+        <div class="max-w-7xl mx-auto glass-dark rounded-none border-t-0 border-x-0 border-b border-white/10 px-6 py-4 relative">
+            <div class="flex justify-between items-center">
+                <a href="#" class="text-white font-bold text-xl tracking-spectral uppercase hover:text-scarlet transition duration-300 z-50 relative">
+                    Grzegorz<span class="text-scarlet">.dev</span>
+                </a>
+                
+                <div class="hidden md:flex gap-12 text-xs font-bold uppercase tracking-spectral text-gray-400 items-center">
+                    <a href="#o-mnie" class="hover:text-white hover:text-glow transition duration-300">O mnie</a>
+                    <a href="#projekty" class="hover:text-white hover:text-glow transition duration-300">Projekty</a>
+                    <a href="#stack" class="hover:text-white hover:text-glow transition duration-300">Tech</a>
+                    <a href="#kontakt" class="btn-scarlet px-6 py-2 text-xs font-bold rounded-sm ml-4">
+                        Kontakt
+                    </a>
+                </div>
+
+                <button id="mobile-menu-btn" class="md:hidden text-white focus:outline-none z-50 p-2 border border-white/20 rounded-sm bg-black/50">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
             </div>
 
-            <a href="#kontakt" class="hidden md:block btn-scarlet px-6 py-2 text-xs font-bold rounded-sm">
-                Kontakt
-            </a>
+            <div id="mobile-menu" class="hidden absolute top-full left-0 w-full glass-dark border-t border-scarlet/20 flex flex-col items-center py-8 space-y-8 md:hidden shadow-[0_10px_30px_rgba(0,0,0,0.9)] animate-fade-in-down">
+                <a href="#o-mnie" class="text-white font-bold text-lg uppercase tracking-spectral hover:text-scarlet transition w-full text-center py-2">O mnie</a>
+                <a href="#projekty" class="text-white font-bold text-lg uppercase tracking-spectral hover:text-scarlet transition w-full text-center py-2">Projekty</a>
+                <a href="#stack" class="text-white font-bold text-lg uppercase tracking-spectral hover:text-scarlet transition w-full text-center py-2">Tech</a>
+                <a href="#kontakt" class="btn-scarlet px-8 py-3 text-sm font-bold rounded-sm mt-4">Kontakt</a>
+            </div>
         </div>
     </nav>
 
@@ -364,5 +378,21 @@
         </div>
     </footer>
 
+    <script>
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+
+        // Funkcja otwierania/zamykania menu
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        // Zamykanie menu po kliknięciu w link
+        menu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.add('hidden');
+            });
+        });
+    </script>
 </body>
 </html>
