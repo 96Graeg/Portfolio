@@ -15,23 +15,13 @@
     
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Space Grotesk', 'sans-serif'],
-                    },
-                    colors: {
-                        scarlet: '#DC143C', 
-                        darkred: '#8B0000',
-                        void: '#000000',
-                    },
-                    letterSpacing: {
-                        'spectral': '0.2em',
-                    },
-                    animation: {
-                        'spin-slow': 'spin 60s linear infinite',
-                        'pulse-slow': 'pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                    }
+                    fontFamily: { sans: ['Space Grotesk', 'sans-serif'] },
+                    colors: { scarlet: '#DC143C', darkred: '#8B0000', void: '#000000' },
+                    letterSpacing: { 'spectral': '0.2em' },
+                    animation: { 'spin-slow': 'spin 60s linear infinite', 'pulse-slow': 'pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite' }
                 }
             }
         }
@@ -43,15 +33,41 @@
             overflow-x: hidden;
             color: #e5e5e5;
             cursor: crosshair;
+            transition: background-color 0.5s ease, color 0.5s ease;
         }
         
+        /* --- LIGHT MODE OVERRIDES ("Orbital Lab" Theme) --- */
+        body.light-mode {
+            background-color: #f3f4f6; /* Jasny szary/biały */
+            color: #111827;
+        }
+        
+        /* W trybie jasnym odwracamy kolory tekstu i tła dla elementów "glass" */
+        body.light-mode .glass-dark {
+            background: rgba(255, 255, 255, 0.75);
+            border-color: rgba(220, 20, 60, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            color: #000;
+        }
+        
+        /* Wymuszenie czarnego tekstu na elementach, które miały text-white */
+        body.light-mode .text-white { color: #111 !important; }
+        body.light-mode .text-gray-400 { color: #4b5563 !important; } /* Ciemniejszy szary */
+        body.light-mode .text-gray-500 { color: #374151 !important; }
+        
+        /* Ukrycie gwiazd w trybie jasnym (lub zmiana na delikatną siatkę) */
+        body.light-mode .galaxy-container { opacity: 0.1; filter: invert(1); }
+        body.light-mode #canvas-container { opacity: 0.8; filter: brightness(0.8); }
+
+        /* Pasek przewijania */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #000; }
+        body.light-mode ::-webkit-scrollbar-track { background: #e5e7eb; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #DC143C; }
 
         /* --- BASIC BACKGROUNDS --- */
-        .galaxy-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -10; pointer-events: none; }
+        .galaxy-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -10; pointer-events: none; transition: opacity 0.5s; }
         .galaxy-core { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40vw; height: 40vw; background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(220,20,60,0.4) 20%, rgba(139,0,0,0.1) 50%, transparent 70%); border-radius: 50%; filter: blur(60px); opacity: 0.8; animation: core-pulse 10s infinite alternate; }
         .spiral-arms { position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background-image: radial-gradient(2px 2px at 20px 30px, #fff, rgba(0,0,0,0)), radial-gradient(2px 2px at 40px 70px, #DC143C, rgba(0,0,0,0)), radial-gradient(2px 2px at 50px 160px, #fff, rgba(0,0,0,0)), radial-gradient(2px 2px at 90px 40px, #8B0000, rgba(0,0,0,0)); background-repeat: repeat; background-size: 300px 300px; opacity: 0.5; animation: galaxy-spin 120s linear infinite; }
         .tech-grid-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -5; pointer-events: none; background-image: linear-gradient(rgba(220, 20, 60, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(220, 20, 60, 0.1) 1px, transparent 1px); background-size: 50px 50px; mask-image: radial-gradient(circle 250px at var(--x, 50%) var(--y, 50%), black 0%, transparent 100%); -webkit-mask-image: radial-gradient(circle 250px at var(--x, 50%) var(--y, 50%), black 0%, transparent 100%); }
@@ -60,7 +76,7 @@
         @keyframes core-pulse { 0% { transform: scale(1); opacity: 0.7; } 100% { transform: scale(1.1); opacity: 0.9; } }
 
         /* --- UI UTILS --- */
-        .glass-dark { background: rgba(5, 0, 0, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(220, 20, 60, 0.3); box-shadow: 0 0 15px rgba(220, 20, 60, 0.05); }
+        .glass-dark { background: rgba(5, 0, 0, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(220, 20, 60, 0.3); box-shadow: 0 0 15px rgba(220, 20, 60, 0.05); transition: all 0.3s ease; }
         .glass-dark:hover { border-color: rgba(220, 20, 60, 0.8); }
         .text-glow { text-shadow: 0 0 15px rgba(220, 20, 60, 0.6); }
         .gradient-scarlet { background: linear-gradient(to right, #ffffff, #DC143C); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -71,10 +87,11 @@
         .btn-filled { background: #DC143C; color: white; border: 1px solid #DC143C; }
         .btn-filled:hover { background: #a30b28; border-color: #a30b28; box-shadow: 0 0 30px rgba(220, 20, 60, 0.4); }
 
-        #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.6; }
+        #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.6; transition: opacity 0.5s; }
 
         .widgets-container { position: fixed; bottom: 20px; left: 20px; z-index: 100; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
-        .tech-widget { font-family: 'Space Grotesk', monospace; font-size: 10px; color: rgba(255, 255, 255, 0.7); background: rgba(0, 0, 0, 0.8); padding: 8px 12px; border-left: 2px solid #DC143C; backdrop-filter: blur(5px); pointer-events: none; }
+        .tech-widget { font-family: 'Space Grotesk', monospace; font-size: 10px; color: rgba(255, 255, 255, 0.7); background: rgba(0, 0, 0, 0.8); padding: 8px 12px; border-left: 2px solid #DC143C; backdrop-filter: blur(5px); pointer-events: none; transition: background 0.3s; }
+        body.light-mode .tech-widget { background: rgba(255, 255, 255, 0.8); color: #000; border-left-color: #DC143C; }
 
         /* SWITCH TOGGLE STYLE */
         .toggle-checkbox:checked { right: 0; border-color: #DC143C; }
@@ -83,6 +100,8 @@
 </head>
 <body class="antialiased selection:bg-scarlet selection:text-white relative">
 
+    <audio id="ui-click" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" preload="auto"></audio>
+
     <div class="tech-grid-overlay" id="flashlight"></div>
     <div class="galaxy-container"><div class="spiral-arms"></div><div class="galaxy-core"></div></div>
     
@@ -90,20 +109,20 @@
         <div class="tech-widget">
             <div class="flex items-center gap-2 mb-1">
                 <div class="w-2 h-2 bg-scarlet rounded-full animate-pulse"></div>
-                <strong class="text-white tracking-widest">STACJA ISS</strong>
+                <strong class="tracking-widest">STACJA ISS</strong>
             </div>
             <div id="iss-data">Łączenie...</div>
         </div>
         <div class="tech-widget">
              <div class="flex items-center gap-2">
-                <strong class="text-white tracking-widest">ZULU TIME (UTC)</strong>
+                <strong class="tracking-widest">ZULU TIME (UTC)</strong>
             </div>
             <div id="utc-clock" class="text-scarlet font-bold mt-1">00:00:00</div>
         </div>
     </div>
 
-    <div class="fixed right-6 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col items-center gap-2 mix-blend-screen">
-        <span class="text-[10px] text-scarlet font-bold tracking-widest -rotate-90 origin-bottom mb-4" style="text-shadow: 0 0 10px #DC143C;">O2 LEVEL</span>
+    <div class="fixed right-6 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col items-center gap-2 mix-blend-difference">
+        <span class="text-[10px] text-scarlet font-bold tracking-widest -rotate-90 origin-bottom mb-4">O2 LEVEL</span>
         <div class="w-2 h-48 bg-gray-900/50 border border-white/20 rounded-full relative overflow-hidden backdrop-blur-sm">
             <div id="scroll-progress" class="absolute bottom-0 left-0 w-full bg-scarlet shadow-[0_0_15px_#DC143C] transition-all duration-100 ease-out" style="height: 0%"></div>
         </div>
@@ -111,42 +130,42 @@
     </div>
 
     <div class="fixed bottom-6 right-6 z-[60]">
-        <button id="settings-btn" class="glass-dark p-4 rounded-full text-white hover:text-scarlet border border-white/20 hover:border-scarlet transition duration-300 shadow-[0_0_15px_rgba(0,0,0,0.5)] bg-black group">
+        <button id="settings-btn" class="glass-dark p-4 rounded-full text-white hover:text-scarlet border border-white/20 hover:border-scarlet transition duration-300 shadow-[0_0_15px_rgba(0,0,0,0.5)] group">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 group-hover:rotate-90 transition duration-500">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.157.92c.447.1.879.293 1.28.567l.882-.369c.532-.224 1.15.066 1.35.61l.546 1.363c.201.543-.07 1.155-.584 1.383l-.936.417c.05.474.05.955 0 1.428l.936.417c.513.228.785.84.584 1.383l-.546 1.363c-.2.544-.818.834-1.35.61l-.882-.369a6.29 6.29 0 0 1-1.28.567l-.157.92c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.02-.398-1.11-.94l-.157-.92a6.293 6.293 0 0 1-1.28-.567l-.882.369c-.532.224-1.15-.066-1.35-.61l-.546-1.363c-.201-.543.07-1.155.584-1.383l.936-.417a6.415 6.415 0 0 1 0-1.428l-.936-.417c-.513-.228-.785-.84-.584-1.383l.546-1.363c.2-.544.818-.834 1.35-.61l.882.369c.401-.274.833-.467 1.28-.567l.157-.92Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.157.92c.447.1.879.293 1.28.567l.882-.369c.532-.224 1.15.066 1.35.61l.546 1.363c.201.543-.07 1.155-.584 1.383l-.936.417c.05.474.05.955 0 1.428l.936.417c.513.228.785.84.584 1.383l-.546 1.363c-.2.544-.818.834-1.35.61l-.882-.369a6.29 6.29 0 0 1-1.28.567l-.157.92c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.02-.398-1.11-.94l-.157-.92a6.293 6.293 0 0 1-1.28-.567l-.882.369c-.532.224-1.15-.066-1.35-.61l-.546-1.363c-.2.544-.818.834-1.35.61l-.882.369c.401-.274.833-.467 1.28-.567l.157-.92Z" />
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
             </svg>
         </button>
 
-        <div id="settings-panel" class="hidden absolute bottom-16 right-0 w-64 glass-dark border border-scarlet/30 p-5 rounded-lg flex-col gap-4 transform transition-all duration-300 origin-bottom-right bg-black/95">
+        <div id="settings-panel" class="hidden absolute bottom-16 right-0 w-64 glass-dark border border-scarlet/30 p-5 rounded-lg flex-col gap-4 transform transition-all duration-300 origin-bottom-right">
             <h3 class="text-scarlet text-xs font-bold uppercase tracking-widest mb-1 border-b border-white/10 pb-2">Konfiguracja Systemu</h3>
             
             <div class="flex justify-between items-center">
-                <span class="text-xs font-bold uppercase text-gray-400">System Audio</span>
+                <span class="text-xs font-bold uppercase text-gray-400">Tryb Jasny (Lab)</span>
                 <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                    <input type="checkbox" name="toggle" id="audio-toggle" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-900 left-0 transition-all duration-300"/>
+                    <input type="checkbox" id="theme-toggle" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-900 left-0 transition-all duration-300"/>
+                    <label for="theme-toggle" class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-700 cursor-pointer"></label>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center">
+                <span class="text-xs font-bold uppercase text-gray-400">System Audio (SFX)</span>
+                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                    <input type="checkbox" id="audio-toggle" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-900 left-0 transition-all duration-300"/>
                     <label for="audio-toggle" class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-700 cursor-pointer"></label>
                 </div>
             </div>
 
             <div class="flex justify-between items-center">
-                <span class="text-xs font-bold uppercase text-gray-400">Wysoka Wydajność</span>
+                <span class="text-xs font-bold uppercase text-gray-400">Oszczędzanie Energii</span>
                 <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                    <input type="checkbox" name="toggle" id="perf-toggle" checked class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-900 left-0 transition-all duration-300 checked:right-0 checked:border-scarlet"/>
-                    <label for="perf-toggle" class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-700 cursor-pointer checked:bg-scarlet"></label>
-                </div>
-            </div>
-
-            <div class="flex justify-between items-center">
-                <span class="text-xs font-bold uppercase text-gray-400">Powiadomienia</span>
-                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                    <input type="checkbox" name="toggle" id="notif-toggle" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-900 left-0 transition-all duration-300"/>
-                    <label for="notif-toggle" class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-700 cursor-pointer"></label>
+                    <input type="checkbox" id="perf-toggle" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-900 left-0 transition-all duration-300"/>
+                    <label for="perf-toggle" class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-700 cursor-pointer"></label>
                 </div>
             </div>
             
-            <div class="text-[9px] text-gray-600 mt-2 text-center font-mono">
-                v2.4.0 // SYS.ADMIN
+            <div class="text-[9px] text-gray-500 mt-2 text-center font-mono">
+                SYSTEM VER. 2.5 // <span id="current-year-mini"></span>
             </div>
         </div>
     </div>
@@ -206,7 +225,7 @@
         <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
             <div class="relative group">
                 <div class="absolute -inset-2 bg-scarlet rounded-sm blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
-                <div class="relative border border-white/10 p-2 rounded-sm bg-black">
+                <div class="relative border border-white/10 p-2 rounded-sm bg-black glass-dark">
                     <img src="https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Space Engineering" class="w-full h-auto rounded-sm grayscale contrast-125 hover:grayscale-0 transition duration-700">
                 </div>
             </div>
@@ -215,7 +234,7 @@
                     Architekt <span class="text-scarlet">Przyszłości</span>
                 </h2>
                 <div class="h-0.5 w-20 bg-scarlet"></div>
-                <p class="text-gray-300 leading-relaxed text-lg font-light">
+                <p class="text-gray-300 text-gray-500 leading-relaxed text-lg font-light">
                     Nie interesuje mnie zwykłe pisanie kodu. Fascynuje mnie materializowanie pomysłów poprzez <strong>Druk 3D</strong>, tworzenie wirtualnych światów w <strong>XR</strong> oraz eksploracja ostatecznej granicy – inżynierii kosmicznej.
                 </p>
                 <div class="grid grid-cols-3 gap-6 pt-8 border-t border-white/10">
@@ -244,7 +263,7 @@
         <div class="max-w-7xl mx-auto">
             <div class="flex flex-col md:flex-row justify-between items-end mb-16 border-b border-white/10 pb-6">
                 <div><h2 class="text-4xl md:text-6xl font-bold text-white uppercase tracking-tight">Wybrane <span class="text-transparent bg-clip-text bg-gradient-to-r from-scarlet to-red-900">Misje</span></h2></div>
-                <p class="text-gray-500 uppercase tracking-widest text-xs mt-4 md:mt-0">Laboratorium 2024</p>
+                <p class="text-gray-500 uppercase tracking-widest text-xs mt-4 md:mt-0">Laboratorium <span id="lab-year"></span></p>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -304,13 +323,13 @@
         </div>
     </section>
 
-    <footer id="kontakt" class="border-t border-white/10 bg-black pt-24 pb-12 relative overflow-hidden z-10">
+    <footer id="kontakt" class="border-t border-white/10 bg-black pt-24 pb-12 relative overflow-hidden z-10 glass-dark">
         <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-md h-1 bg-scarlet blur-[100px] opacity-50"></div>
 
         <div class="max-w-4xl mx-auto px-4 text-center z-10 relative">
             <h2 class="text-4xl md:text-5xl font-bold text-white mb-8 uppercase tracking-spectral">Centrum Połączeń</h2>
             <p class="text-gray-400 mb-10 max-w-lg mx-auto font-light">
-                Kliknij poniżej, aby skopiować email lub przejdź do Linktree.
+                Znajdź mnie w przestrzeni cyfrowej. Wszystkie kanały komunikacji w jednym miejscu.
             </p>
             
             <a href="https://linktr.ee/96graeg" target="_blank" class="magnetic-btn inline-block px-16 py-5 bg-scarlet text-white font-bold text-lg uppercase tracking-[0.2em] hover:bg-white hover:text-black transition duration-500 shadow-[0_0_20px_rgba(220,20,60,0.4)] hover:shadow-[0_0_40px_rgba(255,255,255,0.6)] mb-12">
@@ -335,10 +354,13 @@
     </footer>
 
     <script>
-        // UPDATE YEAR
-        document.getElementById('current-year').innerText = new Date().getFullYear();
+        // DYNAMICZNY ROK (NAPRAWA 2024 -> 2026+)
+        const year = new Date().getFullYear();
+        document.getElementById('current-year').innerText = year;
+        document.getElementById('current-year-mini').innerText = year;
+        document.getElementById('lab-year').innerText = year;
 
-        // SETTINGS WIDGET TOGGLE
+        // SETTINGS WIDGET & TOGGLES
         const settingsBtn = document.getElementById('settings-btn');
         const settingsPanel = document.getElementById('settings-panel');
         settingsBtn.addEventListener('click', () => {
@@ -346,7 +368,44 @@
             settingsPanel.classList.toggle('flex');
         });
 
-        // MENU
+        // 1. LIGHT/DARK THEME
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('change', () => {
+            document.body.classList.toggle('light-mode');
+        });
+
+        // 2. AUDIO SFX
+        const audioToggle = document.getElementById('audio-toggle');
+        const clickSound = document.getElementById('ui-click');
+        clickSound.volume = 0.2; // Cichszy dźwięk
+        
+        function playClick() {
+            if(audioToggle.checked) {
+                clickSound.currentTime = 0;
+                clickSound.play().catch(e => {}); // Ignoruj błędy autoplay
+            }
+        }
+        
+        // Dodaj dźwięk do wszystkich przycisków i linków
+        document.querySelectorAll('a, button').forEach(el => {
+            el.addEventListener('click', playClick);
+        });
+
+        // 3. PERFORMANCE MODE (Zatrzymanie 3D)
+        const perfToggle = document.getElementById('perf-toggle');
+        let animationId;
+        
+        perfToggle.addEventListener('change', () => {
+            if(perfToggle.checked) {
+                // Jeśli zaznaczone (Oszczędzanie), zatrzymaj
+                cancelAnimationFrame(animationId);
+            } else {
+                // Wznów
+                animate();
+            }
+        });
+
+        // MENU MOBILNE
         const btn = document.getElementById('mobile-menu-btn');
         const menu = document.getElementById('mobile-menu');
         btn.addEventListener('click', () => { menu.classList.toggle('hidden'); menu.classList.toggle('flex'); });
@@ -381,7 +440,16 @@
         camera.position.z = 5;
         let mouseX = 0, mouseY = 0;
         document.addEventListener('mousemove', (event) => { mouseX = (event.clientX / window.innerWidth) * 2 - 1; mouseY = -(event.clientY / window.innerHeight) * 2 + 1; });
-        function animate() { requestAnimationFrame(animate); planet.rotation.x += 0.001 + mouseY * 0.01; planet.rotation.y += 0.002 + mouseX * 0.01; core.rotation.x -= 0.002; core.rotation.y -= 0.001; renderer.render(scene, camera); }
+        function animate() { 
+            if(!perfToggle.checked) { // Animuj tylko jeśli tryb wydajności wyłączony
+                animationId = requestAnimationFrame(animate); 
+                planet.rotation.x += 0.001 + mouseY * 0.01; 
+                planet.rotation.y += 0.002 + mouseX * 0.01; 
+                core.rotation.x -= 0.002; 
+                core.rotation.y -= 0.001; 
+                renderer.render(scene, camera); 
+            }
+        }
         animate();
         window.addEventListener('resize', () => { renderer.setSize(window.innerWidth, window.innerHeight); camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); });
 
@@ -411,7 +479,6 @@
         }
         setInterval(updateUTC, 1000); updateUTC();
 
-        // SCROLL PROGRESS
         window.addEventListener('scroll', () => {
             const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
             const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
