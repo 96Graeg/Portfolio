@@ -32,7 +32,6 @@
 
     <style>
         body {
-            /* Tło rozjaśnione do #141414 */
             background-color: #141414; 
             overflow-x: hidden;
             width: 100vw;
@@ -95,7 +94,6 @@
         }
 
         /* --- UI UTILS --- */
-        /* Rozjaśnione tło glass-dark */
         .glass-dark { background: rgba(30, 30, 30, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(220, 20, 60, 0.3); box-shadow: 0 0 15px rgba(220, 20, 60, 0.05); transition: all 0.3s ease; }
         .glass-dark:hover { border-color: rgba(220, 20, 60, 0.8); }
         .text-glow { text-shadow: 0 0 15px rgba(220, 20, 60, 0.6); }
@@ -203,16 +201,6 @@
                 Tryb Imersyjny
             </button>
 
-            <button onclick="generateMissionReport()" class="w-full text-left text-xs font-bold text-white hover:bg-white/10 p-2 rounded transition uppercase tracking-wider flex items-center gap-2 border border-white/10">
-                <svg class="w-4 h-4 text-scarlet" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                Pobierz Raport Misji
-            </button>
-
-            <button onclick="copyLink()" class="w-full text-left text-xs font-bold text-white hover:bg-white/10 p-2 rounded transition uppercase tracking-wider flex items-center gap-2 border border-white/10">
-                <svg class="w-4 h-4 text-scarlet" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
-                Udostępnij Pozycję
-            </button>
-
             <div class="h-px bg-white/10 w-full my-1"></div>
 
             <div class="flex justify-between items-center mt-2">
@@ -232,13 +220,14 @@
             </div>
 
             <div class="text-[9px] text-gray-500 mt-2 text-center font-mono">
-                SYSTEM VER. 3.6 // <span id="current-year-mini"></span>
+                SYSTEM VER. 3.7 // <span id="current-year-mini"></span>
             </div>
         </div>
     </div>
 
     <nav class="fixed top-6 left-0 w-full z-50 flex justify-center px-4">
-        <div class="relative group w-auto"> <div class="glass-dark rounded-full border border-white/10 px-6 py-3 md:px-6 md:py-3 flex items-center justify-between md:justify-center md:gap-6 shadow-[0_0_30px_rgba(0,0,0,0.9)] backdrop-blur-xl z-50 relative transition-all duration-300 hover:border-scarlet/50">
+        <div class="relative group w-auto">
+            <div class="glass-dark rounded-full border border-white/10 px-6 py-3 md:px-6 md:py-3 flex items-center justify-between md:justify-center md:gap-6 shadow-[0_0_30px_rgba(0,0,0,0.9)] backdrop-blur-xl z-50 relative transition-all duration-300 hover:border-scarlet/50">
                 <a href="#" onclick="window.location.reload(); return false;" class="flex-shrink-0 hover:opacity-80 transition cursor-pointer">
                     <img src="logo2.png" alt="Logo" class="h-8 md:h-10 w-auto object-contain">
                 </a>
@@ -503,7 +492,7 @@
                 </a>
 
                 <a href="https://www.instagram.com/96graeg" target="_blank" class="hover:text-scarlet hover:scale-105 transform transition duration-300 flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772 4.902 4.902 0 011.772-1.153c.636-.247 1.363-.416 2.427-.465C9.673 2.013 10.03 2 12.315 2zm-3.155.651c-1.086.046-1.69.195-2.085.35-.537.206-.92.486-1.32.884-.4.4-.68.783-.885 1.32-.154.395-.303 1-.35 2.085-.05.989-.06 1.554-.06 3.935v.4c0 2.381.01 2.946.06 3.935.047 1.086.196 1.69.35 2.085.206.537.486.92.884 1.32.4.4.783.68 1.32.885.395.154 1 .303 2.085.35.989.05 1.554.06 3.935.06h.4c2.381 0 2.946-.01 3.935.06 1.086-.047 1.69-.196 2.085-.35.537-.206.92-.486 1.32-.884.4-.4.68-.783.885-1.32.154-.395.303-1 .35-2.085.05-.989.06-1.554.06-3.935v-.4c0-2.381-.01-2.946-.06-3.935-.047-1.086-.196-1.69-.35-2.085-.206-.537-.486-.92-.884-1.32-.4-.4-.783-.68-1.32-.885-.395-.154-1-.303-2.085-.35-.989-.05-1.554-.06-3.935-.06h-.4c-2.381 0-2.946.01-3.935.06zM12.315 7.423a4.892 4.892 0 110 9.784 4.892 4.892 0 010-9.784zm0 1.956a2.936 2.936 0 100 5.871 2.936 2.936 0 000-5.871zm8.796-4.665a1.304 1.304 0 110 2.608 1.304 1.304 0 010-2.608z" clip-rule="evenodd" /></svg>
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772 4.902 4.902 0 011.772-1.153c.636-.247 1.363-.416 2.427-.465C9.673 2.013 10.03 2 12.315 2zm-3.155.651c-1.086.046-1.69.195-2.085.35-.537.206-.92.486-1.32.884-.4.4-.68.783-.885 1.32-.154.395-.303 1-.35 2.085-.05.989-.06 1.554-.06 3.935v.4c0 2.381.01 2.946.06 3.935.047 1.086.196 1.69.35 2.085.206.537.486.92.884 1.32.4.4.783.68 1.32.885.395.154 1 .303 2.085.35.989.05 1.554.06 3.935.06h-.4c-2.381 0-2.946.01-3.935.06zM12.315 7.423a4.892 4.892 0 110 9.784 4.892 4.892 0 010-9.784zm0 1.956a2.936 2.936 0 100 5.871 2.936 2.936 0 000-5.871zm8.796-4.665a1.304 1.304 0 110 2.608 1.304 1.304 0 010-2.608z" clip-rule="evenodd" /></svg>
                     Instagram
                 </a>
 
@@ -587,18 +576,6 @@
             }
         }
 
-        // COPY LINK LOGIC
-        function copyLink() {
-            navigator.clipboard.writeText(window.location.href).then(() => {
-                const btn = event.currentTarget;
-                const originalText = btn.innerHTML;
-                btn.innerHTML = `<span class="text-scarlet font-bold">SKOPIOWANO!</span>`;
-                setTimeout(() => {
-                    btn.innerHTML = originalText;
-                }, 2000);
-            });
-        }
-
         // 1. LIGHT/DARK THEME
         const themeToggle = document.getElementById('theme-toggle');
         themeToggle.addEventListener('change', () => {
@@ -647,16 +624,6 @@
         // FLASHLIGHT
         const flashlight = document.getElementById('flashlight');
         document.addEventListener('mousemove', (e) => { flashlight.style.setProperty('--x', e.clientX + 'px'); flashlight.style.setProperty('--y', e.clientY + 'px'); });
-
-        // REPORT
-        function generateMissionReport() {
-            const date = new Date().toISOString().split('T')[0];
-            const content = `// MISSION REPORT // DATE: ${date} // OPERATOR: GRZEGORZ "GRAEG" WOJTALCZYK //\n\nSTATUS:\nSystemy R&D operacyjne.\n\nSKILLS:\n- 3D Printing\n- XR\n- Space Systems\n\nKONTAKT:\nhttps://linktr.ee/96graeg`;
-            const blob = new Blob([content], { type: 'text/plain' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href = url; a.download = `MISSION_REPORT_${date}.txt`;
-            document.body.appendChild(a); a.click(); document.body.removeChild(a); window.URL.revokeObjectURL(url);
-        }
 
         // 3D
         const scene = new THREE.Scene();
