@@ -114,65 +114,13 @@
         .toggle-checkbox:checked { right: 0; border-color: #DC143C; }
         .toggle-checkbox:checked + .toggle-label { background-color: #DC143C; }
 
-        #ar-modal, #story-modal, #game-modal { transition: opacity 0.3s ease-in-out; }
-
-        /* --- STYLIZACJA SAPERA --- */
-        .saper-cell {
-            width: 100%;
-            aspect-ratio: 1;
-            background: rgba(20, 20, 20, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Space Mono', monospace;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-            user-select: none;
-        }
-        .saper-cell:hover { background: rgba(50, 50, 50, 0.8); border-color: rgba(220, 20, 60, 0.5); }
-        .saper-cell.revealed { background: rgba(220, 20, 60, 0.05); border-color: rgba(220, 20, 60, 0.1); cursor: default; }
-        .saper-cell.flagged { color: #DC143C; text-shadow: 0 0 5px #DC143C; }
-        .saper-cell.bomb { background: #DC143C; color: white; border-color: #DC143C; box-shadow: 0 0 10px #DC143C; }
-        
-        /* Kolory cyfr */
-        .val-1 { color: #4ade80; text-shadow: 0 0 5px #4ade80; } /* Zielony */
-        .val-2 { color: #facc15; text-shadow: 0 0 5px #facc15; } /* Żółty */
-        .val-3 { color: #fb923c; text-shadow: 0 0 5px #fb923c; } /* Pomarańcz */
-        .val-4 { color: #ef4444; text-shadow: 0 0 5px #ef4444; } /* Czerwony */
+        #ar-modal, #story-modal { transition: opacity 0.3s ease-in-out; }
     </style>
 </head>
 <body class="antialiased selection:bg-scarlet selection:text-white relative">
 
     <div class="scanlines"></div>
 
-    <div id="game-modal" class="hidden fixed inset-0 z-[130] bg-black/95 flex flex-col items-center justify-center p-4 backdrop-blur-sm">
-        
-        <button onclick="toggleGameModal()" class="absolute top-6 right-6 text-gray-400 hover:text-white hover:rotate-90 transition duration-300 z-50 p-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-        </button>
-
-        <div class="z-10 text-center mb-6">
-            <h1 class="text-2xl md:text-4xl font-bold font-mono text-scarlet tracking-widest uppercase">TACTICAL SIMULATION</h1>
-            <p class="text-gray-500 font-mono mt-1 tracking-wider text-[10px] md:text-xs uppercase">/// PROTOKÓŁ TRENINGOWY: MINESWEEPER</p>
-        </div>
-
-        <div class="z-10 bg-black/80 border border-scarlet/50 p-6 rounded-lg shadow-[0_0_50px_rgba(220,20,60,0.2)] max-w-md w-full relative overflow-hidden">
-            <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-2">
-                <span class="text-xs text-scarlet font-mono font-bold uppercase">SAPER.EXE</span>
-                <button onclick="initMinesweeper()" class="text-[10px] bg-white/10 hover:bg-scarlet hover:text-white px-2 py-1 rounded transition uppercase font-mono">Restart</button>
-            </div>
-            
-            <div id="minesweeper-board" class="grid grid-cols-10 gap-1 w-full aspect-square bg-white/5 border border-white/10 p-1">
-                </div>
-
-            <div id="game-status" class="text-center font-mono text-xs mt-4 text-gray-400 h-4">
-                LPM: Odkryj | PPM: Flaga
-            </div>
-        </div>
-    </div>
     <div id="story-modal" class="hidden fixed inset-0 z-[120] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 transition-opacity duration-300">
         <div class="relative w-full max-w-2xl bg-black/90 border border-scarlet/50 shadow-[0_0_50px_rgba(220,20,60,0.2)] rounded-lg overflow-hidden transform transition-all scale-100">
             <div class="bg-scarlet/10 border-b border-scarlet/30 p-4 flex justify-between items-center">
@@ -382,11 +330,6 @@
                 Tryb Imersyjny
             </button>
             
-            <button onclick="toggleGameModal()" class="w-full text-left text-xs font-bold text-gray-400 hover:text-white hover:bg-scarlet/20 p-2 rounded transition uppercase tracking-wider flex items-center gap-2 border border-white/10 group">
-                <svg class="w-4 h-4 text-gray-500 group-hover:text-scarlet" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                Uruchom Saper.exe
-            </button>
-
             <div class="h-px bg-white/10 w-full my-1"></div>
 
             <div class="flex justify-between items-center mt-2">
@@ -648,7 +591,7 @@
             <div class="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-6 mb-12 md:mb-16">
                 
                 <a href="https://linktr.ee/96graeg" target="_blank" class="w-full md:w-auto group relative flex items-center justify-center gap-3 px-6 py-3 md:px-6 md:h-12 rounded-full border border-scarlet bg-scarlet/10 hover:bg-scarlet transition-all duration-300 hover:shadow-[0_0_30px_#DC143C] hover:-translate-y-1">
-                     <svg class="w-5 h-5 text-white group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <svg class="w-5 h-5 text-white group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M13.5 10.7V6.5h2.9l-4.2-4.2-4.2 4.2h2.9v4.2H8L5 8.1v3.2l7 4.6 7-4.6V8.1l-3 2.6zM12 21.3v-5.2"/>
                     </svg>
                     <span class="text-white font-bold text-xs md:text-xs uppercase tracking-widest group-hover:text-white">Linktree</span>
@@ -951,172 +894,6 @@
             if(!toolsPanel.classList.contains('hidden')) {
                 settingsPanel.classList.add('hidden');
                 settingsPanel.classList.remove('flex');
-            }
-        }
-
-        // --- [ZMIANA] LOGIKA SAPERA (MINIGRA NA ŻĄDANIE) ---
-        const gameModal = document.getElementById('game-modal');
-        const boardElement = document.getElementById('minesweeper-board');
-        const gameStatus = document.getElementById('game-status');
-        const BOARD_SIZE = 10;
-        const MINES_COUNT = 15;
-        let board = [];
-        let gameOver = false;
-
-        function toggleGameModal() {
-            gameModal.classList.toggle('hidden');
-            gameModal.classList.toggle('flex');
-            // Zamknij ustawienia, jeśli otwierasz grę
-            if(gameModal.classList.contains('flex')) {
-                settingsPanel.classList.add('hidden');
-                settingsPanel.classList.remove('flex');
-                initMinesweeper();
-            }
-        }
-
-        function initMinesweeper() {
-            board = [];
-            gameOver = false;
-            boardElement.innerHTML = '';
-            gameStatus.innerHTML = 'LPM: Odkryj | PPM: Flaga';
-            gameStatus.classList.remove('text-scarlet', 'text-green-500');
-            gameStatus.classList.add('text-gray-400');
-
-            // 1. Generowanie pustej planszy
-            for (let i = 0; i < BOARD_SIZE * BOARD_SIZE; i++) {
-                const cell = {
-                    id: i,
-                    isMine: false,
-                    isRevealed: false,
-                    isFlagged: false,
-                    neighborMines: 0
-                };
-                board.push(cell);
-                
-                const cellElement = document.createElement('div');
-                cellElement.classList.add('saper-cell');
-                cellElement.dataset.id = i;
-                cellElement.addEventListener('click', () => clickCell(cell));
-                cellElement.addEventListener('contextmenu', (e) => {
-                    e.preventDefault();
-                    rightClickCell(cell);
-                });
-                boardElement.appendChild(cellElement);
-            }
-
-            // 2. Rozmieszczanie min
-            let minesPlaced = 0;
-            while (minesPlaced < MINES_COUNT) {
-                const rand = Math.floor(Math.random() * (BOARD_SIZE * BOARD_SIZE));
-                if (!board[rand].isMine) {
-                    board[rand].isMine = true;
-                    minesPlaced++;
-                }
-            }
-
-            // 3. Obliczanie sąsiadów
-            for (let i = 0; i < board.length; i++) {
-                if (!board[i].isMine) {
-                    board[i].neighborMines = countNeighbors(i);
-                }
-            }
-        }
-
-        function countNeighbors(index) {
-            let count = 0;
-            const row = Math.floor(index / BOARD_SIZE);
-            const col = index % BOARD_SIZE;
-
-            for (let r = -1; r <= 1; r++) {
-                for (let c = -1; c <= 1; c++) {
-                    const newRow = row + r;
-                    const newCol = col + c;
-                    if (newRow >= 0 && newRow < BOARD_SIZE && newCol >= 0 && newCol < BOARD_SIZE) {
-                        const neighborIndex = newRow * BOARD_SIZE + newCol;
-                        if (board[neighborIndex].isMine) count++;
-                    }
-                }
-            }
-            return count;
-        }
-
-        function clickCell(cell) {
-            if (gameOver || cell.isRevealed || cell.isFlagged) return;
-
-            if (cell.isMine) {
-                revealAllMines();
-                gameStatus.innerHTML = "SYSTEM CRITICAL! GAME OVER.";
-                gameStatus.classList.remove('text-gray-400');
-                gameStatus.classList.add('text-scarlet');
-                playClickSound(); // Używamy dźwięku z głównego kodu
-                gameOver = true;
-                return;
-            }
-
-            revealCell(cell);
-            checkWin();
-            playClickSound();
-        }
-
-        function rightClickCell(cell) {
-            if (gameOver || cell.isRevealed) return;
-            cell.isFlagged = !cell.isFlagged;
-            const el = document.querySelector(`.saper-cell[data-id='${cell.id}']`);
-            if (cell.isFlagged) {
-                el.classList.add('flagged');
-                el.innerHTML = '!';
-            } else {
-                el.classList.remove('flagged');
-                el.innerHTML = '';
-            }
-            playClickSound();
-        }
-
-        function revealCell(cell) {
-            if (cell.isRevealed) return;
-            cell.isRevealed = true;
-            const el = document.querySelector(`.saper-cell[data-id='${cell.id}']`);
-            el.classList.add('revealed');
-            
-            if (cell.neighborMines > 0) {
-                el.innerHTML = cell.neighborMines;
-                el.classList.add(`val-${cell.neighborMines}`);
-            } else {
-                // Flood fill dla pustych pól
-                const index = cell.id;
-                const row = Math.floor(index / BOARD_SIZE);
-                const col = index % BOARD_SIZE;
-
-                for (let r = -1; r <= 1; r++) {
-                    for (let c = -1; c <= 1; c++) {
-                        const newRow = row + r;
-                        const newCol = col + c;
-                        if (newRow >= 0 && newRow < BOARD_SIZE && newCol >= 0 && newCol < BOARD_SIZE) {
-                            const neighborIndex = newRow * BOARD_SIZE + newCol;
-                            revealCell(board[neighborIndex]);
-                        }
-                    }
-                }
-            }
-        }
-
-        function revealAllMines() {
-            board.forEach(cell => {
-                if (cell.isMine) {
-                    const el = document.querySelector(`.saper-cell[data-id='${cell.id}']`);
-                    el.classList.add('bomb');
-                    el.innerHTML = 'X';
-                }
-            });
-        }
-
-        function checkWin() {
-            const revealedCount = board.filter(c => c.isRevealed).length;
-            if (revealedCount === (BOARD_SIZE * BOARD_SIZE) - MINES_COUNT) {
-                gameStatus.innerHTML = "SYSTEM RESTORED. YOU WIN.";
-                gameStatus.classList.remove('text-gray-400');
-                gameStatus.classList.add('text-green-500');
-                gameOver = true;
             }
         }
     </script>
