@@ -46,6 +46,7 @@
         body.light-mode #canvas-container { opacity: 0.8; filter: brightness(0.8); }
         body.light-mode ::-webkit-scrollbar-track { background: #e5e7eb; }
         body.light-mode .tech-widget { background: rgba(255, 255, 255, 0.8); color: #000; border-left-color: #DC143C; }
+        body.light-mode .scanlines { opacity: 0.1; }
 
         /* --- SCROLLBAR --- */
         ::-webkit-scrollbar { width: 8px; }
@@ -61,6 +62,34 @@
 
         @keyframes galaxy-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes core-pulse { 0% { transform: scale(1); opacity: 0.7; } 100% { transform: scale(1.1); opacity: 0.9; } }
+
+        /* --- VISUAL FX --- */
+        /* Scanlines */
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2));
+            background-size: 100% 4px;
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        /* Glitch Effect */
+        @keyframes glitch-anim {
+            0% { transform: translate(0) }
+            20% { transform: translate(-2px, 2px) }
+            40% { transform: translate(-2px, -2px) }
+            60% { transform: translate(2px, 2px) }
+            80% { transform: translate(2px, -2px) }
+            100% { transform: translate(0) }
+        }
+        .hover-glitch:hover {
+            animation: glitch-anim 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+            color: #DC143C !important;
+            text-shadow: 2px 0 rgba(255,255,255,0.5), -2px 0 rgba(139,0,0,0.5);
+            border-color: #DC143C !important;
+        }
 
         /* --- UI UTILS --- */
         .glass-dark { background: rgba(5, 0, 0, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(220, 20, 60, 0.3); box-shadow: 0 0 15px rgba(220, 20, 60, 0.05); transition: all 0.3s ease; }
@@ -88,6 +117,8 @@
     </style>
 </head>
 <body class="antialiased selection:bg-scarlet selection:text-white relative">
+
+    <div class="scanlines"></div>
 
     <div id="ar-modal" class="hidden fixed inset-0 z-[100] bg-black/95 flex flex-col items-center justify-center p-4">
         <button onclick="toggleARModal()" class="absolute top-6 right-6 z-[110] text-white hover:text-scarlet transition p-2 border border-white/20 rounded-full">
@@ -188,7 +219,7 @@
             </div>
 
             <div class="text-[9px] text-gray-500 mt-2 text-center font-mono">
-                SYSTEM VER. 3.3 // <span id="current-year-mini"></span>
+                SYSTEM VER. 3.4 // <span id="current-year-mini"></span>
             </div>
         </div>
     </div>
@@ -302,7 +333,7 @@
             <div class="relative border-l-2 border-scarlet/30 ml-4 md:ml-10 space-y-12">
                 <div class="relative pl-8 md:pl-12 group">
                     <span class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-black border-2 border-scarlet group-hover:bg-scarlet transition-all duration-300 shadow-[0_0_10px_rgba(220,20,60,0.5)]"></span>
-                    <div class="glass-dark border border-white/10 p-6 rounded-lg hover:border-scarlet/50 transition duration-300 opacity-70 hover:opacity-100">
+                    <div class="glass-dark border border-white/10 p-6 rounded-lg hover:border-scarlet/50 transition duration-300 opacity-70 hover:opacity-100 hover-glitch">
                         <span class="text-sm md:text-xs font-mono text-scarlet tracking-widest mb-2 block">202X - OBECNIE</span>
                         <h3 class="text-3xl md:text-2xl font-bold text-white uppercase mb-1 font-mono">/// DANE ZASZYFROWANE</h3>
                         <p class="text-lg md:text-sm text-gray-400 uppercase tracking-wider mb-4 font-bold font-mono">[ BRAK DOSTĘPU ]</p>
@@ -315,7 +346,7 @@
 
                 <div class="relative pl-8 md:pl-12 group">
                     <span class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-black border-2 border-scarlet group-hover:bg-scarlet transition-all duration-300 shadow-[0_0_10px_rgba(220,20,60,0.5)]"></span>
-                    <div class="glass-dark border border-white/10 p-6 rounded-lg hover:border-scarlet/50 transition duration-300 opacity-60 hover:opacity-100">
+                    <div class="glass-dark border border-white/10 p-6 rounded-lg hover:border-scarlet/50 transition duration-300 opacity-60 hover:opacity-100 hover-glitch">
                         <span class="text-sm md:text-xs font-mono text-scarlet tracking-widest mb-2 block">20XX - 20XX</span>
                         <h3 class="text-3xl md:text-2xl font-bold text-white uppercase mb-1 font-mono">/// PLIK USZKODZONY</h3>
                         <p class="text-lg md:text-sm text-gray-400 uppercase tracking-wider mb-4 font-bold font-mono">UNKNOWN_ENTITY</p>
@@ -336,7 +367,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="glass-dark border border-scarlet/20 p-6 rounded-lg hover:border-scarlet transition duration-300 group opacity-70">
+                <div class="glass-dark border border-scarlet/20 p-6 rounded-lg hover:border-scarlet transition duration-300 group opacity-70 hover-glitch">
                     <div class="flex items-center justify-between mb-4">
                         <svg class="w-10 h-10 md:w-8 md:h-8 text-scarlet group-hover:animate-pulse transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                         <span class="text-xs md:text-[10px] font-mono text-scarlet">ID: ???-???</span>
@@ -345,7 +376,7 @@
                     <p class="text-sm md:text-xs text-gray-500 uppercase tracking-wider font-mono">DANE NIEDOSTĘPNE</p>
                 </div>
 
-                <div class="glass-dark border border-scarlet/20 p-6 rounded-lg hover:border-scarlet transition duration-300 group opacity-70">
+                <div class="glass-dark border border-scarlet/20 p-6 rounded-lg hover:border-scarlet transition duration-300 group opacity-70 hover-glitch">
                     <div class="flex items-center justify-between mb-4">
                         <svg class="w-10 h-10 md:w-8 md:h-8 text-scarlet group-hover:animate-pulse transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                         <span class="text-xs md:text-[10px] font-mono text-scarlet">ID: ???-???</span>
@@ -363,7 +394,7 @@
                     <p class="text-sm md:text-xs text-gray-400 uppercase tracking-wider">Active License</p>
                 </div>
 
-                <div class="glass-dark border border-scarlet/20 p-6 rounded-lg hover:border-scarlet transition duration-300 group opacity-70">
+                <div class="glass-dark border border-scarlet/20 p-6 rounded-lg hover:border-scarlet transition duration-300 group opacity-70 hover-glitch">
                     <div class="flex items-center justify-between mb-4">
                         <svg class="w-10 h-10 md:w-8 md:h-8 text-scarlet group-hover:animate-pulse transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                         <span class="text-xs md:text-[10px] font-mono text-scarlet">ID: ???-???</span>
@@ -431,7 +462,7 @@
                      <svg class="w-8 h-8 md:w-5 md:h-5 text-white group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M13.5 10.7V6.5h2.9l-4.2-4.2-4.2 4.2h2.9v4.2H8L5 8.1v3.2l7 4.6 7-4.6V8.1l-3 2.6zM12 21.3v-5.2"/>
                     </svg>
-                    <span class="text-white font-bold text-sm md:text-xs uppercase tracking-widest group-hover:text-white">Linktree (Wszystkie linki)</span>
+                    <span class="text-white font-bold text-sm md:text-xs uppercase tracking-widest group-hover:text-white">Linktree // Access All</span>
                     <span class="absolute right-0 top-0 -mt-1 -mr-1 flex h-3 w-3">
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-scarlet opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-3 w-3 bg-scarlet"></span>
@@ -565,6 +596,32 @@
         let animationId;
         perfToggle.addEventListener('change', () => {
             if(perfToggle.checked) { cancelAnimationFrame(animationId); } else { animate(); }
+        });
+
+        // AUDIO UI SYSTEM
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playClickSound() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(800, audioCtx.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.1);
+            
+            gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + 0.1);
+        }
+
+        // Podpięcie pod wszystkie przyciski i linki
+        document.querySelectorAll('button, a').forEach(el => {
+            el.addEventListener('mousedown', playClickSound);
         });
 
         // MENU MOBILNE
