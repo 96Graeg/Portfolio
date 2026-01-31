@@ -36,37 +36,24 @@
             transition: background-color 0.5s ease, color 0.5s ease;
         }
         
-        /* --- LIGHT MODE OVERRIDES ("Orbital Lab" Theme) --- */
-        body.light-mode {
-            background-color: #f3f4f6; /* Jasny szary/biały */
-            color: #111827;
-        }
-        
-        /* W trybie jasnym odwracamy kolory tekstu i tła dla elementów "glass" */
-        body.light-mode .glass-dark {
-            background: rgba(255, 255, 255, 0.75);
-            border-color: rgba(220, 20, 60, 0.2);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-            color: #000;
-        }
-        
-        /* Wymuszenie czarnego tekstu na elementach, które miały text-white */
+        /* --- LIGHT MODE --- */
+        body.light-mode { background-color: #f3f4f6; color: #111827; }
+        body.light-mode .glass-dark { background: rgba(255, 255, 255, 0.75); border-color: rgba(220, 20, 60, 0.2); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); color: #000; }
         body.light-mode .text-white { color: #111 !important; }
-        body.light-mode .text-gray-400 { color: #4b5563 !important; } /* Ciemniejszy szary */
+        body.light-mode .text-gray-400 { color: #4b5563 !important; }
         body.light-mode .text-gray-500 { color: #374151 !important; }
-        
-        /* Ukrycie gwiazd w trybie jasnym (lub zmiana na delikatną siatkę) */
         body.light-mode .galaxy-container { opacity: 0.1; filter: invert(1); }
         body.light-mode #canvas-container { opacity: 0.8; filter: brightness(0.8); }
+        body.light-mode ::-webkit-scrollbar-track { background: #e5e7eb; }
+        body.light-mode .tech-widget { background: rgba(255, 255, 255, 0.8); color: #000; border-left-color: #DC143C; }
 
-        /* Pasek przewijania */
+        /* --- SCROLLBAR --- */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #000; }
-        body.light-mode ::-webkit-scrollbar-track { background: #e5e7eb; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #DC143C; }
 
-        /* --- BASIC BACKGROUNDS --- */
+        /* --- BACKGROUNDS --- */
         .galaxy-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -10; pointer-events: none; transition: opacity 0.5s; }
         .galaxy-core { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40vw; height: 40vw; background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(220,20,60,0.4) 20%, rgba(139,0,0,0.1) 50%, transparent 70%); border-radius: 50%; filter: blur(60px); opacity: 0.8; animation: core-pulse 10s infinite alternate; }
         .spiral-arms { position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background-image: radial-gradient(2px 2px at 20px 30px, #fff, rgba(0,0,0,0)), radial-gradient(2px 2px at 40px 70px, #DC143C, rgba(0,0,0,0)), radial-gradient(2px 2px at 50px 160px, #fff, rgba(0,0,0,0)), radial-gradient(2px 2px at 90px 40px, #8B0000, rgba(0,0,0,0)); background-repeat: repeat; background-size: 300px 300px; opacity: 0.5; animation: galaxy-spin 120s linear infinite; }
@@ -91,16 +78,38 @@
 
         .widgets-container { position: fixed; bottom: 20px; left: 20px; z-index: 100; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
         .tech-widget { font-family: 'Space Grotesk', monospace; font-size: 10px; color: rgba(255, 255, 255, 0.7); background: rgba(0, 0, 0, 0.8); padding: 8px 12px; border-left: 2px solid #DC143C; backdrop-filter: blur(5px); pointer-events: none; transition: background 0.3s; }
-        body.light-mode .tech-widget { background: rgba(255, 255, 255, 0.8); color: #000; border-left-color: #DC143C; }
 
         /* SWITCH TOGGLE STYLE */
         .toggle-checkbox:checked { right: 0; border-color: #DC143C; }
         .toggle-checkbox:checked + .toggle-label { background-color: #DC143C; }
+
+        /* AR MODAL */
+        #ar-modal { transition: opacity 0.3s ease-in-out; }
     </style>
 </head>
 <body class="antialiased selection:bg-scarlet selection:text-white relative">
 
-    <audio id="ui-click" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" preload="auto"></audio>
+    <div id="ar-modal" class="hidden fixed inset-0 z-[100] bg-black/95 flex flex-col items-center justify-center p-4">
+        <button onclick="toggleARModal()" class="absolute top-6 right-6 z-[110] text-white hover:text-scarlet transition p-2 border border-white/20 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+        <h2 class="text-white text-xl uppercase tracking-widest mb-4 absolute top-6 left-6 z-[110]">AR Viewer // V.1.0</h2>
+        
+        <model-viewer 
+            src="https://modelviewer.dev/shared-assets/models/Astronaut.glb" 
+            ar 
+            ar-modes="webxr scene-viewer quick-look" 
+            camera-controls 
+            auto-rotate 
+            class="w-full h-full"
+            ios-src="https://modelviewer.dev/shared-assets/models/Astronaut.usdz">
+            <button slot="ar-button" class="absolute bottom-12 left-1/2 -translate-x-1/2 bg-scarlet text-white px-8 py-3 rounded-full font-bold uppercase tracking-widest shadow-[0_0_20px_#DC143C] z-50 animate-pulse border border-white/20">
+                Aktywuj AR (Mobile)
+            </button>
+        </model-viewer>
+    </div>
 
     <div class="tech-grid-overlay" id="flashlight"></div>
     <div class="galaxy-container"><div class="spiral-arms"></div><div class="galaxy-core"></div></div>
@@ -130,29 +139,26 @@
     </div>
 
     <div class="fixed bottom-6 right-6 z-[60]">
-        <button id="settings-btn" class="glass-dark p-4 rounded-full text-white hover:text-scarlet border border-white/20 hover:border-scarlet transition duration-300 shadow-[0_0_15px_rgba(0,0,0,0.5)] group">
+        <button id="settings-btn" class="glass-dark p-4 rounded-full text-white hover:text-scarlet border border-white/20 hover:border-scarlet transition duration-300 shadow-[0_0_15px_rgba(0,0,0,0.5)] bg-black group">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 group-hover:rotate-90 transition duration-500">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.157.92c.447.1.879.293 1.28.567l.882-.369c.532-.224 1.15.066 1.35.61l.546 1.363c.201.543-.07 1.155-.584 1.383l-.936.417c.05.474.05.955 0 1.428l.936.417c.513.228.785.84.584 1.383l-.546 1.363c-.2.544-.818.834-1.35.61l-.882-.369a6.29 6.29 0 0 1-1.28.567l-.157.92c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.02-.398-1.11-.94l-.157-.92a6.293 6.293 0 0 1-1.28-.567l-.882.369c-.532.224-1.15-.066-1.35-.61l-.546-1.363c-.2.544-.818.834-1.35.61l-.882.369c.401-.274.833-.467 1.28-.567l.157-.92Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.157.92c.447.1.879.293 1.28.567l.882-.369c.532-.224 1.15.066 1.35.61l.546 1.363c.201.543-.07 1.155-.584 1.383l-.936.417c.05.474.05.955 0 1.428l.936.417c.513.228.785.84.584 1.383l-.546 1.363c-.2.544-.818.834-1.35.61l-.882.369a6.29 6.29 0 0 1-1.28.567l-.157.92c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.02-.398-1.11-.94l-.157-.92a6.293 6.293 0 0 1-1.28-.567l-.882.369c-.532.224-1.15-.066-1.35-.61l-.546-1.363c-.201-.543.07-1.155.584-1.383l.936-.417a6.415 6.415 0 0 1 0-1.428l-.936-.417c-.513-.228-.785-.84-.584-1.383l.546-1.363c.2-.544.818-.834 1.35-.61l.882.369c.401-.274.833-.467 1.28-.567l.157-.92Z" />
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
             </svg>
         </button>
 
         <div id="settings-panel" class="hidden absolute bottom-16 right-0 w-64 glass-dark border border-scarlet/30 p-5 rounded-lg flex-col gap-4 transform transition-all duration-300 origin-bottom-right">
-            <h3 class="text-scarlet text-xs font-bold uppercase tracking-widest mb-1 border-b border-white/10 pb-2">Konfiguracja Systemu</h3>
+            <h3 class="text-scarlet text-xs font-bold uppercase tracking-widest mb-1 border-b border-white/10 pb-2">Panel Sterowania</h3>
             
-            <div class="flex justify-between items-center">
+            <button onclick="toggleARModal()" class="w-full text-left text-xs font-bold text-white hover:bg-white/10 p-2 rounded transition uppercase tracking-wider flex items-center gap-2 border border-white/10">
+                <svg class="w-4 h-4 text-scarlet" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path></svg>
+                Uruchom Podgląd AR
+            </button>
+
+            <div class="flex justify-between items-center mt-2">
                 <span class="text-xs font-bold uppercase text-gray-400">Tryb Jasny (Lab)</span>
                 <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
                     <input type="checkbox" id="theme-toggle" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-900 left-0 transition-all duration-300"/>
                     <label for="theme-toggle" class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-700 cursor-pointer"></label>
-                </div>
-            </div>
-
-            <div class="flex justify-between items-center">
-                <span class="text-xs font-bold uppercase text-gray-400">System Audio (SFX)</span>
-                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                    <input type="checkbox" id="audio-toggle" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-900 left-0 transition-all duration-300"/>
-                    <label for="audio-toggle" class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-700 cursor-pointer"></label>
                 </div>
             </div>
 
@@ -165,7 +171,7 @@
             </div>
             
             <div class="text-[9px] text-gray-500 mt-2 text-center font-mono">
-                SYSTEM VER. 2.5 // <span id="current-year-mini"></span>
+                SYSTEM VER. 3.0 // <span id="current-year-mini"></span>
             </div>
         </div>
     </div>
@@ -179,6 +185,7 @@
 
                 <div class="hidden md:flex gap-6 text-[10px] font-bold uppercase tracking-widest text-gray-400 border-l border-white/10 pl-6">
                     <a href="#o-mnie" class="hover:text-white hover:text-glow transition">O mnie</a>
+                    <a href="#archiwa" class="hover:text-white hover:text-glow transition">Archiwa</a>
                     <a href="#projekty" class="hover:text-white hover:text-glow transition">Projekty</a>
                     <a href="#stack" class="hover:text-white hover:text-glow transition">Narzędzia</a>
                 </div>
@@ -190,6 +197,8 @@
 
             <div id="mobile-menu" class="hidden absolute top-full mt-4 left-1/2 -translate-x-1/2 glass-dark border border-white/10 px-6 py-6 rounded-2xl md:hidden text-center w-80 shadow-[0_10px_40px_rgba(0,0,0,0.95)] flex-col z-40 animate-fade-in-down backdrop-blur-xl">
                 <a href="#o-mnie" class="block text-white text-sm font-bold uppercase tracking-[0.2em] hover:text-scarlet transition py-4">O mnie</a>
+                <div class="h-px bg-white/10 w-full mx-auto"></div>
+                <a href="#archiwa" class="block text-white text-sm font-bold uppercase tracking-[0.2em] hover:text-scarlet transition py-4">Archiwa</a>
                 <div class="h-px bg-white/10 w-full mx-auto"></div>
                 <a href="#projekty" class="block text-white text-sm font-bold uppercase tracking-[0.2em] hover:text-scarlet transition py-4">Projekty</a>
                 <div class="h-px bg-white/10 w-full mx-auto"></div>
@@ -212,7 +221,7 @@
                 Łączę świat cyfrowy z fizycznym. Projektuję systemy immersyjne, wytwarzam addytywnie i tworzę rozwiązania dla sektora kosmicznego.
             </p>
             <div class="flex flex-col sm:flex-row gap-6 justify-center pt-12 pointer-events-auto">
-                <a href="#projekty" class="magnetic-btn btn-filled px-10 py-4 font-bold text-sm rounded-sm inline-block">Moje Projekty</a>
+                <a href="#archiwa" class="magnetic-btn btn-filled px-10 py-4 font-bold text-sm rounded-sm inline-block">Moje Prace</a>
                 <button onclick="generateMissionReport()" class="magnetic-btn btn-scarlet px-10 py-4 font-bold text-sm rounded-sm flex items-center justify-center gap-2 group">
                     <svg class="w-4 h-4 group-hover:animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                     Pobierz Raport Misji
@@ -246,6 +255,36 @@
         </div>
     </section>
 
+    <section id="archiwa" class="py-24 px-4 bg-black/80 relative z-10 border-b border-white/5">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 border-b border-white/10 pb-6">
+                <div><h2 class="text-3xl md:text-5xl font-bold text-white uppercase tracking-tight text-gray-400">ARCHIWA <span class="text-scarlet">DANYCH</span></h2></div>
+                <p class="text-gray-500 uppercase tracking-widest text-xs mt-4 md:mt-0">Zakończone misje</p>
+            </div>
+            
+            <div class="glass-dark border border-white/10 p-8 rounded-lg text-center">
+                <div class="flex flex-col items-center justify-center gap-4 py-10">
+                    <svg class="w-12 h-12 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
+                    <h3 class="text-xl font-bold text-white uppercase tracking-widest">Brak Zarchiwizowanych Danych</h3>
+                    <p class="text-gray-500 text-sm max-w-md">Wszystkie systemy pracują nad nowymi rozwiązaniami. Historia projektów zostanie zaktualizowana wkrótce.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projekty" class="py-24 px-4 bg-gradient-to-b from-transparent to-black/90 relative z-10">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 border-b border-white/10 pb-6">
+                <div><h2 class="text-4xl md:text-6xl font-bold text-white uppercase tracking-tight">Aktywne <span class="text-transparent bg-clip-text bg-gradient-to-r from-scarlet to-red-900">Misje</span></h2></div>
+                <p class="text-gray-500 uppercase tracking-widest text-xs mt-4 md:mt-0">Laboratorium <span id="lab-year"></span></p>
+            </div>
+            
+            <div class="border border-white/10 border-dashed rounded-lg p-12 text-center">
+                <p class="text-scarlet font-mono text-sm tracking-widest uppercase animate-pulse">>> INICJOWANIE NOWYCH PROJEKTÓW...</p>
+            </div>
+        </div>
+    </section>
+
     <section id="stack" class="py-24 relative z-10">
         <div class="max-w-6xl mx-auto px-4 text-center">
             <h2 class="text-xs text-scarlet uppercase tracking-[0.5em] mb-16 font-bold">Arsenał Inżyniera</h2>
@@ -259,77 +298,13 @@
         </div>
     </section>
 
-    <section id="projekty" class="py-24 px-4 bg-gradient-to-b from-transparent to-black/90 relative z-10">
-        <div class="max-w-7xl mx-auto">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-16 border-b border-white/10 pb-6">
-                <div><h2 class="text-4xl md:text-6xl font-bold text-white uppercase tracking-tight">Wybrane <span class="text-transparent bg-clip-text bg-gradient-to-r from-scarlet to-red-900">Misje</span></h2></div>
-                <p class="text-gray-500 uppercase tracking-widest text-xs mt-4 md:mt-0">Laboratorium <span id="lab-year"></span></p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="md:col-span-2 group relative overflow-hidden border border-white/5 bg-black min-h-[400px]">
-                    <img src="https://images.unsplash.com/photo-1614728853913-1e2211f9ca52?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="VR Space Simulation" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-105 opacity-40 group-hover:opacity-20 grayscale">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
-                    <div class="absolute bottom-0 left-0 p-8 w-full border-l-4 border-transparent group-hover:border-scarlet transition-all duration-300">
-                        <h3 class="text-3xl font-bold text-white mb-2 uppercase tracking-wider">Mars VR Training</h3>
-                        <p class="text-gray-400 text-sm mb-4 max-w-md">Symulacja spaceru po powierzchni Marsa w wirtualnej rzeczywistości.</p>
-                        <div class="flex gap-4">
-                            <span class="text-scarlet text-xs font-bold uppercase tracking-widest border border-scarlet/30 px-3 py-1">Unity</span>
-                            <span class="text-scarlet text-xs font-bold uppercase tracking-widest border border-scarlet/30 px-3 py-1">Oculus SDK</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="group relative overflow-hidden border border-white/5 bg-black min-h-[400px]">
-                    <model-viewer 
-                        src="https://modelviewer.dev/shared-assets/models/Astronaut.glb" 
-                        ar 
-                        ar-modes="webxr scene-viewer quick-look" 
-                        camera-controls 
-                        auto-rotate 
-                        class="absolute inset-0 w-full h-full bg-black z-20"
-                        ios-src="https://modelviewer.dev/shared-assets/models/Astronaut.usdz">
-                        <button slot="ar-button" class="absolute top-4 right-4 bg-scarlet text-white p-3 rounded-full shadow-[0_0_15px_#DC143C] z-50 animate-pulse border border-white/20">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path></svg>
-                        </button>
-                    </model-viewer>
-                    <div class="absolute bottom-0 left-0 p-8 w-full border-l-4 border-transparent group-hover:border-scarlet transition-all duration-300 z-30 pointer-events-none bg-gradient-to-t from-black via-black/80 to-transparent">
-                        <h3 class="text-xl font-bold text-white mb-2 uppercase tracking-wider">Aero Prototype (AR)</h3>
-                        <p class="text-gray-400 text-sm mb-4">Elementy konstrukcyjne drona. Zobacz w AR.</p>
-                        <span class="text-scarlet text-xs font-bold uppercase tracking-widest">Additive Mfg</span>
-                    </div>
-                </div>
-                <div class="group relative overflow-hidden border border-white/5 bg-black min-h-[400px]">
-                    <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Satellite Data" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-105 opacity-40 group-hover:opacity-20 grayscale">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
-                    <div class="absolute bottom-0 left-0 p-8 w-full border-l-4 border-transparent group-hover:border-scarlet transition-all duration-300">
-                        <h3 class="text-xl font-bold text-white mb-2 uppercase tracking-wider">Orbital Data</h3>
-                        <p class="text-gray-400 text-sm mb-4">Wizualizacja telemetrii satelitarnej.</p>
-                        <span class="text-scarlet text-xs font-bold uppercase tracking-widest">Python / GIS</span>
-                    </div>
-                </div>
-                <div class="md:col-span-2 group relative overflow-hidden border border-white/5 bg-black min-h-[400px]">
-                    <img src="https://images.unsplash.com/photo-1592478411213-61535fdd28f2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="AR Interface" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-105 opacity-40 group-hover:opacity-20 grayscale">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
-                    <div class="absolute bottom-0 left-0 p-8 w-full border-l-4 border-transparent group-hover:border-scarlet transition-all duration-300">
-                        <h3 class="text-3xl font-bold text-white mb-2 uppercase tracking-wider">AR HUD System</h3>
-                        <p class="text-gray-400 text-sm mb-4 max-w-md">Interfejs rozszerzonej rzeczywistości dla operatorów maszyn.</p>
-                        <div class="flex gap-4">
-                            <span class="text-scarlet text-xs font-bold uppercase tracking-widest border border-scarlet/30 px-3 py-1">Hololens</span>
-                            <span class="text-scarlet text-xs font-bold uppercase tracking-widest border border-scarlet/30 px-3 py-1">C#</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <footer id="kontakt" class="border-t border-white/10 bg-black pt-24 pb-12 relative overflow-hidden z-10 glass-dark">
         <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-md h-1 bg-scarlet blur-[100px] opacity-50"></div>
 
         <div class="max-w-4xl mx-auto px-4 text-center z-10 relative">
             <h2 class="text-4xl md:text-5xl font-bold text-white mb-8 uppercase tracking-spectral">Centrum Połączeń</h2>
             <p class="text-gray-400 mb-10 max-w-lg mx-auto font-light">
-                Znajdź mnie w przestrzeni cyfrowej. Wszystkie kanały komunikacji w jednym miejscu.
+                Kliknij poniżej, aby skopiować email lub przejdź do Linktree.
             </p>
             
             <a href="https://linktr.ee/96graeg" target="_blank" class="magnetic-btn inline-block px-16 py-5 bg-scarlet text-white font-bold text-lg uppercase tracking-[0.2em] hover:bg-white hover:text-black transition duration-500 shadow-[0_0_20px_rgba(220,20,60,0.4)] hover:shadow-[0_0_40px_rgba(255,255,255,0.6)] mb-12">
@@ -354,13 +329,13 @@
     </footer>
 
     <script>
-        // DYNAMICZNY ROK (NAPRAWA 2024 -> 2026+)
+        // DYNAMICZNY ROK
         const year = new Date().getFullYear();
         document.getElementById('current-year').innerText = year;
         document.getElementById('current-year-mini').innerText = year;
         document.getElementById('lab-year').innerText = year;
 
-        // SETTINGS WIDGET & TOGGLES
+        // SETTINGS WIDGET
         const settingsBtn = document.getElementById('settings-btn');
         const settingsPanel = document.getElementById('settings-panel');
         settingsBtn.addEventListener('click', () => {
@@ -368,41 +343,27 @@
             settingsPanel.classList.toggle('flex');
         });
 
+        // AR MODAL LOGIC
+        const arModal = document.getElementById('ar-modal');
+        function toggleARModal() {
+            arModal.classList.toggle('hidden');
+            arModal.classList.toggle('flex');
+            // Zamknij panel ustawień jeśli otwarty
+            settingsPanel.classList.add('hidden');
+            settingsPanel.classList.remove('flex');
+        }
+
         // 1. LIGHT/DARK THEME
         const themeToggle = document.getElementById('theme-toggle');
         themeToggle.addEventListener('change', () => {
             document.body.classList.toggle('light-mode');
         });
 
-        // 2. AUDIO SFX
-        const audioToggle = document.getElementById('audio-toggle');
-        const clickSound = document.getElementById('ui-click');
-        clickSound.volume = 0.2; // Cichszy dźwięk
-        
-        function playClick() {
-            if(audioToggle.checked) {
-                clickSound.currentTime = 0;
-                clickSound.play().catch(e => {}); // Ignoruj błędy autoplay
-            }
-        }
-        
-        // Dodaj dźwięk do wszystkich przycisków i linków
-        document.querySelectorAll('a, button').forEach(el => {
-            el.addEventListener('click', playClick);
-        });
-
-        // 3. PERFORMANCE MODE (Zatrzymanie 3D)
+        // 3. PERFORMANCE MODE
         const perfToggle = document.getElementById('perf-toggle');
         let animationId;
-        
         perfToggle.addEventListener('change', () => {
-            if(perfToggle.checked) {
-                // Jeśli zaznaczone (Oszczędzanie), zatrzymaj
-                cancelAnimationFrame(animationId);
-            } else {
-                // Wznów
-                animate();
-            }
+            if(perfToggle.checked) { cancelAnimationFrame(animationId); } else { animate(); }
         });
 
         // MENU MOBILNE
@@ -441,7 +402,7 @@
         let mouseX = 0, mouseY = 0;
         document.addEventListener('mousemove', (event) => { mouseX = (event.clientX / window.innerWidth) * 2 - 1; mouseY = -(event.clientY / window.innerHeight) * 2 + 1; });
         function animate() { 
-            if(!perfToggle.checked) { // Animuj tylko jeśli tryb wydajności wyłączony
+            if(!perfToggle.checked) { 
                 animationId = requestAnimationFrame(animate); 
                 planet.rotation.x += 0.001 + mouseY * 0.01; 
                 planet.rotation.y += 0.002 + mouseX * 0.01; 
