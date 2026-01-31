@@ -235,49 +235,30 @@
     <section class="min-h-screen flex flex-col justify-center items-center text-center px-4 pt-20 relative">
         <div id="canvas-container"></div>
         <div class="space-y-8 max-w-4xl z-10 pointer-events-none">
-            <h2 class="text-sm text-scarlet tracking-[0.4em] uppercase font-bold mb-4 animate-pulse-slow pointer-events-auto">
-                R&D Engineer
-            </h2>
-            <h1 class="text-5xl md:text-8xl font-bold text-white leading-tight uppercase tracking-tight text-glow pointer-events-auto">
-                3D / XR / <br>
-                <span class="gradient-scarlet">SPACE SYSTEMS</span>
-            </h1>
-            <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto font-light leading-relaxed border-l-2 border-scarlet pl-6 text-left md:text-center md:border-l-0 md:pl-0 pointer-events-auto">
-                Łączę świat cyfrowy z fizycznym. Projektuję systemy immersyjne, wytwarzam addytywnie i tworzę rozwiązania dla sektora kosmicznego.
-            </p>
             
-            <div class="pointer-events-auto mt-12">
-                <div class="holo-terminal rounded-lg p-1 inline-block transform transition-all duration-500 hover:scale-105 group relative">
-                    <div class="flex flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x divide-scarlet/30 bg-black/50 backdrop-blur-md rounded-lg">
-                        <a href="#archiwa" class="flex-1 p-6 sm:p-8 flex flex-col items-center justify-center gap-4 transition-all duration-300 hover:bg-scarlet/10 group/left">
-                            <div class="w-12 h-12 rounded-full bg-scarlet/20 flex items-center justify-center text-scarlet group-hover/left:scale-110 transition-transform shadow-[0_0_15px_rgba(220,20,60,0.3)]">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                  <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
-                                </svg>
-                            </div>
-                            <div class="text-center">
-                                <span class="block text-xs text-gray-400 tracking-[0.2em] mb-1">SYSTEM ACCESS</span>
-                                <span class="block text-white font-bold tracking-wider group-hover/left:text-scarlet transition">PRZEGLĄDAJ ARKIWA</span>
-                            </div>
-                        </a>
-                        
-                        <button onclick="generateMissionReport()" class="flex-1 p-6 sm:p-8 flex flex-col items-center justify-center gap-4 transition-all duration-300 hover:bg-scarlet/10 group/right">
-                            <div class="w-12 h-12 rounded-full bg-scarlet/20 flex items-center justify-center text-scarlet group-hover/right:scale-110 transition-transform shadow-[0_0_15px_rgba(220,20,60,0.3)]">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                </svg>
-                            </div>
-                            <div class="text-center">
-                                <span class="block text-xs text-gray-400 tracking-[0.2em] mb-1">MISSION LOG</span>
-                                <span class="block text-white font-bold tracking-wider group-hover/right:text-scarlet transition">GENERUJ RAPORT</span>
-                            </div>
-                        </button>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16 max-w-4xl z-10 pointer-events-auto">
+                <div class="flex flex-col items-center group">
+                    <div class="w-24 h-24 mb-6 rounded-full bg-black/50 border border-scarlet/30 flex items-center justify-center shadow-[0_0_15px_rgba(220,20,60,0.2)] group-hover:shadow-[0_0_30px_rgba(220,20,60,0.5)] transition-all duration-500 bg-glass-dark">
+                        <svg class="w-10 h-10 text-scarlet" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 11H5C3.89543 11 3 11.8954 3 13V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V13C21 11.8954 20.1046 11 19 11Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 11V7C7 5.67392 7.52678 4.40215 8.46447 3.46447C9.40215 2.52678 10.6739 2 12 2C13.3261 2 14.5979 2.52678 15.5355 3.46447C16.4732 4.40215 17 5.67392 17 7V11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 15V18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 18H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </div>
-                    
-                    <div class="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-scarlet opacity-50 group-hover:opacity-100 transition"></div>
-                    <div class="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-scarlet opacity-50 group-hover:opacity-100 transition"></div>
-                    <div class="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-scarlet opacity-50 group-hover:opacity-100 transition"></div>
-                    <div class="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-scarlet opacity-50 group-hover:opacity-100 transition"></div>
+                    <h2 class="text-2xl font-bold text-white uppercase tracking-wider mb-2">3D Printing</h2>
+                    <span class="text-xs text-gray-500 tracking-[0.2em] uppercase">Additive Manufacturing</span>
+                </div>
+        
+                <div class="flex flex-col items-center group">
+                     <div class="w-24 h-24 mb-6 rounded-full bg-black/50 border border-scarlet/30 flex items-center justify-center shadow-[0_0_15px_rgba(220,20,60,0.2)] group-hover:shadow-[0_0_30px_rgba(220,20,60,0.5)] transition-all duration-500 bg-glass-dark">
+                        <svg class="w-10 h-10 text-scarlet" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 12V7C20 5.67392 19.4732 4.40215 18.5355 3.46447C17.5979 2.52678 16.3261 2 15 2H9C7.67392 2 6.40215 2.52678 5.46447 3.46447C4.52678 4.40215 4 5.67392 4 7V12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 12H15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 16C21 14.9 20.1 14 19 14H5C3.9 14 3 14.9 3 16C3 17.1 3.9 18 5 18H19C20.1 18 21 17.1 21 16Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 22V18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 16V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 16V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white uppercase tracking-wider mb-2">XR Systems</h2>
+                     <span class="text-xs text-gray-500 tracking-[0.2em] uppercase">Immersive Tech</span>
+                </div>
+        
+                <div class="flex flex-col items-center group">
+                     <div class="w-24 h-24 mb-6 rounded-full bg-black/50 border border-scarlet/30 flex items-center justify-center shadow-[0_0_15px_rgba(220,20,60,0.2)] group-hover:shadow-[0_0_30px_rgba(220,20,60,0.5)] transition-all duration-500 bg-glass-dark">
+                         <svg class="w-10 h-10 text-scarlet" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L8 6H16L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6L5 11L12 22L19 11L16 6H8Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 14L9 9H15L12 14Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 11L2 13L7 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 11L22 13L17 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white uppercase tracking-wider mb-2">Space Tech</h2>
+                     <span class="text-xs text-gray-500 tracking-[0.2em] uppercase">Orbital Systems</span>
                 </div>
             </div>
 
