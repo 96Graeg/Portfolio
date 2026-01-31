@@ -114,13 +114,72 @@
         .toggle-checkbox:checked { right: 0; border-color: #DC143C; }
         .toggle-checkbox:checked + .toggle-label { background-color: #DC143C; }
 
-        #ar-modal, #story-modal { transition: opacity 0.3s ease-in-out; }
+        #ar-modal, #story-modal, #offline-screen { transition: opacity 0.3s ease-in-out; }
+
+        /* --- SAPER STYLES --- */
+        .saper-cell {
+            width: 100%;
+            aspect-ratio: 1;
+            background: rgba(20, 20, 20, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Space Mono', monospace;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+        .saper-cell:hover { background: rgba(50, 50, 50, 0.8); border-color: rgba(220, 20, 60, 0.5); }
+        .saper-cell.revealed { background: rgba(220, 20, 60, 0.05); border-color: rgba(220, 20, 60, 0.1); cursor: default; }
+        .saper-cell.flagged { color: #DC143C; }
+        .saper-cell.bomb { background: #DC143C; color: white; border-color: #DC143C; box-shadow: 0 0 10px #DC143C; }
+        
+        /* Kolory cyfr */
+        .val-1 { color: #4ade80; text-shadow: 0 0 5px #4ade80; } /* Zielony */
+        .val-2 { color: #facc15; text-shadow: 0 0 5px #facc15; } /* Żółty */
+        .val-3 { color: #fb923c; text-shadow: 0 0 5px #fb923c; } /* Pomarańcz */
+        .val-4 { color: #ef4444; text-shadow: 0 0 5px #ef4444; } /* Czerwony */
     </style>
 </head>
 <body class="antialiased selection:bg-scarlet selection:text-white relative">
 
     <div class="scanlines"></div>
 
+    <div id="offline-screen" class="hidden fixed inset-0 z-[9999] bg-black flex-col items-center justify-center p-4">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(220,20,60,0.15),_transparent)] pointer-events-none"></div>
+        <div class="absolute inset-0 bg-[linear-gradient(rgba(20,0,0,0.5)_2px,transparent_2px)] bg-[length:100%_4px] opacity-50 pointer-events-none"></div>
+        
+        <div class="z-10 text-center mb-8 animate-pulse">
+            <div class="flex items-center justify-center gap-4 mb-2">
+                <svg class="w-12 h-12 text-scarlet" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-bold font-mono text-scarlet tracking-widest uppercase glitch-text">CONNECTION LOST</h1>
+            <p class="text-gray-500 font-mono mt-2 tracking-wider text-xs md:text-sm uppercase">/// SYSTEM OFFLINE. UTRACONO POŁĄCZENIE Z SIECIĄ.</p>
+        </div>
+
+        <div class="z-10 bg-black/80 border border-scarlet/50 p-6 rounded-lg shadow-[0_0_50px_rgba(220,20,60,0.2)] max-w-md w-full relative overflow-hidden">
+            <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-2">
+                <span class="text-xs text-scarlet font-mono font-bold uppercase">MINESWEEPER.EXE</span>
+                <button onclick="initMinesweeper()" class="text-[10px] bg-white/10 hover:bg-scarlet hover:text-white px-2 py-1 rounded transition uppercase font-mono">Restart Systemu</button>
+            </div>
+            
+            <div id="minesweeper-board" class="grid grid-cols-10 gap-1 w-full aspect-square bg-white/5 border border-white/10 p-1">
+                </div>
+
+            <div id="game-status" class="text-center font-mono text-xs mt-4 text-gray-400 h-4">
+                LPM: Odkryj | PPM: Flaga
+            </div>
+        </div>
+        
+        <button id="force-online-btn" onclick="simulateOnline()" class="hidden mt-8 text-xs text-gray-600 hover:text-white underline font-mono z-50">
+            [DEBUG] WYMUŚ TRYB ONLINE
+        </button>
+    </div>
     <div id="story-modal" class="hidden fixed inset-0 z-[120] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 transition-opacity duration-300">
         <div class="relative w-full max-w-2xl bg-black/90 border border-scarlet/50 shadow-[0_0_50px_rgba(220,20,60,0.2)] rounded-lg overflow-hidden transform transition-all scale-100">
             <div class="bg-scarlet/10 border-b border-scarlet/30 p-4 flex justify-between items-center">
@@ -327,6 +386,11 @@
              <button onclick="toggleFullScreen()" class="w-full text-left text-xs font-bold text-white hover:bg-white/10 p-2 rounded transition uppercase tracking-wider flex items-center gap-2 border border-white/10">
                 <svg class="w-4 h-4 text-scarlet" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
                 Tryb Imersyjny
+            </button>
+            
+            <button onclick="simulateOffline()" class="w-full text-left text-xs font-bold text-gray-400 hover:text-white hover:bg-scarlet/20 p-2 rounded transition uppercase tracking-wider flex items-center gap-2 border border-white/10 group">
+                <svg class="w-4 h-4 text-gray-500 group-hover:text-scarlet" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                Symuluj Brak Sieci
             </button>
 
             <div class="h-px bg-white/10 w-full my-1"></div>
@@ -895,6 +959,194 @@
                 settingsPanel.classList.remove('flex');
             }
         }
+
+        // --- [NOWOŚĆ] LOGIKA SAPERA (OFFLINE GAME) ---
+        const boardElement = document.getElementById('minesweeper-board');
+        const offlineScreen = document.getElementById('offline-screen');
+        const gameStatus = document.getElementById('game-status');
+        const BOARD_SIZE = 10;
+        const MINES_COUNT = 15;
+        let board = [];
+        let gameOver = false;
+
+        function initMinesweeper() {
+            board = [];
+            gameOver = false;
+            boardElement.innerHTML = '';
+            gameStatus.innerHTML = 'LPM: Odkryj | PPM: Flaga';
+            gameStatus.classList.remove('text-scarlet', 'text-green-500');
+            gameStatus.classList.add('text-gray-400');
+
+            // 1. Generowanie pustej planszy
+            for (let i = 0; i < BOARD_SIZE * BOARD_SIZE; i++) {
+                const cell = {
+                    id: i,
+                    isMine: false,
+                    isRevealed: false,
+                    isFlagged: false,
+                    neighborMines: 0
+                };
+                board.push(cell);
+                
+                const cellElement = document.createElement('div');
+                cellElement.classList.add('saper-cell');
+                cellElement.dataset.id = i;
+                cellElement.addEventListener('click', () => clickCell(cell));
+                cellElement.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    rightClickCell(cell);
+                });
+                boardElement.appendChild(cellElement);
+            }
+
+            // 2. Rozmieszczanie min
+            let minesPlaced = 0;
+            while (minesPlaced < MINES_COUNT) {
+                const rand = Math.floor(Math.random() * (BOARD_SIZE * BOARD_SIZE));
+                if (!board[rand].isMine) {
+                    board[rand].isMine = true;
+                    minesPlaced++;
+                }
+            }
+
+            // 3. Obliczanie sąsiadów
+            for (let i = 0; i < board.length; i++) {
+                if (!board[i].isMine) {
+                    board[i].neighborMines = countNeighbors(i);
+                }
+            }
+        }
+
+        function countNeighbors(index) {
+            let count = 0;
+            const row = Math.floor(index / BOARD_SIZE);
+            const col = index % BOARD_SIZE;
+
+            for (let r = -1; r <= 1; r++) {
+                for (let c = -1; c <= 1; c++) {
+                    const newRow = row + r;
+                    const newCol = col + c;
+                    if (newRow >= 0 && newRow < BOARD_SIZE && newCol >= 0 && newCol < BOARD_SIZE) {
+                        const neighborIndex = newRow * BOARD_SIZE + newCol;
+                        if (board[neighborIndex].isMine) count++;
+                    }
+                }
+            }
+            return count;
+        }
+
+        function clickCell(cell) {
+            if (gameOver || cell.isRevealed || cell.isFlagged) return;
+
+            if (cell.isMine) {
+                revealAllMines();
+                gameStatus.innerHTML = "SYSTEM CRITICAL! GAME OVER.";
+                gameStatus.classList.remove('text-gray-400');
+                gameStatus.classList.add('text-scarlet');
+                playClickSound(); // Używamy dźwięku z głównego kodu
+                gameOver = true;
+                return;
+            }
+
+            revealCell(cell);
+            checkWin();
+            playClickSound();
+        }
+
+        function rightClickCell(cell) {
+            if (gameOver || cell.isRevealed) return;
+            cell.isFlagged = !cell.isFlagged;
+            const el = document.querySelector(`.saper-cell[data-id='${cell.id}']`);
+            if (cell.isFlagged) {
+                el.classList.add('flagged');
+                el.innerHTML = '!';
+            } else {
+                el.classList.remove('flagged');
+                el.innerHTML = '';
+            }
+            playClickSound();
+        }
+
+        function revealCell(cell) {
+            if (cell.isRevealed) return;
+            cell.isRevealed = true;
+            const el = document.querySelector(`.saper-cell[data-id='${cell.id}']`);
+            el.classList.add('revealed');
+            
+            if (cell.neighborMines > 0) {
+                el.innerHTML = cell.neighborMines;
+                el.classList.add(`val-${cell.neighborMines}`);
+            } else {
+                // Flood fill dla pustych pól
+                const index = cell.id;
+                const row = Math.floor(index / BOARD_SIZE);
+                const col = index % BOARD_SIZE;
+
+                for (let r = -1; r <= 1; r++) {
+                    for (let c = -1; c <= 1; c++) {
+                        const newRow = row + r;
+                        const newCol = col + c;
+                        if (newRow >= 0 && newRow < BOARD_SIZE && newCol >= 0 && newCol < BOARD_SIZE) {
+                            const neighborIndex = newRow * BOARD_SIZE + newCol;
+                            revealCell(board[neighborIndex]);
+                        }
+                    }
+                }
+            }
+        }
+
+        function revealAllMines() {
+            board.forEach(cell => {
+                if (cell.isMine) {
+                    const el = document.querySelector(`.saper-cell[data-id='${cell.id}']`);
+                    el.classList.add('bomb');
+                    el.innerHTML = 'X';
+                }
+            });
+        }
+
+        function checkWin() {
+            const revealedCount = board.filter(c => c.isRevealed).length;
+            if (revealedCount === (BOARD_SIZE * BOARD_SIZE) - MINES_COUNT) {
+                gameStatus.innerHTML = "SYSTEM RESTORED. YOU WIN.";
+                gameStatus.classList.remove('text-gray-400');
+                gameStatus.classList.add('text-green-500');
+                gameOver = true;
+            }
+        }
+
+        // --- OBSŁUGA POŁĄCZENIA INTERNETOWEGO ---
+        function handleConnectionChange() {
+            if (!navigator.onLine) {
+                offlineScreen.classList.remove('hidden');
+                offlineScreen.classList.add('flex');
+                document.getElementById('force-online-btn').classList.add('hidden'); // Ukryj przycisk debugowania w prawdziwym offline
+                initMinesweeper();
+            } else {
+                offlineScreen.classList.add('hidden');
+                offlineScreen.classList.remove('flex');
+            }
+        }
+
+        window.addEventListener('online', handleConnectionChange);
+        window.addEventListener('offline', handleConnectionChange);
+
+        // Funkcja debugująca dla Ciebie (podpięta w menu settings)
+        function simulateOffline() {
+            offlineScreen.classList.remove('hidden');
+            offlineScreen.classList.add('flex');
+            document.getElementById('force-online-btn').classList.remove('hidden'); // Pokaż przycisk powrotu tylko przy symulacji
+            initMinesweeper();
+        }
+
+        function simulateOnline() {
+            offlineScreen.classList.add('hidden');
+            offlineScreen.classList.remove('flex');
+        }
+
+        // Sprawdź status przy ładowaniu
+        if(!navigator.onLine) handleConnectionChange();
+
     </script>
 </body>
 </html>
