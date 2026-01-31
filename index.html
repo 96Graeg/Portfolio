@@ -48,10 +48,6 @@
         body.light-mode #canvas-container { opacity: 0.8; filter: brightness(0.8); }
         body.light-mode ::-webkit-scrollbar-track { background: #e5e7eb; }
         body.light-mode .tech-widget { background: rgba(255, 255, 255, 0.8); color: #000; border-left-color: #DC143C; }
-        /* Chat specyficzne dla light mode */
-        body.light-mode #ai-terminal { background: rgba(255, 255, 255, 0.9); color: #000; border-color: #DC143C; }
-        body.light-mode .ai-msg { color: #000; }
-        body.light-mode .user-msg { color: #DC143C; }
 
         /* --- SCROLLBAR --- */
         ::-webkit-scrollbar { width: 8px; }
@@ -92,17 +88,30 @@
         /* AR MODAL */
         #ar-modal { transition: opacity 0.3s ease-in-out; }
 
-        /* AI CHAT TERMINAL STYLE */
-        #ai-terminal {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            transform-origin: bottom left;
+        /* HOLOGRAPHIC TERMINAL */
+        .holo-terminal {
+            background: rgba(220, 20, 60, 0.1);
+            border: 1px solid rgba(220, 20, 60, 0.4);
+            box-shadow: 0 0 20px rgba(220, 20, 60, 0.2), inset 0 0 20px rgba(220, 20, 60, 0.1);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
         }
-        .ai-msg { color: #e5e5e5; margin-bottom: 8px; font-family: 'Space Grotesk', monospace; }
-        .user-msg { color: #DC143C; margin-bottom: 8px; text-align: right; font-weight: bold; font-family: 'Space Grotesk', monospace; }
-        .typing-dot { animation: typing 1.4s infinite ease-in-out both; }
-        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
-        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes typing { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+        .holo-terminal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(0deg, rgba(220, 20, 60, 0.1) 0px, rgba(220, 20, 60, 0.1) 1px, transparent 1px, transparent 4px);
+            pointer-events: none;
+            opacity: 0.5;
+        }
+        .holo-terminal:hover {
+            box-shadow: 0 0 30px rgba(220, 20, 60, 0.4), inset 0 0 30px rgba(220, 20, 60, 0.2);
+            border-color: rgba(220, 20, 60, 0.6);
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-scarlet selection:text-white relative">
@@ -148,36 +157,6 @@
         </div>
     </div>
 
-    <div class="fixed bottom-20 left-4 md:left-6 z-[60]">
-        <button id="ai-toggle-btn" class="glass-dark px-4 py-3 rounded-full flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-white hover:text-scarlet hover:border-scarlet transition duration-300">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
-            <span class="hidden md:inline">Bielik.AI Link</span>
-            <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-        </button>
-
-        <div id="ai-terminal" class="hidden absolute bottom-14 left-0 w-80 h-96 glass-dark border border-white/20 rounded-lg flex flex-col overflow-hidden shadow-[0_0_30px_rgba(0,0,0,0.8)] backdrop-blur-xl">
-            <div class="bg-black/50 p-3 border-b border-white/10 flex justify-between items-center">
-                <span class="text-xs font-mono text-scarlet tracking-widest">BIELIK.AI // NEURAL LINK</span>
-                <button onclick="document.getElementById('ai-terminal').classList.add('hidden')" class="text-gray-500 hover:text-white">&times;</button>
-            </div>
-            
-            <div id="chat-box" class="flex-1 p-4 overflow-y-auto font-mono text-xs space-y-3 scrollbar-thin scrollbar-thumb-scarlet">
-                <div class="ai-msg opacity-70">> Inicjalizacja połączenia...</div>
-                <div class="ai-msg opacity-70">> Bielik v1.0 online.</div>
-                <div class="ai-msg text-white">Witaj, inżynierze. Jak mogę pomóc w analizie danych o tym portfolio?</div>
-            </div>
-
-            <div class="p-3 bg-black/50 border-t border-white/10">
-                <form id="chat-form" class="flex gap-2">
-                    <input type="text" id="chat-input" placeholder="Wpisz komendę..." class="w-full bg-transparent border-none text-white text-xs font-mono focus:ring-0 focus:outline-none placeholder-gray-600">
-                    <button type="submit" class="text-scarlet hover:text-white transition">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg>
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-
     <div class="fixed right-6 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col items-center gap-2 mix-blend-difference">
         <span class="text-[10px] text-scarlet font-bold tracking-widest -rotate-90 origin-bottom mb-4">O2 LEVEL</span>
         <div class="w-2 h-48 bg-gray-900/50 border border-white/20 rounded-full relative overflow-hidden backdrop-blur-sm">
@@ -187,9 +166,9 @@
     </div>
 
     <div class="fixed bottom-6 right-6 z-[60]">
-        <button id="settings-btn" class="glass-dark p-4 rounded-full text-white hover:text-scarlet border border-white/20 hover:border-scarlet transition duration-300 shadow-[0_0_15px_rgba(0,0,0,0.5)] bg-black group">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 group-hover:rotate-90 transition duration-500">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.157.92c.447.1.879.293 1.28.567l.882-.369c.532-.224 1.15.066 1.35.61l.546 1.363c.201.543-.07 1.155-.584 1.383l-.936.417c.05.474.05.955 0 1.428l.936.417c.513.228.785.84.584 1.383l-.546 1.363c-.2.544-.818.834-1.35.61l-.882.369a6.29 6.29 0 0 1-1.28.567l-.157.92c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.02-.398-1.11-.94l-.157-.92a6.293 6.293 0 0 1-1.28-.567l-.882.369c-.532.224-1.15-.066-1.35-.61l-.546-1.363c-.201-.543.07-1.155.584-1.383l.936-.417a6.415 6.415 0 0 1 0-1.428l-.936-.417c-.513-.228-.785-.84-.584-1.383l.546-1.363c.2-.544.818-.834 1.35-.61l.882.369c.401-.274.833-.467 1.28-.567l.157-.92Z" />
+        <button id="settings-btn" class="glass-dark p-6 md:p-4 rounded-full text-white hover:text-scarlet border border-white/20 hover:border-scarlet transition duration-300 shadow-[0_0_15px_rgba(0,0,0,0.5)] bg-black group">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 md:w-6 md:h-6 group-hover:rotate-90 transition duration-500">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.157.92c.447.1.879.293 1.28.567l.882-.369c.532-.224 1.15.066 1.35.61l.546 1.363c.201.543-.07 1.155-.584 1.383l-.936.417c.05.474.05.955 0 1.428l.936.417c.513.228.785.84.584 1.383l-.546 1.363c-.2.544-.818.834-1.35.61l-.882.369a6.29 6.29 0 0 1-1.28.567l-.157.92c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.02-.398-1.11-.94l-.157-.92a6.293 6.293 0 0 1-1.28-.567l-.882.369c-.532.224-1.15-.066-1.35-.61l-.546-1.363c-.2.544-.818.834-1.35.61l-.546-1.363c-.201-.543.07-1.155.584-1.383l.936-.417a6.415 6.415 0 0 1 0-1.428l-.936-.417c-.513-.228-.785-.84-.584-1.383l.546-1.363c.2-.544.818-.834 1.35-.61l.882.369c.401-.274.833-.467 1.28-.567l.157-.92Z" />
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
             </svg>
         </button>
@@ -226,9 +205,9 @@
 
     <nav class="fixed top-6 left-0 w-full z-50 flex justify-center px-4">
         <div class="relative group">
-            <div class="glass-dark rounded-full border border-white/10 px-6 py-3 md:px-8 flex items-center gap-6 md:gap-8 shadow-[0_0_30px_rgba(0,0,0,0.9)] backdrop-blur-xl z-50 relative transition-all duration-300 hover:border-scarlet/50">
+            <div class="glass-dark rounded-full border border-white/10 px-8 py-5 md:px-8 md:py-3 flex items-center gap-6 md:gap-8 shadow-[0_0_30px_rgba(0,0,0,0.9)] backdrop-blur-xl z-50 relative transition-all duration-300 hover:border-scarlet/50">
                 <a href="#" onclick="window.location.reload(); return false;" class="flex-shrink-0 hover:opacity-80 transition cursor-pointer">
-                    <img src="logo2.png" alt="Logo" class="h-8 md:h-10 w-auto object-contain">
+                    <img src="logo2.png" alt="Logo" class="h-14 md:h-10 w-auto object-contain">
                 </a>
 
                 <div class="hidden md:flex gap-6 text-[10px] font-bold uppercase tracking-widest text-gray-400 border-l border-white/10 pl-6">
@@ -241,53 +220,53 @@
                 </div>
 
                 <button id="mobile-menu-btn" class="md:hidden text-white ml-2 focus:outline-none p-1">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    <svg class="w-10 h-10 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                 </button>
             </div>
 
             <div id="mobile-menu" class="hidden absolute top-full mt-4 left-1/2 -translate-x-1/2 glass-dark border border-white/10 px-6 py-6 rounded-2xl md:hidden text-center w-80 shadow-[0_10px_40px_rgba(0,0,0,0.95)] flex-col z-40 animate-fade-in-down backdrop-blur-xl">
-                <a href="#o-mnie" class="block text-white text-sm font-bold uppercase tracking-[0.2em] hover:text-scarlet transition py-4">O mnie</a>
+                <a href="#o-mnie" class="block text-white text-xl font-bold uppercase tracking-[0.2em] hover:text-scarlet transition py-6">O mnie</a>
                 <div class="h-px bg-white/10 w-full mx-auto"></div>
-                <a href="#doswiadczenie" class="block text-white text-sm font-bold uppercase tracking-[0.2em] hover:text-scarlet transition py-4">Doświadczenie</a>
+                <a href="#doswiadczenie" class="block text-white text-xl font-bold uppercase tracking-[0.2em] hover:text-scarlet transition py-6">Doświadczenie</a>
                 <div class="h-px bg-white/10 w-full mx-auto"></div>
-                <a href="#uprawnienia" class="block text-white text-sm font-bold uppercase tracking-[0.2em] hover:text-scarlet transition py-4">Uprawnienia</a>
+                <a href="#uprawnienia" class="block text-white text-xl font-bold uppercase tracking-[0.2em] hover:text-scarlet transition py-6">Uprawnienia</a>
                 <div class="h-px bg-white/10 w-full mx-auto"></div>
-                <a href="#archiwa" class="block text-white text-sm font-bold uppercase tracking-[0.2em] hover:text-scarlet transition py-4">Archiwa</a>
+                <a href="#archiwa" class="block text-white text-xl font-bold uppercase tracking-[0.2em] hover:text-scarlet transition py-6">Archiwa</a>
                 <div class="h-px bg-white/10 w-full mx-auto"></div>
-                <a href="#projekty" class="block text-white text-sm font-bold uppercase tracking-[0.2em] hover:text-scarlet transition py-4">Projekty</a>
+                <a href="#projekty" class="block text-white text-xl font-bold uppercase tracking-[0.2em] hover:text-scarlet transition py-6">Projekty</a>
                 <div class="h-px bg-white/10 w-full mx-auto"></div>
-                <a href="#stack" class="block text-white text-sm font-bold uppercase tracking-[0.2em] hover:text-scarlet transition py-4">Arsenał</a>
+                <a href="#stack" class="block text-white text-xl font-bold uppercase tracking-[0.2em] hover:text-scarlet transition py-6">Arsenał</a>
             </div>
         </div>
     </nav>
 
     <section class="min-h-screen flex flex-col justify-center items-center text-center px-4 pt-20 relative">
         <div id="canvas-container"></div>
-        <div class="space-y-8 max-w-4xl z-10 pointer-events-none">
+        <div class="space-y-12 max-w-4xl z-10 pointer-events-none">
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16 max-w-4xl z-10 pointer-events-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-16 max-w-4xl z-10 pointer-events-auto">
                 <div class="flex flex-col items-center group">
-                    <div class="w-24 h-24 mb-6 rounded-full bg-black/50 border border-scarlet/30 flex items-center justify-center shadow-[0_0_15px_rgba(220,20,60,0.2)] group-hover:shadow-[0_0_30px_rgba(220,20,60,0.5)] transition-all duration-500 bg-glass-dark">
-                        <svg class="w-10 h-10 text-scarlet" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 11H5C3.89543 11 3 11.8954 3 13V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V13C21 11.8954 20.1046 11 19 11Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 11V7C7 5.67392 7.52678 4.40215 8.46447 3.46447C9.40215 2.52678 10.6739 2 12 2C13.3261 2 14.5979 2.52678 15.5355 3.46447C16.4732 4.40215 17 5.67392 17 7V11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 15V18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 18H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <div class="w-40 h-40 md:w-24 md:h-24 mb-6 rounded-full bg-black/50 border border-scarlet/30 flex items-center justify-center shadow-[0_0_15px_rgba(220,20,60,0.2)] group-hover:shadow-[0_0_30px_rgba(220,20,60,0.5)] transition-all duration-500 bg-glass-dark">
+                        <svg class="w-16 h-16 md:w-10 md:h-10 text-scarlet" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 11H5C3.89543 11 3 11.8954 3 13V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V13C21 11.8954 20.1046 11 19 11Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 11V7C7 5.67392 7.52678 4.40215 8.46447 3.46447C9.40215 2.52678 10.6739 2 12 2C13.3261 2 14.5979 2.52678 15.5355 3.46447C16.4732 4.40215 17 5.67392 17 7V11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 15V18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 18H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </div>
-                    <h2 class="text-2xl font-bold text-white uppercase tracking-wider mb-2">3D Printing</h2>
-                    <span class="text-xs text-gray-500 tracking-[0.2em] uppercase">Additive Manufacturing</span>
+                    <h2 class="text-4xl md:text-2xl font-bold text-white uppercase tracking-wider mb-2">3D Printing</h2>
+                    <span class="text-lg md:text-xs text-gray-500 tracking-[0.2em] uppercase">Additive Manufacturing</span>
                 </div>
         
                 <div class="flex flex-col items-center group">
-                     <div class="w-24 h-24 mb-6 rounded-full bg-black/50 border border-scarlet/30 flex items-center justify-center shadow-[0_0_15px_rgba(220,20,60,0.2)] group-hover:shadow-[0_0_30px_rgba(220,20,60,0.5)] transition-all duration-500 bg-glass-dark">
-                        <svg class="w-10 h-10 text-scarlet" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 12V7C20 5.67392 19.4732 4.40215 18.5355 3.46447C17.5979 2.52678 16.3261 2 15 2H9C7.67392 2 6.40215 2.52678 5.46447 3.46447C4.52678 4.40215 4 5.67392 4 7V12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 12H15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 16C21 14.9 20.1 14 19 14H5C3.9 14 3 14.9 3 16C3 17.1 3.9 18 5 18H19C20.1 18 21 17.1 21 16Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 22V18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 16V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 16V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                     <div class="w-40 h-40 md:w-24 md:h-24 mb-6 rounded-full bg-black/50 border border-scarlet/30 flex items-center justify-center shadow-[0_0_15px_rgba(220,20,60,0.2)] group-hover:shadow-[0_0_30px_rgba(220,20,60,0.5)] transition-all duration-500 bg-glass-dark">
+                        <svg class="w-16 h-16 md:w-10 md:h-10 text-scarlet" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 12V7C20 5.67392 19.4732 4.40215 18.5355 3.46447C17.5979 2.52678 16.3261 2 15 2H9C7.67392 2 6.40215 2.52678 5.46447 3.46447C4.52678 4.40215 4 5.67392 4 7V12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 12H15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 16C21 14.9 20.1 14 19 14H5C3.9 14 3 14.9 3 16C3 17.1 3.9 18 5 18H19C20.1 18 21 17.1 21 16Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 22V18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 16V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 16V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </div>
-                    <h2 class="text-2xl font-bold text-white uppercase tracking-wider mb-2">XR Systems</h2>
-                     <span class="text-xs text-gray-500 tracking-[0.2em] uppercase">Immersive Tech</span>
+                    <h2 class="text-4xl md:text-2xl font-bold text-white uppercase tracking-wider mb-2">XR Systems</h2>
+                     <span class="text-lg md:text-xs text-gray-500 tracking-[0.2em] uppercase">Immersive Tech</span>
                 </div>
         
                 <div class="flex flex-col items-center group">
-                     <div class="w-24 h-24 mb-6 rounded-full bg-black/50 border border-scarlet/30 flex items-center justify-center shadow-[0_0_15px_rgba(220,20,60,0.2)] group-hover:shadow-[0_0_30px_rgba(220,20,60,0.5)] transition-all duration-500 bg-glass-dark">
-                         <svg class="w-10 h-10 text-scarlet" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L8 6H16L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6L5 11L12 22L19 11L16 6H8Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 14L9 9H15L12 14Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 11L2 13L7 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 11L22 13L17 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                     <div class="w-40 h-40 md:w-24 md:h-24 mb-6 rounded-full bg-black/50 border border-scarlet/30 flex items-center justify-center shadow-[0_0_15px_rgba(220,20,60,0.2)] group-hover:shadow-[0_0_30px_rgba(220,20,60,0.5)] transition-all duration-500 bg-glass-dark">
+                         <svg class="w-16 h-16 md:w-10 md:h-10 text-scarlet" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L8 6H16L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6L5 11L12 22L19 11L16 6H8Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 14L9 9H15L12 14Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 11L2 13L7 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 11L22 13L17 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </div>
-                    <h2 class="text-2xl font-bold text-white uppercase tracking-wider mb-2">Space Tech</h2>
-                     <span class="text-xs text-gray-500 tracking-[0.2em] uppercase">Orbital Systems</span>
+                    <h2 class="text-4xl md:text-2xl font-bold text-white uppercase tracking-wider mb-2">Space Tech</h2>
+                     <span class="text-lg md:text-xs text-gray-500 tracking-[0.2em] uppercase">Orbital Systems</span>
                 </div>
             </div>
 
@@ -303,17 +282,17 @@
                 </div>
             </div>
             <div class="space-y-8">
-                <h2 class="text-3xl md:text-4xl font-bold text-white uppercase tracking-spectral">
+                <h2 class="text-5xl md:text-4xl font-bold text-white uppercase tracking-spectral">
                     Architekt <span class="text-scarlet">Przyszłości</span>
                 </h2>
                 <div class="h-0.5 w-20 bg-scarlet"></div>
-                <p class="text-gray-300 text-gray-500 leading-relaxed text-lg font-light">
+                <p class="text-gray-300 text-xl md:text-lg font-light leading-relaxed">
                     Nie interesuje mnie zwykłe pisanie kodu. Fascynuje mnie materializowanie pomysłów poprzez <strong>Druk 3D</strong>, tworzenie wirtualnych światów w <strong>XR</strong> oraz eksploracja ostatecznej granicy – inżynierii kosmicznej.
                 </p>
                 <div class="grid grid-cols-3 gap-6 pt-8 border-t border-white/10">
-                    <div><span class="block text-4xl font-bold text-white">3D</span><span class="text-xs uppercase tracking-widest text-gray-500">Prototyping</span></div>
-                    <div><span id="days-on-orbit" class="block text-4xl font-bold text-scarlet">---</span><span class="text-xs uppercase tracking-widest text-gray-500">Dni na Orbicie</span></div>
-                    <div><span class="block text-4xl font-bold text-white">AI</span><span class="text-xs uppercase tracking-widest text-gray-500">Integration</span></div>
+                    <div><span class="block text-5xl md:text-4xl font-bold text-white">3D</span><span class="text-sm md:text-xs uppercase tracking-widest text-gray-500">Prototyping</span></div>
+                    <div><span id="days-on-orbit" class="block text-5xl md:text-4xl font-bold text-scarlet">---</span><span class="text-sm md:text-xs uppercase tracking-widest text-gray-500">Dni na Orbicie</span></div>
+                    <div><span class="block text-5xl md:text-4xl font-bold text-white">AI</span><span class="text-sm md:text-xs uppercase tracking-widest text-gray-500">Integration</span></div>
                 </div>
             </div>
         </div>
@@ -322,18 +301,18 @@
     <section id="doswiadczenie" class="py-24 px-4 relative z-10">
         <div class="max-w-7xl mx-auto">
             <div class="flex flex-col md:flex-row justify-between items-end mb-16 border-b border-white/10 pb-6">
-                <div><h2 class="text-3xl md:text-5xl font-bold text-white uppercase tracking-tight">Doświadczenie <span class="text-scarlet">Zawodowe</span></h2></div>
-                <p class="text-gray-500 uppercase tracking-widest text-xs mt-4 md:mt-0">Historia operacyjna</p>
+                <div><h2 class="text-5xl md:text-5xl font-bold text-white uppercase tracking-tight">Doświadczenie <span class="text-scarlet">Zawodowe</span></h2></div>
+                <p class="text-gray-500 uppercase tracking-widest text-sm md:text-xs mt-4 md:mt-0">Historia operacyjna</p>
             </div>
 
             <div class="relative border-l-2 border-scarlet/30 ml-4 md:ml-10 space-y-12">
                 <div class="relative pl-8 md:pl-12 group">
                     <span class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-black border-2 border-scarlet group-hover:bg-scarlet transition-all duration-300 shadow-[0_0_10px_rgba(220,20,60,0.5)]"></span>
                     <div class="glass-dark border border-white/10 p-6 rounded-lg hover:border-scarlet/50 transition duration-300 opacity-70 hover:opacity-100">
-                        <span class="text-xs font-mono text-scarlet tracking-widest mb-2 block">202X - OBECNIE</span>
-                        <h3 class="text-2xl font-bold text-white uppercase mb-1 font-mono">/// DANE ZASZYFROWANE</h3>
-                        <p class="text-sm text-gray-400 uppercase tracking-wider mb-4 font-bold font-mono">[ BRAK DOSTĘPU ]</p>
-                        <p class="text-scarlet font-mono text-xs leading-relaxed">
+                        <span class="text-sm md:text-xs font-mono text-scarlet tracking-widest mb-2 block">202X - OBECNIE</span>
+                        <h3 class="text-3xl md:text-2xl font-bold text-white uppercase mb-1 font-mono">/// DANE ZASZYFROWANE</h3>
+                        <p class="text-lg md:text-sm text-gray-400 uppercase tracking-wider mb-4 font-bold font-mono">[ BRAK DOSTĘPU ]</p>
+                        <p class="text-scarlet font-mono text-sm md:text-xs leading-relaxed">
                             // ACCESS DENIED. Wymagane wyższe uprawnienia bezpieczeństwa do wyświetlenia tych danych.<br>
                             // KONTAKT Z ADMINISTRATOREM SYSTEMU WYMAGANY.
                         </p>
@@ -343,10 +322,10 @@
                 <div class="relative pl-8 md:pl-12 group">
                     <span class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-black border-2 border-scarlet group-hover:bg-scarlet transition-all duration-300 shadow-[0_0_10px_rgba(220,20,60,0.5)]"></span>
                     <div class="glass-dark border border-white/10 p-6 rounded-lg hover:border-scarlet/50 transition duration-300 opacity-60 hover:opacity-100">
-                        <span class="text-xs font-mono text-scarlet tracking-widest mb-2 block">20XX - 20XX</span>
-                        <h3 class="text-2xl font-bold text-white uppercase mb-1 font-mono">/// PLIK USZKODZONY</h3>
-                        <p class="text-sm text-gray-400 uppercase tracking-wider mb-4 font-bold font-mono">UNKNOWN_ENTITY</p>
-                        <p class="text-scarlet font-mono text-xs leading-relaxed">
+                        <span class="text-sm md:text-xs font-mono text-scarlet tracking-widest mb-2 block">20XX - 20XX</span>
+                        <h3 class="text-3xl md:text-2xl font-bold text-white uppercase mb-1 font-mono">/// PLIK USZKODZONY</h3>
+                        <p class="text-lg md:text-sm text-gray-400 uppercase tracking-wider mb-4 font-bold font-mono">UNKNOWN_ENTITY</p>
+                        <p class="text-scarlet font-mono text-sm md:text-xs leading-relaxed">
                             // ERROR: 403 FORBIDDEN. Dane historyczne zostały zarchiwizowane i zaszyfrowane kluczem 256-bit.
                         </p>
                     </div>
@@ -358,45 +337,45 @@
     <section id="uprawnienia" class="py-24 px-4 bg-black/30 relative z-10 border-y border-white/5">
         <div class="max-w-7xl mx-auto">
             <div class="flex flex-col md:flex-row justify-between items-end mb-16 border-b border-white/10 pb-6">
-                <div><h2 class="text-3xl md:text-5xl font-bold text-white uppercase tracking-tight">Licencje i <span class="text-scarlet">Uprawnienia</span></h2></div>
-                <p class="text-gray-500 uppercase tracking-widest text-xs mt-4 md:mt-0">Certyfikacja</p>
+                <div><h2 class="text-5xl md:text-5xl font-bold text-white uppercase tracking-tight">Licencje i <span class="text-scarlet">Uprawnienia</span></h2></div>
+                <p class="text-gray-500 uppercase tracking-widest text-sm md:text-xs mt-4 md:mt-0">Certyfikacja</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div class="glass-dark border border-scarlet/20 p-6 rounded-lg hover:border-scarlet transition duration-300 group opacity-70">
                     <div class="flex items-center justify-between mb-4">
-                        <svg class="w-8 h-8 text-scarlet group-hover:animate-pulse transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                        <span class="text-[10px] font-mono text-scarlet">ID: ???-???</span>
+                        <svg class="w-10 h-10 md:w-8 md:h-8 text-scarlet group-hover:animate-pulse transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        <span class="text-xs md:text-[10px] font-mono text-scarlet">ID: ???-???</span>
                     </div>
-                    <h3 class="text-lg font-bold text-scarlet uppercase leading-tight mb-1 font-mono">ZABLOKOWANE</h3>
-                    <p class="text-xs text-gray-500 uppercase tracking-wider font-mono">DANE NIEDOSTĘPNE</p>
+                    <h3 class="text-xl md:text-lg font-bold text-scarlet uppercase leading-tight mb-1 font-mono">ZABLOKOWANE</h3>
+                    <p class="text-sm md:text-xs text-gray-500 uppercase tracking-wider font-mono">DANE NIEDOSTĘPNE</p>
                 </div>
 
                 <div class="glass-dark border border-scarlet/20 p-6 rounded-lg hover:border-scarlet transition duration-300 group opacity-70">
                     <div class="flex items-center justify-between mb-4">
-                        <svg class="w-8 h-8 text-scarlet group-hover:animate-pulse transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                        <span class="text-[10px] font-mono text-scarlet">ID: ???-???</span>
+                        <svg class="w-10 h-10 md:w-8 md:h-8 text-scarlet group-hover:animate-pulse transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        <span class="text-xs md:text-[10px] font-mono text-scarlet">ID: ???-???</span>
                     </div>
-                    <h3 class="text-lg font-bold text-scarlet uppercase leading-tight mb-1 font-mono">ZABLOKOWANE</h3>
-                    <p class="text-xs text-gray-500 uppercase tracking-wider font-mono">DANE NIEDOSTĘPNE</p>
+                    <h3 class="text-xl md:text-lg font-bold text-scarlet uppercase leading-tight mb-1 font-mono">ZABLOKOWANE</h3>
+                    <p class="text-sm md:text-xs text-gray-500 uppercase tracking-wider font-mono">DANE NIEDOSTĘPNE</p>
                 </div>
 
                 <div class="glass-dark border border-white/20 p-6 rounded-lg hover:border-white transition duration-300 group shadow-[0_0_15px_rgba(255,255,255,0.05)]">
                     <div class="flex items-center justify-between mb-4">
-                        <svg class="w-8 h-8 text-white opacity-80 group-hover:opacity-100 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 012-2v0a2 2 0 012 2m0 0a2 2 0 012-2h2a2 2 0 012 2m0 0a2 2 0 012-2v0a2 2 0 012 2"></path></svg>
-                        <span class="text-[10px] font-mono text-gray-400">ID: DL-CAT-B</span>
+                        <svg class="w-10 h-10 md:w-8 md:h-8 text-white opacity-80 group-hover:opacity-100 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 012-2v0a2 2 0 012 2m0 0a2 2 0 012-2h2a2 2 0 012 2m0 0a2 2 0 012-2v0a2 2 0 012 2"></path></svg>
+                        <span class="text-xs md:text-[10px] font-mono text-gray-400">ID: DL-CAT-B</span>
                     </div>
-                    <h3 class="text-lg font-bold text-white uppercase leading-tight mb-1">Prawo Jazdy Kat. B</h3>
-                    <p class="text-xs text-gray-400 uppercase tracking-wider">Active License</p>
+                    <h3 class="text-xl md:text-lg font-bold text-white uppercase leading-tight mb-1">Prawo Jazdy Kat. B</h3>
+                    <p class="text-sm md:text-xs text-gray-400 uppercase tracking-wider">Active License</p>
                 </div>
 
                 <div class="glass-dark border border-scarlet/20 p-6 rounded-lg hover:border-scarlet transition duration-300 group opacity-70">
                     <div class="flex items-center justify-between mb-4">
-                        <svg class="w-8 h-8 text-scarlet group-hover:animate-pulse transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                        <span class="text-[10px] font-mono text-scarlet">ID: ???-???</span>
+                        <svg class="w-10 h-10 md:w-8 md:h-8 text-scarlet group-hover:animate-pulse transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        <span class="text-xs md:text-[10px] font-mono text-scarlet">ID: ???-???</span>
                     </div>
-                    <h3 class="text-lg font-bold text-scarlet uppercase leading-tight mb-1 font-mono">ZABLOKOWANE</h3>
-                    <p class="text-xs text-gray-500 uppercase tracking-wider font-mono">DANE NIEDOSTĘPNE</p>
+                    <h3 class="text-xl md:text-lg font-bold text-scarlet uppercase leading-tight mb-1 font-mono">ZABLOKOWANE</h3>
+                    <p class="text-sm md:text-xs text-gray-500 uppercase tracking-wider font-mono">DANE NIEDOSTĘPNE</p>
                 </div>
             </div>
         </div>
@@ -405,15 +384,15 @@
     <section id="archiwa" class="py-24 px-4 bg-black/80 relative z-10 border-b border-white/5">
         <div class="max-w-7xl mx-auto">
             <div class="flex flex-col md:flex-row justify-between items-end mb-16 border-b border-white/10 pb-6">
-                <div><h2 class="text-3xl md:text-5xl font-bold text-white uppercase tracking-tight text-gray-400">ARCHIWA <span class="text-scarlet">DANYCH</span></h2></div>
-                <p class="text-gray-500 uppercase tracking-widest text-xs mt-4 md:mt-0">Zakończone misje</p>
+                <div><h2 class="text-5xl md:text-5xl font-bold text-white uppercase tracking-tight text-gray-400">ARCHIWA <span class="text-scarlet">DANYCH</span></h2></div>
+                <p class="text-gray-500 uppercase tracking-widest text-sm md:text-xs mt-4 md:mt-0">Zakończone misje</p>
             </div>
             
             <div class="glass-dark border border-white/10 p-8 rounded-lg text-center">
                 <div class="flex flex-col items-center justify-center gap-4 py-10">
-                    <svg class="w-12 h-12 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
-                    <h3 class="text-xl font-bold text-white uppercase tracking-widest">Brak Zarchiwizowanych Danych</h3>
-                    <p class="text-gray-500 text-sm max-w-md">Wszystkie systemy pracują nad nowymi rozwiązaniami. Historia projektów zostanie zaktualizowana wkrótce.</p>
+                    <svg class="w-16 h-16 md:w-12 md:h-12 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
+                    <h3 class="text-2xl md:text-xl font-bold text-white uppercase tracking-widest">Brak Zarchiwizowanych Danych</h3>
+                    <p class="text-gray-500 text-lg md:text-sm max-w-md">Wszystkie systemy pracują nad nowymi rozwiązaniami. Historia projektów zostanie zaktualizowana wkrótce.</p>
                 </div>
             </div>
         </div>
@@ -422,26 +401,26 @@
     <section id="projekty" class="py-24 px-4 bg-gradient-to-b from-transparent to-black/90 relative z-10">
         <div class="max-w-7xl mx-auto">
             <div class="flex flex-col md:flex-row justify-between items-end mb-16 border-b border-white/10 pb-6">
-                <div><h2 class="text-4xl md:text-6xl font-bold text-white uppercase tracking-tight">Aktywne <span class="text-transparent bg-clip-text bg-gradient-to-r from-scarlet to-red-900">Misje</span></h2></div>
-                <p class="text-gray-500 uppercase tracking-widest text-xs mt-4 md:mt-0">Laboratorium <span id="lab-year"></span></p>
+                <div><h2 class="text-6xl md:text-6xl font-bold text-white uppercase tracking-tight">Aktywne <span class="text-transparent bg-clip-text bg-gradient-to-r from-scarlet to-red-900">Misje</span></h2></div>
+                <p class="text-gray-500 uppercase tracking-widest text-sm md:text-xs mt-4 md:mt-0">Laboratorium <span id="lab-year"></span></p>
             </div>
             
             <div class="border border-white/10 border-dashed rounded-lg p-12 text-center">
-                <p class="text-scarlet font-mono text-sm tracking-widest uppercase animate-pulse">>> INICJOWANIE NOWYCH PROJEKTÓW...</p>
+                <p class="text-scarlet font-mono text-lg md:text-sm tracking-widest uppercase animate-pulse">>> INICJOWANIE NOWYCH PROJEKTÓW...</p>
             </div>
         </div>
     </section>
 
     <section id="stack" class="py-24 relative z-10">
         <div class="max-w-6xl mx-auto px-4 text-center">
-            <h2 class="text-xs text-scarlet uppercase tracking-[0.5em] mb-16 font-bold">Arsenał Inżyniera</h2>
+            <h2 class="text-sm md:text-xs text-scarlet uppercase tracking-[0.5em] mb-16 font-bold">Arsenał Inżyniera</h2>
             <div class="flex flex-wrap justify-center gap-6">
-                <div class="group glass-dark px-10 py-5 hover:-translate-y-2 transition duration-300 cursor-default"><span class="text-white font-bold tracking-widest group-hover:text-scarlet transition">Python / Scripting</span></div>
-                <div class="group glass-dark px-10 py-5 hover:-translate-y-2 transition duration-300 cursor-default"><span class="text-white font-bold tracking-widest group-hover:text-scarlet transition">AutoCAD</span></div>
-                <div class="group glass-dark px-10 py-5 hover:-translate-y-2 transition duration-300 cursor-default"><span class="text-white font-bold tracking-widest group-hover:text-scarlet transition">Autodesk Fusion 360</span></div>
-                <div class="group glass-dark px-10 py-5 hover:-translate-y-2 transition duration-300 cursor-default"><span class="text-white font-bold tracking-widest group-hover:text-scarlet transition">Additive Mfg / 3D Print</span></div>
-                <div class="group glass-dark px-10 py-5 hover:-translate-y-2 transition duration-300 cursor-default"><span class="text-white font-bold tracking-widest group-hover:text-scarlet transition">CAD Systems Design</span></div>
-                <div class="group glass-dark px-10 py-5 hover:-translate-y-2 transition duration-300 cursor-default"><span class="text-white font-bold tracking-widest group-hover:text-scarlet transition">AI / Machine Learning</span></div>
+                <div class="group glass-dark px-10 py-5 hover:-translate-y-2 transition duration-300 cursor-default"><span class="text-xl md:text-base text-white font-bold tracking-widest group-hover:text-scarlet transition">Python / Scripting</span></div>
+                <div class="group glass-dark px-10 py-5 hover:-translate-y-2 transition duration-300 cursor-default"><span class="text-xl md:text-base text-white font-bold tracking-widest group-hover:text-scarlet transition">AutoCAD</span></div>
+                <div class="group glass-dark px-10 py-5 hover:-translate-y-2 transition duration-300 cursor-default"><span class="text-xl md:text-base text-white font-bold tracking-widest group-hover:text-scarlet transition">Autodesk Fusion 360</span></div>
+                <div class="group glass-dark px-10 py-5 hover:-translate-y-2 transition duration-300 cursor-default"><span class="text-xl md:text-base text-white font-bold tracking-widest group-hover:text-scarlet transition">Additive Mfg / 3D Print</span></div>
+                <div class="group glass-dark px-10 py-5 hover:-translate-y-2 transition duration-300 cursor-default"><span class="text-xl md:text-base text-white font-bold tracking-widest group-hover:text-scarlet transition">CAD Systems Design</span></div>
+                <div class="group glass-dark px-10 py-5 hover:-translate-y-2 transition duration-300 cursor-default"><span class="text-xl md:text-base text-white font-bold tracking-widest group-hover:text-scarlet transition">AI / Machine Learning</span></div>
             </div>
         </div>
     </section>
@@ -450,33 +429,33 @@
         <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-md h-1 bg-scarlet blur-[100px] opacity-50"></div>
 
         <div class="max-w-4xl mx-auto px-4 text-center z-10 relative">
-            <h2 class="text-4xl md:text-5xl font-bold text-white mb-12 uppercase tracking-spectral">Centrum Połączeń</h2>
+            <h2 class="text-5xl md:text-5xl font-bold text-white mb-12 uppercase tracking-spectral">Centrum Połączeń</h2>
             
             <div class="mb-12">
-                <a href="https://linktr.ee/96graeg" target="_blank" class="text-scarlet hover:text-white transition tracking-[0.2em] uppercase font-bold text-sm border-b border-scarlet/50 pb-1 hover:border-white">
+                <a href="https://linktr.ee/96graeg" target="_blank" class="text-scarlet hover:text-white transition tracking-[0.2em] uppercase font-bold text-lg md:text-sm border-b border-scarlet/50 pb-1 hover:border-white">
                     Linktree (Wszystkie linki)
                 </a>
             </div>
 
             <div class="flex flex-wrap justify-center items-center gap-6 mb-16">
                 
-                <a href="https://pin.it/7BiCrw7Y6" target="_blank" class="group relative w-12 h-12 flex items-center justify-center rounded-full border border-white/20 bg-black/40 hover:border-scarlet hover:bg-scarlet/10 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(220,20,60,0.4)]">
-                    <svg class="w-5 h-5 text-gray-400 group-hover:text-scarlet transition-colors" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <a href="https://pin.it/7BiCrw7Y6" target="_blank" class="group relative w-20 h-20 md:w-12 md:h-12 flex items-center justify-center rounded-full border border-white/20 bg-black/40 hover:border-scarlet hover:bg-scarlet/10 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(220,20,60,0.4)]">
+                    <svg class="w-8 h-8 md:w-5 md:h-5 text-gray-400 group-hover:text-scarlet transition-colors" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.399.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.951-7.252 4.173 0 7.41 2.967 7.41 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.367 18.62 0 12.017 0z"/>
                     </svg>
                 </a>
 
-                <a href="https://www.reddit.com/u/Any_Trade_7108/s/k965o3YK5y" target="_blank" class="group relative w-12 h-12 flex items-center justify-center rounded-full border border-white/20 bg-black/40 hover:border-[#FF4500] hover:bg-[#FF4500]/10 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(255,69,0,0.4)]">
-                    <svg class="w-5 h-5 text-gray-400 group-hover:text-[#FF4500] transition-colors" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <a href="https://www.reddit.com/u/Any_Trade_7108/s/k965o3YK5y" target="_blank" class="group relative w-20 h-20 md:w-12 md:h-12 flex items-center justify-center rounded-full border border-white/20 bg-black/40 hover:border-[#FF4500] hover:bg-[#FF4500]/10 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(255,69,0,0.4)]">
+                    <svg class="w-8 h-8 md:w-5 md:h-5 text-gray-400 group-hover:text-[#FF4500] transition-colors" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.561-1.249-1.249-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.463 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/>
                     </svg>
                 </a>
 
-                <a href="https://discord.gg/PdmeSzZvB" target="_blank" class="group relative flex items-center gap-3 px-6 h-12 rounded-full border border-scarlet bg-scarlet/10 hover:bg-scarlet transition-all duration-300 hover:shadow-[0_0_30px_#DC143C] hover:-translate-y-1">
-                    <svg class="w-5 h-5 text-white group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <a href="https://discord.gg/PdmeSzZvB" target="_blank" class="group relative flex items-center gap-3 px-8 md:px-6 h-20 md:h-12 rounded-full border border-scarlet bg-scarlet/10 hover:bg-scarlet transition-all duration-300 hover:shadow-[0_0_30px_#DC143C] hover:-translate-y-1">
+                    <svg class="w-8 h-8 md:w-5 md:h-5 text-white group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.419 0 1.334-.956 2.419-2.157 2.419zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.419 0 1.334-.946 2.419-2.157 2.419z"/>
                     </svg>
-                    <span class="text-white font-bold text-xs uppercase tracking-widest group-hover:text-white">Dołącz na Discord</span>
+                    <span class="text-white font-bold text-sm md:text-xs uppercase tracking-widest group-hover:text-white">Dołącz do serwera Discord</span>
                     <span class="absolute right-0 top-0 -mt-1 -mr-1 flex h-3 w-3">
                       <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-scarlet opacity-75"></span>
                       <span class="relative inline-flex rounded-full h-3 w-3 bg-scarlet"></span>
@@ -484,41 +463,25 @@
                 </a>
 
             </div>
+
+            <div class="flex flex-wrap justify-center gap-x-8 gap-y-6 text-gray-600 uppercase text-sm md:text-xs tracking-[0.25em] font-bold">
+                <a href="https://www.facebook.com/96graeg/?locale=pl_PL" target="_blank" class="hover:text-scarlet hover:scale-105 transform transition duration-300">Facebook</a>
+                <a href="https://www.instagram.com/96graeg" target="_blank" class="hover:text-scarlet hover:scale-105 transform transition duration-300">Instagram</a>
+                <a href="https://www.youtube.com/@96graeg" target="_blank" class="hover:text-scarlet hover:scale-105 transform transition duration-300">YouTube</a>
+                <a href="https://www.linkedin.com/in/grzegorz-wojtalczyk-44845b280/" target="_blank" class="hover:text-scarlet hover:scale-105 transform transition duration-300">LinkedIn</a>
+                <a href="https://github.com/96Graeg" target="_blank" class="hover:text-scarlet hover:scale-105 transform transition duration-300">GitHub</a>
+                <a href="https://x.com/96graeg" target="_blank" class="hover:text-scarlet hover:scale-105 transform transition duration-300">X (Twitter)</a>
+                <a href="https://www.threads.net/@96graeg" target="_blank" class="hover:text-scarlet hover:scale-105 transform transition duration-300">Threads</a>
+            </div>
             
-            <div class="mt-20 text-[10px] text-gray-800 font-mono">
+            <div class="mt-20 text-xs md:text-[10px] text-gray-800 font-mono">
                 // SYSTEM STATUS: STABLE <br>
                 &copy; <span id="current-year"></span> GRZEGORZ. ANDROMEDA SECTOR.
             </div>
         </div>
     </footer>
 
-    <script type="importmap">
-      {
-        "imports": {
-          "@google/generative-ai": "https://esm.run/@google/generative-ai"
-        }
-      }
-    </script>
-    
-    <script type="module">
-        import { GoogleGenerativeAI } from "@google/generative-ai";
-
-        // --- KONFIGURACJA GEMINI (TUTAJ WKLEJ SWÓJ KLUCZ!) ---
-        const API_KEY = "TU_WKLEJ_SWOJ_KLUCZ_API"; 
-        // -----------------------------------------------------
-
-        let genAI;
-        let model;
-
-        try {
-            genAI = new GoogleGenerativeAI(API_KEY);
-            model = genAI.getGenerativeModel({ model: "gemini-pro"});
-        } catch (e) {
-            console.error("Błąd konfiguracji AI (Zignoruj, jeśli nie podałeś klucza):", e);
-        }
-
-        // --- RESZTA LOGIKI JAVASCRIPT ---
-
+    <script>
         // DYNAMICZNY ROK
         const year = new Date().getFullYear();
         document.getElementById('current-year').innerText = year;
@@ -533,38 +496,40 @@
             settingsPanel.classList.toggle('flex');
         });
 
-        // AR MODAL LOGIC (Exported to window for HTML onclick)
+        // AR MODAL LOGIC
         const arModal = document.getElementById('ar-modal');
-        window.toggleARModal = function() { 
+        function toggleARModal() {
             arModal.classList.toggle('hidden');
             arModal.classList.toggle('flex');
             settingsPanel.classList.add('hidden');
             settingsPanel.classList.remove('flex');
         }
 
-        // THEME TOGGLE
+        // 1. LIGHT/DARK THEME
         const themeToggle = document.getElementById('theme-toggle');
-        themeToggle.addEventListener('change', () => { document.body.classList.toggle('light-mode'); });
+        themeToggle.addEventListener('change', () => {
+            document.body.classList.toggle('light-mode');
+        });
 
-        // PERFORMANCE TOGGLE
+        // 3. PERFORMANCE MODE
         const perfToggle = document.getElementById('perf-toggle');
         let animationId;
         perfToggle.addEventListener('change', () => {
             if(perfToggle.checked) { cancelAnimationFrame(animationId); } else { animate(); }
         });
 
-        // MOBILE MENU
+        // MENU MOBILNE
         const btn = document.getElementById('mobile-menu-btn');
         const menu = document.getElementById('mobile-menu');
         btn.addEventListener('click', () => { menu.classList.toggle('hidden'); menu.classList.toggle('flex'); });
         menu.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => { menu.classList.add('hidden'); menu.classList.remove('flex'); }); });
-        
-        // FLASHLIGHT EFFECT
+
+        // FLASHLIGHT
         const flashlight = document.getElementById('flashlight');
         document.addEventListener('mousemove', (e) => { flashlight.style.setProperty('--x', e.clientX + 'px'); flashlight.style.setProperty('--y', e.clientY + 'px'); });
 
-        // MISSION REPORT GENERATOR
-        window.generateMissionReport = function() {
+        // REPORT
+        function generateMissionReport() {
             const date = new Date().toISOString().split('T')[0];
             const content = `// MISSION REPORT // DATE: ${date} // OPERATOR: GRZEGORZ WOJTALCZYK //\n\nSTATUS:\nSystemy R&D operacyjne.\n\nSKILLS:\n- 3D Printing\n- XR\n- Space Systems\n\nKONTAKT:\nhttps://linktr.ee/96graeg`;
             const blob = new Blob([content], { type: 'text/plain' });
@@ -573,28 +538,21 @@
             document.body.appendChild(a); a.click(); document.body.removeChild(a); window.URL.revokeObjectURL(url);
         }
 
-        // 3D SCENE (THREE.JS)
+        // 3D
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
-        
         const geometry = new THREE.IcosahedronGeometry(2, 2);
         const material = new THREE.MeshBasicMaterial({ color: 0xDC143C, wireframe: true, transparent: true, opacity: 0.3 });
         const planet = new THREE.Mesh(geometry, material); scene.add(planet);
-        
         const coreGeo = new THREE.IcosahedronGeometry(1, 1);
         const coreMat = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.1 });
         const core = new THREE.Mesh(coreGeo, coreMat); scene.add(core);
-        
         camera.position.z = 5;
         let mouseX = 0, mouseY = 0;
-        document.addEventListener('mousemove', (event) => { 
-            mouseX = (event.clientX / window.innerWidth) * 2 - 1; 
-            mouseY = -(event.clientY / window.innerHeight) * 2 + 1; 
-        });
-        
+        document.addEventListener('mousemove', (event) => { mouseX = (event.clientX / window.innerWidth) * 2 - 1; mouseY = -(event.clientY / window.innerHeight) * 2 + 1; });
         function animate() { 
             if(!perfToggle.checked) { 
                 animationId = requestAnimationFrame(animate); 
@@ -608,7 +566,7 @@
         animate();
         window.addEventListener('resize', () => { renderer.setSize(window.innerWidth, window.innerHeight); camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); });
 
-        // ISS API WIDGET
+        // WIDGETS
         async function updateISS() {
             const issDiv = document.getElementById('iss-data');
             try {
@@ -619,11 +577,14 @@
         }
         setInterval(updateISS, 5000); updateISS();
 
-        // ORBIT DAYS COUNTER
+        document.querySelectorAll(".magnetic-btn").forEach((btn) => {
+            btn.addEventListener("mousemove", (e) => { const rect = btn.getBoundingClientRect(); const x = e.clientX - rect.left - rect.width / 2; const y = e.clientY - rect.top - rect.height / 2; gsap.to(btn, { duration: 0.3, x: x * 0.3, y: y * 0.3, ease: "power2.out" }); });
+            btn.addEventListener("mouseleave", () => { gsap.to(btn, { duration: 0.3, x: 0, y: 0, ease: "power2.out" }); });
+        });
+
         const diffDays = Math.ceil(Math.abs(new Date() - new Date('2003-01-19')) / (1000 * 60 * 60 * 24)); 
         document.getElementById('days-on-orbit').innerText = diffDays.toLocaleString();
 
-        // UTC CLOCK
         function updateUTC() {
             const now = new Date();
             const timeString = now.toISOString().split('T')[1].split('.')[0];
@@ -631,84 +592,12 @@
         }
         setInterval(updateUTC, 1000); updateUTC();
 
-        // SCROLL PROGRESS
         window.addEventListener('scroll', () => {
             const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
             const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             const scrolled = (winScroll / height) * 100;
             document.getElementById('scroll-progress').style.height = scrolled + "%";
             document.getElementById('scroll-percent').innerText = Math.round(scrolled) + "%";
-        });
-
-        // ---------------------------------------------------------
-        // LOGIKA CZATU AI (ZINTEGROWANA Z GEMINI)
-        // ---------------------------------------------------------
-        const aiToggleBtn = document.getElementById('ai-toggle-btn');
-        const aiTerminal = document.getElementById('ai-terminal');
-        const chatForm = document.getElementById('chat-form');
-        const chatInput = document.getElementById('chat-input');
-        const chatBox = document.getElementById('chat-box');
-
-        // Historia czatu (Kontekst dla AI)
-        let chatHistory = [
-            {
-                role: "user",
-                parts: [{ text: "Jesteś asystentem AI w portfolio inżyniera Grzegorza Wojtalczyka. Twoim zadaniem jest odpowiadać krótko, technicznie i w klimacie Sci-Fi/Cyberpunk. Znasz się na druku 3D, XR i technologiach kosmicznych. Jeśli nie znasz odpowiedzi, wymyśl coś technobabełkowego." }],
-            },
-            {
-                role: "model",
-                parts: [{ text: "Zrozumiałem. Systemy gotowe. Oczekuję na dane wejściowe." }],
-            }
-        ];
-
-        aiToggleBtn.addEventListener('click', () => {
-            aiTerminal.classList.toggle('hidden');
-            if(!aiTerminal.classList.contains('hidden')) chatInput.focus();
-        });
-
-        chatForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const userText = chatInput.value.trim();
-            if (!userText) return;
-
-            // 1. Dodaj wiadomość użytkownika do UI
-            chatBox.innerHTML += `<div class="user-msg">> ${userText}</div>`;
-            chatInput.value = '';
-            chatBox.scrollTop = chatBox.scrollHeight;
-
-            // 2. Dodaj wiadomość do historii dla Gemini
-            chatHistory.push({ role: "user", parts: [{ text: userText }] });
-
-            // 3. Pokaż animację ładowania
-            const loadingId = 'loading-' + Date.now();
-            chatBox.innerHTML += `<div id="${loadingId}" class="ai-msg text-scarlet flex gap-1 items-center">> ŁĄCZENIE Z ZASOBAMI NEURONOWYMI <span class="typing-dot">.</span><span class="typing-dot">.</span><span class="typing-dot">.</span></div>`;
-            chatBox.scrollTop = chatBox.scrollHeight;
-
-            try {
-                if (!model) throw new Error("Klucz API nie został skonfigurowany.");
-
-                // 4. Wyślij zapytanie do Gemini
-                const chat = model.startChat({ history: chatHistory });
-                const result = await chat.sendMessage(userText);
-                const response = result.response.text();
-
-                // 5. Usuń loading i pokaż odpowiedź
-                document.getElementById(loadingId).remove();
-                chatBox.innerHTML += `<div class="ai-msg text-white">> ${response}</div>`;
-                
-            } catch (error) {
-                // FALLBACK (JEŚLI NIE MA KLUCZA API LUB BŁĄD)
-                document.getElementById(loadingId).remove();
-                
-                // Prosta symulacja odpowiedzi, jeśli API nie działa
-                let fallbackResponse = "Błąd połączenia z siecią neuronową (Sprawdź API Key).";
-                if(error.message.includes("API")) fallbackResponse = "SYSTEM OFFLINE. Wprowadź klucz autoryzacji (API Key) w kodzie źródłowym.";
-                else if(userText.toLowerCase().includes('witam')) fallbackResponse = "Witaj. Systemy są sprawne. (Tryb awaryjny)";
-
-                chatBox.innerHTML += `<div class="ai-msg text-scarlet">> BŁĄD: ${fallbackResponse}</div>`;
-                console.error(error);
-            }
-            chatBox.scrollTop = chatBox.scrollHeight;
         });
     </script>
 </body>
