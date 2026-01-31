@@ -166,7 +166,7 @@
     <div class="fixed bottom-6 right-6 z-[60]">
         <button id="settings-btn" class="glass-dark p-4 rounded-full text-white hover:text-scarlet border border-white/20 hover:border-scarlet transition duration-300 shadow-[0_0_15px_rgba(0,0,0,0.5)] bg-black group">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 group-hover:rotate-90 transition duration-500">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.157.92c.447.1.879.293 1.28.567l.882-.369c.532-.224 1.15.066 1.35.61l.546 1.363c.201.543-.07 1.155-.584 1.383l-.936.417c.05.474.05.955 0 1.428l.936.417c.513.228.785.84.584 1.383l-.546 1.363c-.2.544-.818.834-1.35.61l-.882.369a6.29 6.29 0 0 1-1.28.567l-.157.92c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.02-.398-1.11-.94l-.157-.92a6.293 6.293 0 0 1-1.28-.567l-.882.369c-.532.224-1.15-.066-1.35-.61l-.546-1.363c-.201-.543.07-1.155.584-1.383l.936-.417a6.415 6.415 0 0 1 0-1.428l-.936-.417c-.513-.228-.785-.84-.584-1.383l.546-1.363c.2-.544.818-.834 1.35-.61l.882.369c.401-.274.833-.467 1.28-.567l.157-.92Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.157.92c.447.1.879.293 1.28.567l.882-.369c.532-.224 1.15.066 1.35.61l.546 1.363c.201.543-.07 1.155-.584 1.383l-.936.417c.05.474.05.955 0 1.428l.936.417c.513.228.785.84.584 1.383l-.546 1.363c-.2.544-.818.834-1.35.61l-.882.369a6.29 6.29 0 0 1-1.28.567l-.157.92c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.02-.398-1.11-.94l-.157-.92a6.293 6.293 0 0 1-1.28-.567l-.882.369c-.532.224-1.15-.066-1.35-.61l-.546-1.363c-.2.544-.818.834-1.35.61l-.546-1.363c-.2.544-.818.834-1.35.61l-.882.369c.401-.274.833-.467 1.28-.567l.157-.92Z" />
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
             </svg>
         </button>
@@ -210,6 +210,8 @@
 
                 <div class="hidden md:flex gap-6 text-[10px] font-bold uppercase tracking-widest text-gray-400 border-l border-white/10 pl-6">
                     <a href="#o-mnie" class="hover:text-white hover:text-glow transition">O mnie</a>
+                    <a href="#doswiadczenie" class="hover:text-white hover:text-glow transition">Doświadczenie</a>
+                    <a href="#uprawnienia" class="hover:text-white hover:text-glow transition">Uprawnienia</a>
                     <a href="#archiwa" class="hover:text-white hover:text-glow transition">Archiwa</a>
                     <a href="#projekty" class="hover:text-white hover:text-glow transition">Projekty</a>
                     <a href="#stack" class="hover:text-white hover:text-glow transition">Arsenał</a>
@@ -222,6 +224,10 @@
 
             <div id="mobile-menu" class="hidden absolute top-full mt-4 left-1/2 -translate-x-1/2 glass-dark border border-white/10 px-6 py-6 rounded-2xl md:hidden text-center w-80 shadow-[0_10px_40px_rgba(0,0,0,0.95)] flex-col z-40 animate-fade-in-down backdrop-blur-xl">
                 <a href="#o-mnie" class="block text-white text-sm font-bold uppercase tracking-[0.2em] hover:text-scarlet transition py-4">O mnie</a>
+                <div class="h-px bg-white/10 w-full mx-auto"></div>
+                <a href="#doswiadczenie" class="block text-white text-sm font-bold uppercase tracking-[0.2em] hover:text-scarlet transition py-4">Doświadczenie</a>
+                <div class="h-px bg-white/10 w-full mx-auto"></div>
+                <a href="#uprawnienia" class="block text-white text-sm font-bold uppercase tracking-[0.2em] hover:text-scarlet transition py-4">Uprawnienia</a>
                 <div class="h-px bg-white/10 w-full mx-auto"></div>
                 <a href="#archiwa" class="block text-white text-sm font-bold uppercase tracking-[0.2em] hover:text-scarlet transition py-4">Archiwa</a>
                 <div class="h-px bg-white/10 w-full mx-auto"></div>
@@ -262,6 +268,41 @@
                 </div>
             </div>
 
+            <div class="pointer-events-auto mt-12">
+                <div class="holo-terminal rounded-lg p-1 inline-block transform transition-all duration-500 hover:scale-105 group relative">
+                    <div class="flex flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x divide-scarlet/30 bg-black/50 backdrop-blur-md rounded-lg">
+                        <a href="#archiwa" class="flex-1 p-6 sm:p-8 flex flex-col items-center justify-center gap-4 transition-all duration-300 hover:bg-scarlet/10 group/left">
+                            <div class="w-12 h-12 rounded-full bg-scarlet/20 flex items-center justify-center text-scarlet group-hover/left:scale-110 transition-transform shadow-[0_0_15px_rgba(220,20,60,0.3)]">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
+                                </svg>
+                            </div>
+                            <div class="text-center">
+                                <span class="block text-xs text-gray-400 tracking-[0.2em] mb-1">SYSTEM ACCESS</span>
+                                <span class="block text-white font-bold tracking-wider group-hover/left:text-scarlet transition">PRZEGLĄDAJ ARCHIWA</span>
+                            </div>
+                        </a>
+                        
+                        <button onclick="generateMissionReport()" class="flex-1 p-6 sm:p-8 flex flex-col items-center justify-center gap-4 transition-all duration-300 hover:bg-scarlet/10 group/right">
+                            <div class="w-12 h-12 rounded-full bg-scarlet/20 flex items-center justify-center text-scarlet group-hover/right:scale-110 transition-transform shadow-[0_0_15px_rgba(220,20,60,0.3)]">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                </svg>
+                            </div>
+                            <div class="text-center">
+                                <span class="block text-xs text-gray-400 tracking-[0.2em] mb-1">MISSION LOG</span>
+                                <span class="block text-white font-bold tracking-wider group-hover/right:text-scarlet transition">GENERUJ RAPORT</span>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <div class="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-scarlet opacity-50 group-hover:opacity-100 transition"></div>
+                    <div class="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-scarlet opacity-50 group-hover:opacity-100 transition"></div>
+                    <div class="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-scarlet opacity-50 group-hover:opacity-100 transition"></div>
+                    <div class="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-scarlet opacity-50 group-hover:opacity-100 transition"></div>
+                </div>
+            </div>
+
         </div>
     </section>
 
@@ -285,6 +326,90 @@
                     <div><span class="block text-4xl font-bold text-white">3D</span><span class="text-xs uppercase tracking-widest text-gray-500">Prototyping</span></div>
                     <div><span id="days-on-orbit" class="block text-4xl font-bold text-scarlet">---</span><span class="text-xs uppercase tracking-widest text-gray-500">Dni na Orbicie</span></div>
                     <div><span class="block text-4xl font-bold text-white">AI</span><span class="text-xs uppercase tracking-widest text-gray-500">Integration</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="doswiadczenie" class="py-24 px-4 relative z-10">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 border-b border-white/10 pb-6">
+                <div><h2 class="text-3xl md:text-5xl font-bold text-white uppercase tracking-tight">Doświadczenie <span class="text-scarlet">Zawodowe</span></h2></div>
+                <p class="text-gray-500 uppercase tracking-widest text-xs mt-4 md:mt-0">Historia operacyjna</p>
+            </div>
+
+            <div class="relative border-l-2 border-scarlet/30 ml-4 md:ml-10 space-y-12">
+                <div class="relative pl-8 md:pl-12 group">
+                    <span class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-black border-2 border-scarlet group-hover:bg-scarlet transition-all duration-300 shadow-[0_0_10px_rgba(220,20,60,0.5)]"></span>
+                    
+                    <div class="glass-dark border border-white/10 p-6 rounded-lg hover:border-scarlet/50 transition duration-300">
+                        <span class="text-xs font-mono text-scarlet tracking-widest mb-2 block">202X - OBECNIE</span>
+                        <h3 class="text-2xl font-bold text-white uppercase mb-1">Stanowisko / Rola</h3>
+                        <p class="text-sm text-gray-400 uppercase tracking-wider mb-4 font-bold">Nazwa Firmy</p>
+                        <p class="text-gray-500 font-light leading-relaxed">
+                            Opis obowiązków i osiągnięć. Miejsce na wpisanie szczegółów dotyczących pracy inżynierskiej, projektów badawczych lub wdrożeń.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="relative pl-8 md:pl-12 group">
+                    <span class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-black border-2 border-scarlet group-hover:bg-scarlet transition-all duration-300 shadow-[0_0_10px_rgba(220,20,60,0.5)]"></span>
+                    
+                    <div class="glass-dark border border-white/10 p-6 rounded-lg hover:border-scarlet/50 transition duration-300">
+                        <span class="text-xs font-mono text-scarlet tracking-widest mb-2 block">20XX - 20XX</span>
+                        <h3 class="text-2xl font-bold text-white uppercase mb-1">Poprzednie Stanowisko</h3>
+                        <p class="text-sm text-gray-400 uppercase tracking-wider mb-4 font-bold">Poprzednia Firma</p>
+                        <p class="text-gray-500 font-light leading-relaxed">
+                            Krótki opis zrealizowanych zadań.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="uprawnienia" class="py-24 px-4 bg-black/30 relative z-10 border-y border-white/5">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 border-b border-white/10 pb-6">
+                <div><h2 class="text-3xl md:text-5xl font-bold text-white uppercase tracking-tight">Licencje i <span class="text-scarlet">Uprawnienia</span></h2></div>
+                <p class="text-gray-500 uppercase tracking-widest text-xs mt-4 md:mt-0">Certyfikacja</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="glass-dark border border-white/10 p-6 rounded-lg hover:border-scarlet/50 transition duration-300 group">
+                    <div class="flex items-center justify-between mb-4">
+                        <svg class="w-8 h-8 text-scarlet opacity-80 group-hover:opacity-100 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span class="text-[10px] font-mono text-gray-500">ID: CERT-001</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white uppercase leading-tight mb-1">Nazwa Uprawnienia</h3>
+                    <p class="text-xs text-gray-400 uppercase tracking-wider">Instytucja Wydająca</p>
+                </div>
+
+                <div class="glass-dark border border-white/10 p-6 rounded-lg hover:border-scarlet/50 transition duration-300 group">
+                    <div class="flex items-center justify-between mb-4">
+                        <svg class="w-8 h-8 text-scarlet opacity-80 group-hover:opacity-100 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span class="text-[10px] font-mono text-gray-500">ID: CERT-002</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white uppercase leading-tight mb-1">Certyfikat SEP</h3>
+                    <p class="text-xs text-gray-400 uppercase tracking-wider">Stowarzyszenie Elektryków</p>
+                </div>
+
+                <div class="glass-dark border border-white/10 p-6 rounded-lg hover:border-scarlet/50 transition duration-300 group">
+                    <div class="flex items-center justify-between mb-4">
+                        <svg class="w-8 h-8 text-scarlet opacity-80 group-hover:opacity-100 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span class="text-[10px] font-mono text-gray-500">ID: CERT-003</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white uppercase leading-tight mb-1">Prawo Jazdy B</h3>
+                    <p class="text-xs text-gray-400 uppercase tracking-wider">PL</p>
+                </div>
+
+                <div class="glass-dark border border-white/10 p-6 rounded-lg hover:border-scarlet/50 transition duration-300 group">
+                    <div class="flex items-center justify-between mb-4">
+                        <svg class="w-8 h-8 text-scarlet opacity-80 group-hover:opacity-100 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span class="text-[10px] font-mono text-gray-500">ID: CERT-004</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white uppercase leading-tight mb-1">Inne Szkolenie</h3>
+                    <p class="text-xs text-gray-400 uppercase tracking-wider">Organizator</p>
                 </div>
             </div>
         </div>
