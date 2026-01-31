@@ -8,6 +8,7 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
     
@@ -40,7 +41,7 @@
             background-color: #000000;
             overflow-x: hidden;
             color: #e5e5e5;
-            cursor: crosshair; /* Celownik zamiast kursora dla klimatu inżynierskiego */
+            cursor: crosshair;
         }
 
         /* --- ANDROMEDA GALAXY CSS --- */
@@ -80,19 +81,15 @@
         }
 
         /* --- FLASHLIGHT EFFECT LAYER --- */
-        /* To jest ukryta siatka techniczna, którą odsłania kursor */
         .tech-grid-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: -5;
             pointer-events: none;
-            /* Wzór siatki technicznej */
             background-image: 
                 linear-gradient(rgba(220, 20, 60, 0.1) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(220, 20, 60, 0.1) 1px, transparent 1px);
             background-size: 50px 50px;
-            
-            /* Domyślnie ukryte maską */
             mask-image: radial-gradient(
                 circle 250px at var(--x, 50%) var(--y, 50%),
                 black 0%,
@@ -148,6 +145,7 @@
             position: relative;
             overflow: hidden;
             transition: all 0.4s ease;
+            z-index: 20;
         }
 
         .btn-scarlet:hover {
@@ -163,6 +161,7 @@
             text-transform: uppercase;
             letter-spacing: 0.2em;
             transition: all 0.4s ease;
+            z-index: 20;
         }
         
         .btn-filled:hover {
@@ -178,8 +177,24 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1; /* Za tekstem, przed tłem */
+            z-index: -1; 
             opacity: 0.6;
+        }
+
+        /* ISS WIDGET */
+        .iss-widget {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 100;
+            font-family: 'Space Grotesk', monospace;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.7);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 15px;
+            border-left: 2px solid #DC143C;
+            backdrop-filter: blur(5px);
+            pointer-events: none; /* Żeby nie przeszkadzało w klikaniu */
         }
     </style>
 </head>
@@ -192,6 +207,16 @@
         <div class="galaxy-core"></div>
     </div>
     
+    <div class="iss-widget hidden md:block">
+        <div class="flex items-center gap-2 mb-1">
+            <div class="w-2 h-2 bg-scarlet rounded-full animate-pulse"></div>
+            <strong class="text-white tracking-widest">STACJA ISS LIVE</strong>
+        </div>
+        <div id="iss-data">
+            Łączenie z satelitą...
+        </div>
+    </div>
+
     <nav class="fixed top-6 left-0 w-full z-50 flex justify-center px-4">
         <div class="relative group">
             <div class="glass-dark rounded-full border border-white/10 px-6 py-3 md:px-8 flex items-center gap-6 md:gap-8 shadow-[0_0_30px_rgba(0,0,0,0.9)] backdrop-blur-xl z-50 relative transition-all duration-300 hover:border-scarlet/50">
@@ -205,7 +230,7 @@
                     <a href="#stack" class="hover:text-white hover:text-glow transition">Narzędzia</a>
                 </div>
 
-                <a href="#kontakt" class="bg-scarlet hover:bg-white hover:text-black text-white rounded-full p-2 transition duration-300 shadow-[0_0_15px_rgba(220,20,60,0.4)]">
+                <a href="#kontakt" class="magnetic-btn bg-scarlet hover:bg-white hover:text-black text-white rounded-full p-2 transition duration-300 shadow-[0_0_15px_rgba(220,20,60,0.4)]">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
                     </svg>
@@ -229,7 +254,8 @@
     <section class="min-h-screen flex flex-col justify-center items-center text-center px-4 pt-20 relative">
         <div id="canvas-container"></div>
 
-        <div class="space-y-8 max-w-4xl z-10 pointer-events-none"> <h2 class="text-sm text-scarlet tracking-[0.4em] uppercase font-bold mb-4 animate-pulse-slow pointer-events-auto">
+        <div class="space-y-8 max-w-4xl z-10 pointer-events-none">
+            <h2 class="text-sm text-scarlet tracking-[0.4em] uppercase font-bold mb-4 animate-pulse-slow pointer-events-auto">
                 R&D Engineer
             </h2>
             <h1 class="text-5xl md:text-8xl font-bold text-white leading-tight uppercase tracking-tight text-glow pointer-events-auto">
@@ -241,10 +267,10 @@
             </p>
             
             <div class="flex flex-col sm:flex-row gap-6 justify-center pt-12 pointer-events-auto">
-                <a href="#projekty" class="btn-filled px-10 py-4 font-bold text-sm rounded-sm">
+                <a href="#projekty" class="magnetic-btn btn-filled px-10 py-4 font-bold text-sm rounded-sm inline-block">
                     Moje Projekty
                 </a>
-                <button onclick="generateMissionReport()" class="btn-scarlet px-10 py-4 font-bold text-sm rounded-sm flex items-center justify-center gap-2 group">
+                <button onclick="generateMissionReport()" class="magnetic-btn btn-scarlet px-10 py-4 font-bold text-sm rounded-sm flex items-center justify-center gap-2 group">
                     <svg class="w-4 h-4 group-hover:animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                     Pobierz Raport Misji
                 </button>
@@ -268,14 +294,15 @@
                 <p class="text-gray-300 leading-relaxed text-lg font-light">
                     Nie interesuje mnie zwykłe pisanie kodu. Fascynuje mnie materializowanie pomysłów poprzez <strong>Druk 3D</strong>, tworzenie wirtualnych światów w <strong>XR</strong> oraz eksploracja ostatecznej granicy – inżynierii kosmicznej.
                 </p>
+                
                 <div class="grid grid-cols-3 gap-6 pt-8 border-t border-white/10">
                     <div>
                         <span class="block text-4xl font-bold text-white">3D</span>
                         <span class="text-xs uppercase tracking-widest text-gray-500">Prototyping</span>
                     </div>
                     <div>
-                        <span class="block text-4xl font-bold text-white">XR</span>
-                        <span class="text-xs uppercase tracking-widest text-gray-500">Development</span>
+                        <span id="days-on-orbit" class="block text-4xl font-bold text-scarlet">---</span>
+                        <span class="text-xs uppercase tracking-widest text-gray-500">Dni na Orbicie</span>
                     </div>
                     <div>
                         <span class="block text-4xl font-bold text-white">AI</span>
@@ -376,7 +403,7 @@
                 Znajdź mnie w przestrzeni cyfrowej. Wszystkie kanały komunikacji w jednym miejscu.
             </p>
             
-            <a href="https://linktr.ee/96graeg" target="_blank" class="inline-block px-16 py-5 bg-scarlet text-white font-bold text-lg uppercase tracking-[0.2em] hover:bg-white hover:text-black transition duration-500 shadow-[0_0_20px_rgba(220,20,60,0.4)] hover:shadow-[0_0_40px_rgba(255,255,255,0.6)] mb-12">
+            <a href="https://linktr.ee/96graeg" target="_blank" class="magnetic-btn inline-block px-16 py-5 bg-scarlet text-white font-bold text-lg uppercase tracking-[0.2em] hover:bg-white hover:text-black transition duration-500 shadow-[0_0_20px_rgba(220,20,60,0.4)] hover:shadow-[0_0_40px_rgba(255,255,255,0.6)] mb-12">
                 Otwórz Linktree
             </a>
 
@@ -400,131 +427,110 @@
         // --- 1. MENU MOBILNE ---
         const btn = document.getElementById('mobile-menu-btn');
         const menu = document.getElementById('mobile-menu');
+        btn.addEventListener('click', () => { menu.classList.toggle('hidden'); menu.classList.toggle('flex'); });
+        menu.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => { menu.classList.add('hidden'); menu.classList.remove('flex'); }); });
 
-        btn.addEventListener('click', () => {
-            menu.classList.toggle('hidden');
-            menu.classList.toggle('flex');
-        });
-
-        menu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                menu.classList.add('hidden');
-                menu.classList.remove('flex');
-            });
-        });
-
-        // --- 2. FLASHLIGHT EFFECT (FUNKCJA 3) ---
+        // --- 2. FLASHLIGHT EFFECT ---
         const flashlight = document.getElementById('flashlight');
         document.addEventListener('mousemove', (e) => {
-            // Aktualizujemy pozycję maski zgodnie z kursorem
             flashlight.style.setProperty('--x', e.clientX + 'px');
             flashlight.style.setProperty('--y', e.clientY + 'px');
         });
 
-        // --- 3. GENERATOR RAPORTU MISJI (FUNKCJA 6) ---
+        // --- 3. RAPORT MISJI ---
         function generateMissionReport() {
             const date = new Date().toISOString().split('T')[0];
-            const content = `
-                // MISSION REPORT //
-                // DATE: ${date} //
-                // OPERATOR: GRZEGORZ WOJTALCZYK //
-                
-                STATUS:
-                Systemy R&D w pełni operacyjne.
-                Gotowość do podjęcia nowych wyzwań.
-
-                UMIEJĘTNOŚCI KLUCZOWE:
-                - 3D Printing & Additive Manufacturing
-                - XR Development (Unity, Unreal, VR/AR)
-                - Space Systems Engineering
-                - Python, C++, CAD (Fusion 360)
-
-                KONTAKT:
-                Email: twoj@email.com
-                Linktree: https://linktr.ee/96graeg
-
-                // END OF TRANSMISSION //
-            `.replace(/^\s+/gm, ''); // Usuwa wcięcia
-
+            const content = `// MISSION REPORT // DATE: ${date} // OPERATOR: GRZEGORZ WOJTALCZYK //\n\nSTATUS:\nSystemy R&D operacyjne.\n\nSKILLS:\n- 3D Printing\n- XR\n- Space Systems\n\nKONTAKT:\nhttps://linktr.ee/96graeg`;
             const blob = new Blob([content], { type: 'text/plain' });
             const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `MISSION_REPORT_${date}.txt`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
-            
-            alert("Inicjowanie pobierania raportu...");
+            const a = document.createElement('a'); a.href = url; a.download = `MISSION_REPORT_${date}.txt`;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a); window.URL.revokeObjectURL(url);
         }
 
-        // --- 4. THREE.JS 3D SCENE (FUNKCJA 1) ---
+        // --- 4. THREE.JS 3D SCENE ---
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true }); // Alpha true dla przezroczystości
-        
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
-
-        // Tworzymy "Holograficzną Planetę/Jądro"
-        const geometry = new THREE.IcosahedronGeometry(2, 2); // Radius, Detail
-        const material = new THREE.MeshBasicMaterial({ 
-            color: 0xDC143C, // Scarlet
-            wireframe: true,
-            transparent: true,
-            opacity: 0.3
-        });
+        
+        const geometry = new THREE.IcosahedronGeometry(2, 2);
+        const material = new THREE.MeshBasicMaterial({ color: 0xDC143C, wireframe: true, transparent: true, opacity: 0.3 });
         const planet = new THREE.Mesh(geometry, material);
         scene.add(planet);
-
-        // Dodajemy wewnętrzny rdzeń
+        
         const coreGeo = new THREE.IcosahedronGeometry(1, 1);
-        const coreMat = new THREE.MeshBasicMaterial({
-            color: 0xffffff,
-            wireframe: true,
-            transparent: true,
-            opacity: 0.1
-        });
+        const coreMat = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.1 });
         const core = new THREE.Mesh(coreGeo, coreMat);
         scene.add(core);
-
         camera.position.z = 5;
 
-        // Interakcja z myszką dla 3D
-        let mouseX = 0;
-        let mouseY = 0;
+        let mouseX = 0, mouseY = 0;
         document.addEventListener('mousemove', (event) => {
             mouseX = (event.clientX / window.innerWidth) * 2 - 1;
             mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
         });
 
-        // Animacja
         function animate() {
             requestAnimationFrame(animate);
-
-            // Stały obrót
-            planet.rotation.x += 0.001;
-            planet.rotation.y += 0.002;
+            planet.rotation.x += 0.001 + mouseY * 0.01;
+            planet.rotation.y += 0.002 + mouseX * 0.01;
             core.rotation.x -= 0.002;
             core.rotation.y -= 0.001;
-
-            // Reakcja na myszkę (delikatne wychylenie)
-            planet.rotation.x += mouseY * 0.01;
-            planet.rotation.y += mouseX * 0.01;
-
             renderer.render(scene, camera);
         }
         animate();
-
-        // Responsywność
         window.addEventListener('resize', () => {
-            const width = window.innerWidth;
-            const height = window.innerHeight;
-            renderer.setSize(width, height);
-            camera.aspect = width / height;
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
         });
+
+        // --- 5. ISS TRACKER LIVE (NOWOŚĆ) ---
+        async function updateISS() {
+            const issDiv = document.getElementById('iss-data');
+            try {
+                const response = await fetch('https://api.wheretheiss.at/v1/satellites/25544');
+                const data = await response.json();
+                const lat = data.latitude.toFixed(2);
+                const lon = data.longitude.toFixed(2);
+                const vel = Math.round(data.velocity).toLocaleString();
+                issDiv.innerHTML = `
+                    <div class="flex flex-col gap-1">
+                        <span>LAT: <span class="text-scarlet">${lat}°</span></span>
+                        <span>LON: <span class="text-scarlet">${lon}°</span></span>
+                        <span>VEL: ${vel} km/h</span>
+                    </div>
+                `;
+            } catch (error) {
+                issDiv.innerHTML = "Utracono sygnał...";
+            }
+        }
+        setInterval(updateISS, 5000);
+        updateISS();
+
+        // --- 6. MAGNETIC BUTTONS (NOWOŚĆ) ---
+        const magneticBtns = document.querySelectorAll(".magnetic-btn");
+        magneticBtns.forEach((btn) => {
+            btn.addEventListener("mousemove", (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                gsap.to(btn, { duration: 0.3, x: x * 0.3, y: y * 0.3, ease: "power2.out" });
+            });
+            btn.addEventListener("mouseleave", () => {
+                gsap.to(btn, { duration: 0.3, x: 0, y: 0, ease: "power2.out" });
+            });
+        });
+
+        // --- 7. DAYS ON ORBIT COUNTER (NOWOŚĆ) ---
+        // Data urodzenia: 19.01.2003
+        const birthDate = new Date('2003-01-19');
+        const today = new Date();
+        const diffTime = Math.abs(today - birthDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+        document.getElementById('days-on-orbit').innerText = diffDays.toLocaleString();
+
     </script>
 </body>
 </html>
