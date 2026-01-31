@@ -7,6 +7,7 @@
     <meta name="description" content="Portfolio Grzegorza Wojtalczyka - 3D Printing, XR & Space Tech">
     
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
     
@@ -39,6 +40,7 @@
             background-color: #000000;
             overflow-x: hidden;
             color: #e5e5e5;
+            cursor: crosshair; /* Celownik zamiast kursora dla klimatu inżynierskiego */
         }
 
         /* --- ANDROMEDA GALAXY CSS --- */
@@ -77,12 +79,30 @@
             animation: galaxy-spin 120s linear infinite;
         }
 
-        .nebula-overlay {
+        /* --- FLASHLIGHT EFFECT LAYER --- */
+        /* To jest ukryta siatka techniczna, którą odsłania kursor */
+        .tech-grid-overlay {
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: radial-gradient(circle at 80% 20%, rgba(220, 20, 60, 0.08), transparent 40%),
-                        radial-gradient(circle at 20% 80%, rgba(139, 0, 0, 0.1), transparent 40%);
+            top: 0; left: 0; width: 100%; height: 100%;
             z-index: -5;
+            pointer-events: none;
+            /* Wzór siatki technicznej */
+            background-image: 
+                linear-gradient(rgba(220, 20, 60, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(220, 20, 60, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            
+            /* Domyślnie ukryte maską */
+            mask-image: radial-gradient(
+                circle 250px at var(--x, 50%) var(--y, 50%),
+                black 0%,
+                transparent 100%
+            );
+            -webkit-mask-image: radial-gradient(
+                circle 250px at var(--x, 50%) var(--y, 50%),
+                black 0%,
+                transparent 100%
+            );
         }
 
         @keyframes galaxy-spin {
@@ -150,20 +170,31 @@
             border-color: #a30b28;
             box-shadow: 0 0 30px rgba(220, 20, 60, 0.4);
         }
+
+        /* Kontener na 3D */
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Za tekstem, przed tłem */
+            opacity: 0.6;
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-scarlet selection:text-white relative">
+
+    <div class="tech-grid-overlay" id="flashlight"></div>
 
     <div class="galaxy-container">
         <div class="spiral-arms"></div>
         <div class="galaxy-core"></div>
     </div>
-    <div class="nebula-overlay"></div>
-
+    
     <nav class="fixed top-6 left-0 w-full z-50 flex justify-center px-4">
         <div class="relative group">
             <div class="glass-dark rounded-full border border-white/10 px-6 py-3 md:px-8 flex items-center gap-6 md:gap-8 shadow-[0_0_30px_rgba(0,0,0,0.9)] backdrop-blur-xl z-50 relative transition-all duration-300 hover:border-scarlet/50">
-                
                 <a href="#" class="text-white font-bold text-lg tracking-tight uppercase hover:text-scarlet transition">
                     G<span class="text-scarlet">.</span>Tech
                 </a>
@@ -186,52 +217,42 @@
             </div>
 
             <div id="mobile-menu" class="hidden absolute top-full mt-4 left-1/2 -translate-x-1/2 glass-dark border border-white/10 px-6 py-6 rounded-2xl md:hidden text-center w-80 shadow-[0_10px_40px_rgba(0,0,0,0.95)] flex-col z-40 animate-fade-in-down backdrop-blur-xl">
-                
-                <a href="#o-mnie" class="block text-white text-sm font-bold uppercase tracking-[0.2em] hover:text-scarlet transition py-4">
-                    O mnie
-                </a>
-                
+                <a href="#o-mnie" class="block text-white text-sm font-bold uppercase tracking-[0.2em] hover:text-scarlet transition py-4">O mnie</a>
                 <div class="h-px bg-white/10 w-full mx-auto"></div>
-                
-                <a href="#projekty" class="block text-white text-sm font-bold uppercase tracking-[0.2em] hover:text-scarlet transition py-4">
-                    Projekty
-                </a>
-                
+                <a href="#projekty" class="block text-white text-sm font-bold uppercase tracking-[0.2em] hover:text-scarlet transition py-4">Projekty</a>
                 <div class="h-px bg-white/10 w-full mx-auto"></div>
-                
-                <a href="#stack" class="block text-white text-sm font-bold uppercase tracking-[0.2em] hover:text-scarlet transition py-4">
-                    Narzędzia
-                </a>
-                
+                <a href="#stack" class="block text-white text-sm font-bold uppercase tracking-[0.2em] hover:text-scarlet transition py-4">Narzędzia</a>
             </div>
         </div>
     </nav>
 
     <section class="min-h-screen flex flex-col justify-center items-center text-center px-4 pt-20 relative">
-        <div class="space-y-8 max-w-4xl z-10">
-            <h2 class="text-sm text-scarlet tracking-[0.4em] uppercase font-bold mb-4 animate-pulse-slow">
+        <div id="canvas-container"></div>
+
+        <div class="space-y-8 max-w-4xl z-10 pointer-events-none"> <h2 class="text-sm text-scarlet tracking-[0.4em] uppercase font-bold mb-4 animate-pulse-slow pointer-events-auto">
                 R&D Engineer
             </h2>
-            <h1 class="text-5xl md:text-8xl font-bold text-white leading-tight uppercase tracking-tight">
+            <h1 class="text-5xl md:text-8xl font-bold text-white leading-tight uppercase tracking-tight text-glow pointer-events-auto">
                 3D / XR / <br>
                 <span class="gradient-scarlet">SPACE SYSTEMS</span>
             </h1>
-            <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto font-light leading-relaxed border-l-2 border-scarlet pl-6 text-left md:text-center md:border-l-0 md:pl-0">
+            <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto font-light leading-relaxed border-l-2 border-scarlet pl-6 text-left md:text-center md:border-l-0 md:pl-0 pointer-events-auto">
                 Łączę świat cyfrowy z fizycznym. Projektuję systemy immersyjne, wytwarzam addytywnie i tworzę rozwiązania dla sektora kosmicznego.
             </p>
             
-            <div class="flex flex-col sm:flex-row gap-6 justify-center pt-12">
+            <div class="flex flex-col sm:flex-row gap-6 justify-center pt-12 pointer-events-auto">
                 <a href="#projekty" class="btn-filled px-10 py-4 font-bold text-sm rounded-sm">
                     Moje Projekty
                 </a>
-                <a href="#kontakt" class="btn-scarlet px-10 py-4 font-bold text-sm rounded-sm">
-                    Współpraca
-                </a>
+                <button onclick="generateMissionReport()" class="btn-scarlet px-10 py-4 font-bold text-sm rounded-sm flex items-center justify-center gap-2 group">
+                    <svg class="w-4 h-4 group-hover:animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    Pobierz Raport Misji
+                </button>
             </div>
         </div>
     </section>
 
-    <section id="o-mnie" class="py-24 px-4 border-y border-white/5 bg-black/50 backdrop-blur-sm">
+    <section id="o-mnie" class="py-24 px-4 border-y border-white/5 bg-black/50 backdrop-blur-sm relative z-10">
         <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
             <div class="relative group">
                 <div class="absolute -inset-2 bg-scarlet rounded-sm blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
@@ -246,9 +267,6 @@
                 <div class="h-0.5 w-20 bg-scarlet"></div>
                 <p class="text-gray-300 leading-relaxed text-lg font-light">
                     Nie interesuje mnie zwykłe pisanie kodu. Fascynuje mnie materializowanie pomysłów poprzez <strong>Druk 3D</strong>, tworzenie wirtualnych światów w <strong>XR</strong> oraz eksploracja ostatecznej granicy – inżynierii kosmicznej.
-                </p>
-                <p class="text-gray-400 leading-relaxed font-light">
-                    Pracuję nad prototypowaniem, symulacjami VR oraz analizą danych telemetrycznych. Mój cel to tworzenie technologii, która rozszerza ludzkie możliwości.
                 </p>
                 <div class="grid grid-cols-3 gap-6 pt-8 border-t border-white/10">
                     <div>
@@ -268,7 +286,7 @@
         </div>
     </section>
 
-    <section id="stack" class="py-24 relative">
+    <section id="stack" class="py-24 relative z-10">
         <div class="max-w-6xl mx-auto px-4 text-center">
             <h2 class="text-xs text-scarlet uppercase tracking-[0.5em] mb-16 font-bold">Arsenał Inżyniera</h2>
             <div class="flex flex-wrap justify-center gap-6">
@@ -291,7 +309,7 @@
         </div>
     </section>
 
-    <section id="projekty" class="py-24 px-4 bg-gradient-to-b from-transparent to-black/90">
+    <section id="projekty" class="py-24 px-4 bg-gradient-to-b from-transparent to-black/90 relative z-10">
         <div class="max-w-7xl mx-auto">
             <div class="flex flex-col md:flex-row justify-between items-end mb-16 border-b border-white/10 pb-6">
                 <div>
@@ -303,7 +321,6 @@
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                
                 <div class="md:col-span-2 group relative overflow-hidden border border-white/5 bg-black min-h-[400px]">
                     <img src="https://images.unsplash.com/photo-1614728853913-1e2211f9ca52?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="VR Space Simulation" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-105 opacity-40 group-hover:opacity-20 grayscale">
                     <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
@@ -316,7 +333,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="group relative overflow-hidden border border-white/5 bg-black min-h-[400px]">
                     <img src="https://images.unsplash.com/photo-1631541909061-71e349d1f203?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="3D Print Prototype" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-105 opacity-40 group-hover:opacity-20 grayscale">
                     <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
@@ -326,7 +342,6 @@
                         <span class="text-scarlet text-xs font-bold uppercase tracking-widest">Additive Mfg</span>
                     </div>
                 </div>
-
                 <div class="group relative overflow-hidden border border-white/5 bg-black min-h-[400px]">
                     <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Satellite Data" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-105 opacity-40 group-hover:opacity-20 grayscale">
                     <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
@@ -336,7 +351,6 @@
                         <span class="text-scarlet text-xs font-bold uppercase tracking-widest">Python / GIS</span>
                     </div>
                 </div>
-
                 <div class="md:col-span-2 group relative overflow-hidden border border-white/5 bg-black min-h-[400px]">
                     <img src="https://images.unsplash.com/photo-1592478411213-61535fdd28f2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="AR Interface" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-105 opacity-40 group-hover:opacity-20 grayscale">
                     <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
@@ -353,7 +367,7 @@
         </div>
     </section>
 
-    <footer id="kontakt" class="border-t border-white/10 bg-black pt-24 pb-12 relative overflow-hidden">
+    <footer id="kontakt" class="border-t border-white/10 bg-black pt-24 pb-12 relative overflow-hidden z-10">
         <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-md h-1 bg-scarlet blur-[100px] opacity-50"></div>
 
         <div class="max-w-4xl mx-auto px-4 text-center z-10 relative">
@@ -383,18 +397,133 @@
     </footer>
 
     <script>
+        // --- 1. MENU MOBILNE ---
         const btn = document.getElementById('mobile-menu-btn');
         const menu = document.getElementById('mobile-menu');
 
         btn.addEventListener('click', () => {
             menu.classList.toggle('hidden');
+            menu.classList.toggle('flex');
         });
 
-        // Zamykanie menu po kliknięciu w link
         menu.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
                 menu.classList.add('hidden');
+                menu.classList.remove('flex');
             });
+        });
+
+        // --- 2. FLASHLIGHT EFFECT (FUNKCJA 3) ---
+        const flashlight = document.getElementById('flashlight');
+        document.addEventListener('mousemove', (e) => {
+            // Aktualizujemy pozycję maski zgodnie z kursorem
+            flashlight.style.setProperty('--x', e.clientX + 'px');
+            flashlight.style.setProperty('--y', e.clientY + 'px');
+        });
+
+        // --- 3. GENERATOR RAPORTU MISJI (FUNKCJA 6) ---
+        function generateMissionReport() {
+            const date = new Date().toISOString().split('T')[0];
+            const content = `
+                // MISSION REPORT //
+                // DATE: ${date} //
+                // OPERATOR: GRZEGORZ WOJTALCZYK //
+                
+                STATUS:
+                Systemy R&D w pełni operacyjne.
+                Gotowość do podjęcia nowych wyzwań.
+
+                UMIEJĘTNOŚCI KLUCZOWE:
+                - 3D Printing & Additive Manufacturing
+                - XR Development (Unity, Unreal, VR/AR)
+                - Space Systems Engineering
+                - Python, C++, CAD (Fusion 360)
+
+                KONTAKT:
+                Email: twoj@email.com
+                Linktree: https://linktr.ee/96graeg
+
+                // END OF TRANSMISSION //
+            `.replace(/^\s+/gm, ''); // Usuwa wcięcia
+
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `MISSION_REPORT_${date}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            alert("Inicjowanie pobierania raportu...");
+        }
+
+        // --- 4. THREE.JS 3D SCENE (FUNKCJA 1) ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true }); // Alpha true dla przezroczystości
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        // Tworzymy "Holograficzną Planetę/Jądro"
+        const geometry = new THREE.IcosahedronGeometry(2, 2); // Radius, Detail
+        const material = new THREE.MeshBasicMaterial({ 
+            color: 0xDC143C, // Scarlet
+            wireframe: true,
+            transparent: true,
+            opacity: 0.3
+        });
+        const planet = new THREE.Mesh(geometry, material);
+        scene.add(planet);
+
+        // Dodajemy wewnętrzny rdzeń
+        const coreGeo = new THREE.IcosahedronGeometry(1, 1);
+        const coreMat = new THREE.MeshBasicMaterial({
+            color: 0xffffff,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.1
+        });
+        const core = new THREE.Mesh(coreGeo, coreMat);
+        scene.add(core);
+
+        camera.position.z = 5;
+
+        // Interakcja z myszką dla 3D
+        let mouseX = 0;
+        let mouseY = 0;
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+            mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+        });
+
+        // Animacja
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Stały obrót
+            planet.rotation.x += 0.001;
+            planet.rotation.y += 0.002;
+            core.rotation.x -= 0.002;
+            core.rotation.y -= 0.001;
+
+            // Reakcja na myszkę (delikatne wychylenie)
+            planet.rotation.x += mouseY * 0.01;
+            planet.rotation.y += mouseX * 0.01;
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Responsywność
+        window.addEventListener('resize', () => {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            renderer.setSize(width, height);
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
         });
     </script>
 </body>
