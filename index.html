@@ -53,9 +53,9 @@
         body.light-mode .scanlines { opacity: 0.1; }
 
         /* --- SCROLLBAR --- */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #141414; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(20,20,20,0.5); }
+        ::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #DC143C; }
 
         /* --- BACKGROUNDS --- */
@@ -150,6 +150,7 @@
             </div>
         </div>
     </div>
+
     <div class="fixed top-8 left-8 z-50 hidden md:flex flex-col gap-1 items-start select-none pointer-events-none mix-blend-difference">
         <div class="flex items-center gap-2">
             <div class="w-1.5 h-1.5 bg-scarlet animate-pulse"></div>
@@ -220,10 +221,11 @@
             </span>
         </button>
 
-        <div id="tools-panel" class="hidden absolute bottom-0 right-16 w-64 glass-dark border border-scarlet/30 p-5 rounded-lg flex-col gap-2 transform transition-all duration-300 origin-bottom-right">
-            <h3 class="text-scarlet text-xs font-bold uppercase tracking-widest mb-2 border-b border-white/10 pb-2">Przybornik Inżyniera</h3>
+        <div id="tools-panel" class="hidden absolute bottom-0 right-16 w-72 glass-dark border border-scarlet/30 p-4 rounded-lg flex-col gap-2 transform transition-all duration-300 origin-bottom-right">
+            <h3 class="text-scarlet text-xs font-bold uppercase tracking-widest mb-1 border-b border-white/10 pb-2">Przybornik Inżyniera</h3>
             
-            <div class="space-y-2">
+            <div class="space-y-2 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
+                
                 <div class="flex items-center justify-between text-xs text-gray-300 hover:text-white group cursor-default">
                     <span class="font-mono group-hover:text-scarlet transition">> Notion</span>
                     <span class="text-[9px] bg-white/10 px-1 rounded text-gray-500">ORG</span>
@@ -233,20 +235,74 @@
                     <span class="text-[9px] bg-white/10 px-1 rounded text-gray-500">TIME</span>
                 </div>
                 <div class="flex items-center justify-between text-xs text-gray-300 hover:text-white group cursor-default">
+                    <span class="font-mono group-hover:text-scarlet transition">> Google Workspace</span>
+                    <span class="text-[9px] bg-white/10 px-1 rounded text-gray-500">CLOUD</span>
+                </div>
+                <div class="flex items-center justify-between text-xs text-gray-300 hover:text-white group cursor-default">
+                    <span class="font-mono group-hover:text-scarlet transition">> Microsoft 365</span>
+                    <span class="text-[9px] bg-white/10 px-1 rounded text-gray-500">OFFICE</span>
+                </div>
+                <div class="flex items-center justify-between text-xs text-gray-300 hover:text-white group cursor-default">
+                    <span class="font-mono group-hover:text-scarlet transition">> LibreOffice</span>
+                    <span class="text-[9px] bg-white/10 px-1 rounded text-gray-500">OFFICE</span>
+                </div>
+                <div class="flex items-center justify-between text-xs text-gray-300 hover:text-white group cursor-default">
                     <span class="font-mono group-hover:text-scarlet transition">> Jotform</span>
                     <span class="text-[9px] bg-white/10 px-1 rounded text-gray-500">DATA</span>
                 </div>
+                
+                <div class="h-px bg-white/5 w-full my-1"></div>
+
+                <div class="flex items-center justify-between text-xs text-gray-300 hover:text-white group cursor-default">
+                    <span class="font-mono group-hover:text-scarlet transition">> Canva</span>
+                    <span class="text-[9px] bg-white/10 px-1 rounded text-gray-500">DESIGN</span>
+                </div>
+                <div class="flex items-center justify-between text-xs text-gray-300 hover:text-white group cursor-default">
+                    <span class="font-mono group-hover:text-scarlet transition">> Creative Cloud Pro</span>
+                    <span class="text-[9px] bg-white/10 px-1 rounded text-gray-500">ART</span>
+                </div>
+                <div class="flex items-center justify-between text-xs text-gray-300 hover:text-white group cursor-default">
+                    <span class="font-mono group-hover:text-scarlet transition">> DaVinci Resolve</span>
+                    <span class="text-[9px] bg-white/10 px-1 rounded text-gray-500">VIDEO</span>
+                </div>
+
+                <div class="h-px bg-white/5 w-full my-1"></div>
+
                 <div class="flex items-center justify-between text-xs text-gray-300 hover:text-white group cursor-default">
                     <span class="font-mono group-hover:text-scarlet transition">> Fusion 360</span>
                     <span class="text-[9px] bg-white/10 px-1 rounded text-gray-500">CAD</span>
                 </div>
-                 <div class="flex items-center justify-between text-xs text-gray-300 hover:text-white group cursor-default">
-                    <span class="font-mono group-hover:text-scarlet transition">> VS Code</span>
-                    <span class="text-[9px] bg-white/10 px-1 rounded text-gray-500">DEV</span>
+                <div class="flex items-center justify-between text-xs text-gray-300 hover:text-white group cursor-default">
+                    <span class="font-mono group-hover:text-scarlet transition">> FreeCAD</span>
+                    <span class="text-[9px] bg-white/10 px-1 rounded text-gray-500">CAD</span>
                 </div>
+                <div class="flex items-center justify-between text-xs text-gray-300 hover:text-white group cursor-default">
+                    <span class="font-mono group-hover:text-scarlet transition">> Blender</span>
+                    <span class="text-[9px] bg-white/10 px-1 rounded text-gray-500">3D</span>
+                </div>
+                 <div class="flex items-center justify-between text-xs text-gray-300 hover:text-white group cursor-default">
+                    <span class="font-mono group-hover:text-scarlet transition">> PrusaSlicer</span>
+                    <span class="text-[9px] bg-white/10 px-1 rounded text-gray-500">CAM</span>
+                </div>
+                <div class="flex items-center justify-between text-xs text-gray-300 hover:text-white group cursor-default">
+                    <span class="font-mono group-hover:text-scarlet transition">> Bambu Studio</span>
+                    <span class="text-[9px] bg-white/10 px-1 rounded text-gray-500">CAM</span>
+                </div>
+
+                <div class="h-px bg-white/5 w-full my-1"></div>
+
+                <div class="flex items-center justify-between text-xs text-gray-300 hover:text-white group cursor-default">
+                    <span class="font-mono group-hover:text-scarlet transition">> MediaFire</span>
+                    <span class="text-[9px] bg-white/10 px-1 rounded text-gray-500">DRIVE</span>
+                </div>
+                <div class="flex items-center justify-between text-xs text-gray-300 hover:text-white group cursor-default">
+                    <span class="font-mono group-hover:text-scarlet transition">> AnyDesk</span>
+                    <span class="text-[9px] bg-white/10 px-1 rounded text-gray-500">REMOTE</span>
+                </div>
+
             </div>
 
-            <div class="h-px bg-white/10 w-full my-2"></div>
+            <div class="h-px bg-white/10 w-full my-1"></div>
             <div class="text-[9px] text-gray-500 text-center font-mono">
                 TOOLS VERIFIED // READY
             </div>
@@ -786,7 +842,7 @@
             document.getElementById('scroll-percent').innerText = Math.round(scrolled) + "%";
         });
 
-        // --- [NOWOŚĆ] LOGIKA HISTORII (STORY MODAL) ---
+        // --- LOGIKA HISTORII (STORY MODAL) ---
         const storyData = {
             '3d': {
                 title: "PROTOKÓŁ: ADDITIVE MFG",
@@ -826,7 +882,7 @@
         });
 
 
-        // --- [NOWOŚĆ] LOGIKA PANELU NARZĘDZI (TOOLS) ---
+        // --- LOGIKA PANELU NARZĘDZI (TOOLS) ---
         const toolsPanel = document.getElementById('tools-panel');
 
         function toggleTools() {
