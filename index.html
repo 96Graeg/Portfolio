@@ -6,6 +6,8 @@
     <title>Portfolio | Grzegorz Wojtalczyk</title>
     <meta name="description" content="Portfolio Grzegorza Wojtalczyka - 3D Printing, XR & Space Tech">
     
+    <link rel="icon" type="image/png" href="logo.png">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -85,6 +87,31 @@
 
         /* AR MODAL */
         #ar-modal { transition: opacity 0.3s ease-in-out; }
+
+        /* HOLOGRAPHIC TERMINAL */
+        .holo-terminal {
+            background: rgba(220, 20, 60, 0.1);
+            border: 1px solid rgba(220, 20, 60, 0.4);
+            box-shadow: 0 0 20px rgba(220, 20, 60, 0.2), inset 0 0 20px rgba(220, 20, 60, 0.1);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+        .holo-terminal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(0deg, rgba(220, 20, 60, 0.1) 0px, rgba(220, 20, 60, 0.1) 1px, transparent 1px, transparent 4px);
+            pointer-events: none;
+            opacity: 0.5;
+        }
+        .holo-terminal:hover {
+            box-shadow: 0 0 30px rgba(220, 20, 60, 0.4), inset 0 0 30px rgba(220, 20, 60, 0.2);
+            border-color: rgba(220, 20, 60, 0.6);
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-scarlet selection:text-white relative">
@@ -141,7 +168,7 @@
     <div class="fixed bottom-6 right-6 z-[60]">
         <button id="settings-btn" class="glass-dark p-4 rounded-full text-white hover:text-scarlet border border-white/20 hover:border-scarlet transition duration-300 shadow-[0_0_15px_rgba(0,0,0,0.5)] bg-black group">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 group-hover:rotate-90 transition duration-500">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.157.92c.447.1.879.293 1.28.567l.882-.369c.532-.224 1.15.066 1.35.61l.546 1.363c.201.543-.07 1.155-.584 1.383l-.936.417c.05.474.05.955 0 1.428l.936.417c.513.228.785.84.584 1.383l-.546 1.363c-.2.544-.818.834-1.35.61l-.882.369a6.29 6.29 0 0 1-1.28.567l-.157.92c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.02-.398-1.11-.94l-.157-.92a6.293 6.293 0 0 1-1.28-.567l-.882.369c-.532.224-1.15-.066-1.35-.61l-.546-1.363c-.2.544-.818.834-1.35.61l-.546-1.363c-.2.544-.818.834-1.35.61l-.882.369c.401-.274.833-.467 1.28-.567l.157-.92Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.157.92c.447.1.879.293 1.28.567l.882-.369c.532-.224 1.15.066 1.35.61l.546 1.363c.201.543-.07 1.155-.584 1.383l-.936.417c.05.474.05.955 0 1.428l.936.417c.513.228.785.84.584 1.383l-.546 1.363c-.2.544-.818.834-1.35.61l-.882.369a6.29 6.29 0 0 1-1.28.567l-.157.92c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.02-.398-1.11-.94l-.157-.92a6.293 6.293 0 0 1-1.28-.567l-.882.369c-.532.224-1.15-.066-1.35-.61l-.546-1.363c-.2.544-.818.834-1.35.61l-.546-1.363c-.201-.543.07-1.155.584-1.383l.936-.417a6.415 6.415 0 0 1 0-1.428l-.936-.417c-.513-.228-.785-.84-.584-1.383l.546-1.363c.2-.544.818-.834 1.35-.61l.882.369c.401-.274.833-.467 1.28-.567l.157-.92Z" />
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
             </svg>
         </button>
@@ -179,8 +206,8 @@
     <nav class="fixed top-6 left-0 w-full z-50 flex justify-center px-4">
         <div class="relative group">
             <div class="glass-dark rounded-full border border-white/10 px-6 py-3 md:px-8 flex items-center gap-6 md:gap-8 shadow-[0_0_30px_rgba(0,0,0,0.9)] backdrop-blur-xl z-50 relative transition-all duration-300 hover:border-scarlet/50">
-                <a href="#" class="text-white font-bold text-lg tracking-tight uppercase hover:text-scarlet transition">
-                    G<span class="text-scarlet">.</span>Tech
+                <a href="#" class="flex-shrink-0 hover:opacity-80 transition">
+                    <img src="logo.png" alt="Logo" class="h-8 md:h-10 w-auto object-contain">
                 </a>
 
                 <div class="hidden md:flex gap-6 text-[10px] font-bold uppercase tracking-widest text-gray-400 border-l border-white/10 pl-6">
