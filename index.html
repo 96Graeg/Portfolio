@@ -40,17 +40,71 @@
             transition: background-color 0.5s ease, color 0.5s ease;
         }
 
-        /* --- LIGHT MODE --- */
-        body.light-mode { background-color: #f3f4f6; color: #111827; }
-        body.light-mode .glass-dark { background: rgba(255, 255, 255, 0.75); border-color: rgba(220, 20, 60, 0.2); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); color: #000; }
+        /* --- LIGHT MODE (LABORATORY THEME) --- */
+        body.light-mode { 
+            background-color: #e8e8e8; 
+            color: #1a1a1a; 
+        }
+
+        /* Tło siatki dla light mode */
+        body.light-mode .tech-grid-overlay {
+            opacity: 0.15;
+            background-image: linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px);
+            background-size: 40px 40px;
+            mask-image: none; /* Wyłączamy efekt latarki na tle w light mode dla czystości */
+            -webkit-mask-image: none;
+        }
+        
+        /* Ukryj kosmos w light mode, pokaż sterylne tło */
+        body.light-mode .galaxy-container { opacity: 0; } 
+        body.light-mode .scanlines { opacity: 0.03; mix-blend-mode: multiply; }
+
+        /* Karty w light mode - styl "Frosted Ice" */
+        body.light-mode .glass-dark { 
+            background: rgba(255, 255, 255, 0.75); 
+            backdrop-filter: blur(12px);
+            border-color: rgba(220, 20, 60, 0.2); 
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08); 
+            color: #000; 
+        }
+        body.light-mode .glass-dark:hover {
+            border-color: #DC143C;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 10px 40px rgba(220, 20, 60, 0.15);
+        }
+
+        /* Poprawa czytelności tekstów w light mode */
         body.light-mode .text-white { color: #111 !important; }
-        body.light-mode .text-gray-400 { color: #4b5563 !important; }
-        body.light-mode .text-gray-500 { color: #374151 !important; }
-        body.light-mode .galaxy-container { opacity: 0.1; filter: invert(1); }
-        body.light-mode #canvas-container { opacity: 0.8; filter: brightness(0.8); }
-        body.light-mode ::-webkit-scrollbar-track { background: #e5e7eb; }
-        body.light-mode .tech-widget { background: rgba(255, 255, 255, 0.8); color: #000; border-left-color: #DC143C; }
-        body.light-mode .scanlines { opacity: 0.1; }
+        body.light-mode .text-gray-300, 
+        body.light-mode .text-gray-400, 
+        body.light-mode .text-gray-500 { color: #4b5563 !important; }
+        
+        /* Wyjątki dla przycisków i elementów akcentujących (zostają białe na czerwonym) */
+        body.light-mode .bg-scarlet .text-white,
+        body.light-mode .btn-filled .text-white,
+        body.light-mode .group:hover .group-hover\:text-white { 
+            color: #fff !important; 
+        }
+
+        /* Nagłówki i akcenty */
+        body.light-mode .text-glow { text-shadow: none; } /* Glow brudzi w jasnym trybie */
+        body.light-mode .tech-widget { 
+            background: rgba(255, 255, 255, 0.9); 
+            color: #000; 
+            border: 1px solid rgba(0,0,0,0.1);
+            border-left: 3px solid #DC143C;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        /* Inne elementy UI */
+        body.light-mode ::-webkit-scrollbar-track { background: #d1d5db; }
+        body.light-mode ::-webkit-scrollbar-thumb { background: #9ca3af; }
+        body.light-mode ::-webkit-scrollbar-thumb:hover { background: #DC143C; }
+        
+        body.light-mode nav .glass-dark {
+            background: rgba(255,255,255,0.8);
+            border: 1px solid rgba(0,0,0,0.1);
+        }
 
         /* --- SCROLLBAR --- */
         ::-webkit-scrollbar { width: 6px; }
@@ -62,7 +116,15 @@
         .galaxy-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -10; pointer-events: none; transition: opacity 0.5s; }
         .galaxy-core { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40vw; height: 40vw; background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(220,20,60,0.4) 20%, rgba(139,0,0,0.1) 50%, transparent 70%); border-radius: 50%; filter: blur(60px); opacity: 0.8; animation: core-pulse 10s infinite alternate; }
         .spiral-arms { position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background-image: radial-gradient(2px 2px at 20px 30px, #fff, rgba(0,0,0,0)), radial-gradient(2px 2px at 40px 70px, #DC143C, rgba(0,0,0,0)), radial-gradient(2px 2px at 50px 160px, #fff, rgba(0,0,0,0)), radial-gradient(2px 2px at 90px 40px, #8B0000, rgba(0,0,0,0)); background-repeat: repeat; background-size: 300px 300px; opacity: 0.5; animation: galaxy-spin 120s linear infinite; }
-        .tech-grid-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -5; pointer-events: none; background-image: linear-gradient(rgba(220, 20, 60, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(220, 20, 60, 0.1) 1px, transparent 1px); background-size: 50px 50px; mask-image: radial-gradient(circle 250px at var(--x, 50%) var(--y, 50%), black 0%, transparent 100%); -webkit-mask-image: radial-gradient(circle 250px at var(--x, 50%) var(--y, 50%), black 0%, transparent 100%); }
+        
+        .tech-grid-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -5; pointer-events: none; 
+            background-image: linear-gradient(rgba(220, 20, 60, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(220, 20, 60, 0.1) 1px, transparent 1px); 
+            background-size: 50px 50px; 
+            mask-image: radial-gradient(circle 250px at var(--x, 50%) var(--y, 50%), black 0%, transparent 100%); 
+            -webkit-mask-image: radial-gradient(circle 250px at var(--x, 50%) var(--y, 50%), black 0%, transparent 100%);
+            transition: all 0.5s ease;
+        }
 
         @keyframes galaxy-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes core-pulse { 0% { transform: scale(1); opacity: 0.7; } 100% { transform: scale(1.1); opacity: 0.9; } }
@@ -76,6 +138,7 @@
             z-index: 9999;
             pointer-events: none;
             opacity: 0.3;
+            transition: opacity 0.3s;
         }
 
         @keyframes glitch-anim {
@@ -92,12 +155,20 @@
             text-shadow: 2px 0 rgba(255,255,255,0.5), -2px 0 rgba(139,0,0,0.5);
             border-color: #DC143C !important;
         }
+        
+        /* Fix glitch text shadow in light mode */
+        body.light-mode .hover-glitch:hover {
+            text-shadow: 2px 0 rgba(0,0,0,0.2), -2px 0 rgba(220,20,60,0.2);
+        }
 
         /* --- UI UTILS --- */
         .glass-dark { background: rgba(30, 30, 30, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(220, 20, 60, 0.3); box-shadow: 0 0 15px rgba(220, 20, 60, 0.05); transition: all 0.3s ease; }
         .glass-dark:hover { border-color: rgba(220, 20, 60, 0.8); }
         .text-glow { text-shadow: 0 0 15px rgba(220, 20, 60, 0.6); }
         .gradient-scarlet { background: linear-gradient(to right, #ffffff, #DC143C); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        /* Gradient fix for light mode */
+        body.light-mode .gradient-scarlet { background: linear-gradient(to right, #111111, #DC143C); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
         .btn-scarlet, .btn-filled { transition: all 0.4s ease; z-index: 20; text-transform: uppercase; letter-spacing: 0.2em; }
         .btn-scarlet { border: 1px solid #DC143C; color: #DC143C; background: transparent; }
@@ -108,7 +179,7 @@
         #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.6; transition: opacity 0.5s; }
 
         .widgets-container { position: fixed; bottom: 20px; left: 20px; z-index: 100; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
-        .tech-widget { font-family: 'Space Grotesk', monospace; font-size: 10px; color: rgba(255, 255, 255, 0.7); background: rgba(30, 30, 30, 0.8); padding: 8px 12px; border-left: 2px solid #DC143C; backdrop-filter: blur(5px); pointer-events: none; transition: background 0.3s; }
+        .tech-widget { font-family: 'Space Grotesk', monospace; font-size: 10px; color: rgba(255, 255, 255, 0.7); background: rgba(30, 30, 30, 0.8); padding: 8px 12px; border-left: 2px solid #DC143C; backdrop-filter: blur(5px); pointer-events: none; transition: background 0.3s, color 0.3s, border 0.3s; }
 
         /* SWITCH TOGGLE STYLE */
         .toggle-checkbox:checked { right: 0; border-color: #DC143C; }
@@ -122,7 +193,7 @@
     <div class="scanlines"></div>
 
     <div id="story-modal" class="hidden fixed inset-0 z-[120] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 transition-opacity duration-300">
-        <div class="relative w-full max-w-2xl bg-black/90 border border-scarlet/50 shadow-[0_0_50px_rgba(220,20,60,0.2)] rounded-lg overflow-hidden transform transition-all scale-100">
+        <div class="relative w-full max-w-2xl bg-black/90 border border-scarlet/50 shadow-[0_0_50px_rgba(220,20,60,0.2)] rounded-lg overflow-hidden transform transition-all scale-100 glass-dark">
             <div class="bg-scarlet/10 border-b border-scarlet/30 p-4 flex justify-between items-center">
                 <div class="flex items-center gap-3">
                     <div class="w-2 h-2 bg-scarlet animate-pulse"></div>
@@ -137,10 +208,10 @@
                     // DATA DECRYPTION: COMPLETE<br>
                     // AUTHOR: G. WOJTALCZYK
                 </div>
-                <p id="story-content" class="text-gray-200 leading-relaxed font-light text-sm md:text-base border-l-2 border-scarlet pl-4">
+                <p id="story-content" class="text-gray-200 leading-relaxed font-light text-sm md:text-base border-l-2 border-scarlet pl-4 text-white">
                     </p>
             </div>
-            <div class="bg-black border-t border-white/10 p-2 px-6 flex justify-between items-center">
+            <div class="bg-black/50 border-t border-white/10 p-2 px-6 flex justify-between items-center">
                 <span class="text-[9px] text-gray-600 font-mono uppercase">End of transmission</span>
                 <div class="flex gap-1">
                     <div class="w-8 h-1 bg-scarlet/20"></div>
@@ -212,7 +283,7 @@
 
     <div class="fixed bottom-24 right-6 z-[60]">
         <button onclick="toggleTools()" class="glass-dark p-3 md:p-4 rounded-full text-white hover:text-scarlet border border-white/20 hover:border-scarlet transition duration-300 shadow-[0_0_15px_rgba(0,0,0,0.5)] bg-black group relative">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 md:w-6 md:h-6 group-hover:-rotate-12 transition duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 md:w-6 md:h-6 group-hover:-rotate-12 transition duration-300 text-white">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z" />
             </svg>
             <span class="absolute -top-1 -right-1 flex h-3 w-3">
@@ -311,7 +382,7 @@
 
     <div class="fixed bottom-6 right-6 z-[60]">
         <button id="settings-btn" class="glass-dark p-3 md:p-4 rounded-full text-white hover:text-scarlet border border-white/20 hover:border-scarlet transition duration-300 shadow-[0_0_15px_rgba(0,0,0,0.5)] bg-black group">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 md:w-6 md:h-6 group-hover:rotate-90 transition duration-500">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 md:w-6 md:h-6 group-hover:rotate-90 transition duration-500 text-white">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.157.92c.447.1.879.293 1.28.567l.882-.369c.532-.224 1.15.066 1.35.61l.546 1.363c.201.543-.07 1.155-.584 1.383l-.936.417c.05.474.05.955 0 1.428l.936.417c.513.228.785.84.584 1.383l-.546 1.363c-.2.544-.818.834-1.35.61l-.882.369a6.29 6.29 0 0 1-1.28.567l-.157.92c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.02-.398-1.11-.94l-.157-.92a6.293 6.293 0 0 1-1.28-.567l-.882.369c-.532.224-1.15-.066-1.35-.61l-.546-1.363c-.2.544-.818.834-1.35.61l-.546-1.363c-.201-.543.07-1.155.584-1.383l.936-.417a6.415 6.415 0 0 1 0-1.428l-.936-.417c-.513-.228-.785-.84-.584-1.383l.546-1.363c.2-.544.818-.834 1.35-.61l.882.369c.401-.274.833-.467 1.28-.567l.157-.92Z" />
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
             </svg>
@@ -424,7 +495,7 @@
         </div>
     </section>
 
-    <section id="o-mnie" class="py-16 md:py-20 px-4 border-y border-white/5 bg-black/50 backdrop-blur-sm relative z-10">
+    <section id="o-mnie" class="py-16 md:py-20 px-4 border-y border-white/5 bg-black/50 backdrop-blur-sm relative z-10 glass-dark">
         <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-8 md:gap-12 items-center">
             <div class="relative group mx-auto md:mx-0 w-full max-w-sm md:max-w-none">
                 <div class="absolute -inset-2 bg-scarlet rounded-sm blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
@@ -491,7 +562,7 @@
         </div>
     </section>
 
-    <section id="uprawnienia" class="py-16 md:py-20 px-4 bg-black/30 relative z-10 border-y border-white/5">
+    <section id="uprawnienia" class="py-16 md:py-20 px-4 bg-black/30 relative z-10 border-y border-white/5 glass-dark">
         <div class="max-w-7xl mx-auto">
             <div class="flex flex-col md:flex-row justify-between items-center md:items-end mb-8 md:mb-12 border-b border-white/10 pb-6 text-center md:text-left">
                 <div><h2 class="text-3xl md:text-5xl font-bold text-white uppercase tracking-tight">Licencje i <span class="text-scarlet">Uprawnienia</span></h2></div>
@@ -538,7 +609,7 @@
         </div>
     </section>
 
-    <section id="archiwa" class="py-16 md:py-20 px-4 bg-black/80 relative z-10 border-b border-white/5">
+    <section id="archiwa" class="py-16 md:py-20 px-4 bg-black/80 relative z-10 border-b border-white/5 glass-dark">
         <div class="max-w-7xl mx-auto">
             <div class="flex flex-col md:flex-row justify-between items-center md:items-end mb-8 md:mb-12 border-b border-white/10 pb-6 text-center md:text-left">
                 <div><h2 class="text-3xl md:text-5xl font-bold text-white uppercase tracking-tight text-gray-400">ARCHIWA <span class="text-scarlet">DANYCH</span></h2></div>
@@ -555,7 +626,7 @@
         </div>
     </section>
 
-    <section id="projekty" class="py-16 md:py-20 px-4 bg-gradient-to-b from-transparent to-black/90 relative z-10">
+    <section id="projekty" class="py-16 md:py-20 px-4 bg-gradient-to-b from-transparent to-black/90 relative z-10 glass-dark">
         <div class="max-w-7xl mx-auto">
             <div class="flex flex-col md:flex-row justify-between items-center md:items-end mb-8 md:mb-12 border-b border-white/10 pb-6 text-center md:text-left">
                 <div><h2 class="text-4xl md:text-6xl font-bold text-white uppercase tracking-tight">Aktywne <span class="text-transparent bg-clip-text bg-gradient-to-r from-scarlet to-red-900">Misje</span></h2></div>
@@ -641,7 +712,7 @@
                 </a>
 
                 <a href="https://www.reddit.com/u/Any_Trade_7108/s/k965o3YK5y" target="_blank" class="hover:text-scarlet hover:scale-105 transform transition duration-300 flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.561-1.249-1.249-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.463 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.561-1.249-1.249-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.05.2961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.463 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
                     Reddit
                 </a>
 
@@ -680,6 +751,8 @@
         // SETTINGS WIDGET
         const settingsBtn = document.getElementById('settings-btn');
         const settingsPanel = document.getElementById('settings-panel');
+        const toolsPanel = document.getElementById('tools-panel');
+
         settingsBtn.addEventListener('click', () => {
             settingsPanel.classList.toggle('hidden');
             settingsPanel.classList.toggle('flex');
@@ -711,10 +784,22 @@
             }
         }
 
+        // 3D SCENE VARIABLES (GLOBAL, to access in theme toggle)
+        let material, coreMat;
+
         // 1. LIGHT/DARK THEME
         const themeToggle = document.getElementById('theme-toggle');
         themeToggle.addEventListener('change', () => {
             document.body.classList.toggle('light-mode');
+            
+            // Update 3D Model Colors for Light Mode
+            if(document.body.classList.contains('light-mode')) {
+                material.color.setHex(0x1a1a1a); // Ciemny grafit
+                coreMat.color.setHex(0xDC143C); // Czerwony rdzeń
+            } else {
+                material.color.setHex(0xDC143C); // Oryginalny czerwony
+                coreMat.color.setHex(0xffffff); // Biały rdzeń
+            }
         });
 
         // 3. PERFORMANCE MODE
@@ -760,18 +845,21 @@
         const flashlight = document.getElementById('flashlight');
         document.addEventListener('mousemove', (e) => { flashlight.style.setProperty('--x', e.clientX + 'px'); flashlight.style.setProperty('--y', e.clientY + 'px'); });
 
-        // 3D
+        // 3D SETUP
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
+        
         const geometry = new THREE.IcosahedronGeometry(2, 2);
-        const material = new THREE.MeshBasicMaterial({ color: 0xDC143C, wireframe: true, transparent: true, opacity: 0.3 });
+        material = new THREE.MeshBasicMaterial({ color: 0xDC143C, wireframe: true, transparent: true, opacity: 0.3 });
         const planet = new THREE.Mesh(geometry, material); scene.add(planet);
+        
         const coreGeo = new THREE.IcosahedronGeometry(1, 1);
-        const coreMat = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.1 });
+        coreMat = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.1 });
         const core = new THREE.Mesh(coreGeo, coreMat); scene.add(core);
+        
         camera.position.z = 5;
         let mouseX = 0, mouseY = 0;
         document.addEventListener('mousemove', (event) => { mouseX = (event.clientX / window.innerWidth) * 2 - 1; mouseY = -(event.clientY / window.innerHeight) * 2 + 1; });
@@ -884,8 +972,6 @@
 
 
         // --- LOGIKA PANELU NARZĘDZI (TOOLS) ---
-        const toolsPanel = document.getElementById('tools-panel');
-
         function toggleTools() {
             toolsPanel.classList.toggle('hidden');
             toolsPanel.classList.toggle('flex');
