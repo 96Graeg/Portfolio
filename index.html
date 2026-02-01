@@ -2,17 +2,22 @@
 <html lang="pl" class="bg-[#050505] overflow-x-hidden scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GRAEG // HYBRID SYSTEM</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GRAEG // HYBRID PORTFOLIO SYSTEM</title>
+    <meta name="description" content="Grzegorz Wojtalczyk - Space Tech Engineer, XR Developer, 3D Print Specialist.">
+    <link rel="icon" type="image/png" href="logo2.png">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+    
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
 
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: { 
@@ -23,209 +28,296 @@
                     colors: { 
                         scarlet: '#FF0033', 
                         void: '#020202',
-                        terminal: '#0f0f0f'
+                        terminal: '#0f0f0f',
+                        'glass-border': 'rgba(255, 255, 255, 0.1)',
+                        'glass-bg': 'rgba(255, 255, 255, 0.03)'
                     },
                     backgroundImage: {
-                        'grid': "linear-gradient(to right, #1a1a1a 1px, transparent 1px), linear-gradient(to bottom, #1a1a1a 1px, transparent 1px)"
-                    }
+                        'grid': "linear-gradient(to right, #1a1a1a 1px, transparent 1px), linear-gradient(to bottom, #1a1a1a 1px, transparent 1px)",
+                        'scanline': "linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2))"
+                    },
+                    letterSpacing: { 'widest': '0.25em' },
+                    cursor: { 'none': 'none' }
                 }
             }
         }
     </script>
 
     <style>
-        /* --- GLOBAL FX --- */
-        body { cursor: none; }
-        
-        /* Noise Overlay (Cała strona) */
+        /* CORE RESET */
+        body { cursor: none; background-color: #050505; color: #e5e5e5; overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #FF0033; }
+
+        /* VISUAL FX: NOISE */
         .noise-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
             pointer-events: none; z-index: 999; mix-blend-mode: overlay;
         }
 
-        /* Custom Cursor (Celownik) */
+        /* VISUAL FX: FLASHLIGHT (Terminal Section) */
+        .flashlight-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10;
+            background: radial-gradient(circle 300px at var(--x, 50%) var(--y, 50%), transparent 0%, rgba(0,0,0,0.8) 100%);
+            mix-blend-mode: multiply; opacity: 0; transition: opacity 0.5s;
+        }
+        .terminal-active .flashlight-overlay { opacity: 1; }
+
+        /* CUSTOM CURSOR */
         #cursor {
-            position: fixed; top: 0; left: 0; width: 30px; height: 30px;
-            border: 1px solid #FF0033;
-            transform: translate(-50%, -50%) rotate(45deg);
-            pointer-events: none; z-index: 1000;
-            transition: all 0.1s ease-out;
+            position: fixed; top: 0; left: 0; width: 24px; height: 24px;
+            border: 1px solid #FF0033; border-radius: 50%;
+            transform: translate(-50%, -50%); pointer-events: none; z-index: 10000;
+            transition: transform 0.1s, width 0.3s, height 0.3s, background 0.3s;
             mix-blend-mode: difference;
         }
-        #cursor::after {
-            content: ''; position: absolute; top: 50%; left: 50%; width: 4px; height: 4px;
-            background: #FF0033; transform: translate(-50%, -50%);
+        #cursor-dot {
+            position: fixed; top: 0; left: 0; width: 4px; height: 4px; background: #FF0033;
+            border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; z-index: 10001;
         }
-        body:hover #cursor.active {
-            width: 60px; height: 60px; background: rgba(255, 0, 51, 0.1); border-radius: 50%; transform: translate(-50%, -50%) rotate(0deg);
-        }
+        body:hover #cursor.hovered { width: 60px; height: 60px; background: rgba(255, 0, 51, 0.1); border-color: transparent; }
 
-        /* --- PART 1: COMMANDER STYLES --- */
-        .glitch-text { position: relative; }
+        /* --- SECTION 1: COMMANDER (Visual) --- */
+        .holo-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative; overflow: hidden;
+        }
+        .holo-card::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: skewX(-25deg); transition: 0.5s; pointer-events: none;
+        }
+        .holo-card:hover::before { left: 150%; transition: 0.7s; }
+        .holo-card:hover { border-color: #FF0033; transform: translateY(-5px); box-shadow: 0 10px 30px -10px rgba(255, 0, 51, 0.3); }
+
+        .glitch-text { position: relative; display: inline-block; }
         .glitch-text::before, .glitch-text::after {
             content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: #050505; opacity: 0.8;
         }
-        .glitch-text::before { color: #0ff; clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%); transform: translate(-2px, 0); animation: glitch 2s infinite linear alternate-reverse; }
-        .glitch-text::after { color: #f0f; clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%); transform: translate(2px, 0); animation: glitch 2.5s infinite linear alternate-reverse; }
-        
-        @keyframes glitch { 0% { transform: translate(0); } 20% { transform: translate(-2px, 2px); } 40% { transform: translate(-2px, -2px); } 60% { transform: translate(2px, 2px); } 80% { transform: translate(2px, -2px); } 100% { transform: translate(0); } }
-
-        .holo-card {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-        .holo-card:hover {
-            transform: scale(1.02) translateY(-5px);
-            border-color: #FF0033;
-            box-shadow: 0 10px 40px -10px rgba(255, 0, 51, 0.3);
+        .glitch-text::before { color: #0ff; clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%); transform: translate(-2px, 0); animation: glitch-anim 3s infinite linear alternate-reverse; }
+        .glitch-text::after { color: #f0f; clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%); transform: translate(2px, 0); animation: glitch-anim 2.5s infinite linear alternate-reverse; }
+        @keyframes glitch-anim {
+            0% { transform: translate(0) } 20% { transform: translate(-2px, 2px) } 40% { transform: translate(-2px, -2px) } 60% { transform: translate(2px, 2px) } 80% { transform: translate(2px, -2px) } 100% { transform: translate(0) }
         }
 
-        /* --- PART 2: TERMINAL STYLES --- */
+        /* --- SECTION 2: TERMINAL (Geek) --- */
         .terminal-section {
-            background-color: #080808;
-            background-size: 40px 40px;
-            background-image: linear-gradient(to right, rgba(50, 50, 50, 0.1) 1px, transparent 1px),
-                              linear-gradient(to bottom, rgba(50, 50, 50, 0.1) 1px, transparent 1px);
+            background-color: #0a0a0a;
+            background-image: linear-gradient(rgba(255, 0, 51, 0.03) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255, 0, 51, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            position: relative;
         }
-        .retro-scanline {
-            width: 100%; height: 2px; background: rgba(255, 0, 51, 0.1);
-            position: absolute; z-index: 10; animation: scan 6s linear infinite; pointer-events: none;
+        .scanline {
+            width: 100%; height: 4px; background: rgba(255, 0, 51, 0.1);
+            position: fixed; top: 0; left: 0; z-index: 50; animation: scan 6s linear infinite; pointer-events: none; opacity: 0;
         }
+        .terminal-active .scanline { opacity: 1; }
         @keyframes scan { 0% { top: 0%; } 100% { top: 100%; } }
 
-        /* Widgety z v1 */
-        .tech-widget {
-            border-left: 2px solid #FF0033; background: rgba(20, 20, 20, 0.8);
-            padding: 10px; font-family: 'Space Mono', monospace; font-size: 11px;
-            color: #aaa; margin-bottom: 10px;
+        /* Geek Widgets */
+        .geek-widget {
+            background: rgba(0, 0, 0, 0.8); border: 1px solid #333;
+            border-left: 3px solid #FF0033; padding: 12px;
+            font-family: 'Space Mono', monospace; font-size: 11px; color: #888;
+            margin-bottom: 12px; transition: border-color 0.3s;
+        }
+        .geek-widget:hover { border-color: #FF0033; color: #ddd; }
+        
+        .code-block {
+            background: #000; border: 1px solid #333; padding: 20px;
+            font-family: 'Space Mono', monospace; font-size: 12px; color: #0f0;
+            overflow-x: auto; position: relative;
+        }
+        .code-block::before {
+            content: 'ARSENAL.JSON'; position: absolute; top: 0; right: 0;
+            background: #333; color: #fff; font-size: 10px; padding: 2px 8px;
         }
 
         /* --- BOOT SCREEN --- */
         #boot-screen {
-            position: fixed; inset: 0; background: #000; z-index: 9999;
-            display: flex; justify-content: center; align-items: center;
+            position: fixed; inset: 0; background: #000; z-index: 100000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
             font-family: 'Space Mono', monospace; color: #FF0033;
         }
+
+        /* --- UTILS --- */
+        .hover-trigger { cursor: none; } /* Targets for custom cursor */
     </style>
 </head>
 <body class="antialiased">
 
     <div class="noise-overlay"></div>
     <div id="cursor"></div>
+    <div id="cursor-dot"></div>
+    <div class="scanline"></div>
 
     <div id="boot-screen">
-        <div class="text-center">
-            <div class="text-xs tracking-[0.5em] mb-4">SYSTEM INITIALIZATION</div>
-            <div class="w-64 h-1 bg-gray-900 mx-auto overflow-hidden">
-                <div id="boot-bar" class="h-full bg-scarlet w-0"></div>
+        <div class="flex flex-col items-center gap-4 w-full max-w-md px-8">
+            <div class="text-xs tracking-[0.5em] text-white">GRAEG.SYS // BOOTING</div>
+            <div class="w-full h-1 bg-gray-900 overflow-hidden relative">
+                <div id="boot-bar" class="absolute top-0 left-0 h-full bg-scarlet w-0"></div>
             </div>
-            <div id="boot-log" class="mt-2 text-[10px] text-gray-600 h-6"></div>
+            <div id="boot-log" class="text-[10px] text-gray-500 w-full text-left h-20 overflow-hidden border-l border-gray-800 pl-2"></div>
         </div>
     </div>
 
-    <div id="canvas-container" class="fixed inset-0 z-0 opacity-30 pointer-events-none"></div>
+    <div id="canvas-container" class="fixed inset-0 z-0 opacity-40 pointer-events-none"></div>
 
-    <header class="relative min-h-screen flex flex-col p-6 z-10">
-        <nav class="flex justify-between items-center mix-blend-difference">
+    <header class="relative min-h-screen flex flex-col p-6 md:p-12 z-10">
+        
+        <nav class="flex justify-between items-center mix-blend-difference mb-20">
             <div class="flex items-center gap-3">
                 <div class="w-2 h-2 bg-scarlet animate-pulse"></div>
                 <span class="font-display font-bold text-xl tracking-widest text-white">GRAEG<span class="text-scarlet">.SYS</span></span>
             </div>
-            <a href="#terminal-breach" class="hover-trigger text-xs font-mono font-bold text-scarlet border border-scarlet px-4 py-2 hover:bg-scarlet hover:text-white transition">
-                [ SKIP_TO_DATA ]
-            </a>
+            
+            <div class="flex items-center gap-8">
+                <div class="hidden md:flex gap-6 text-xs font-mono font-bold text-gray-400">
+                    <a href="https://linkedin.com" class="hover:text-white hover-trigger transition">LINKEDIN</a>
+                    <a href="mailto:contact@graeg.com" class="hover:text-white hover-trigger transition">EMAIL</a>
+                </div>
+                <a href="#terminal-breach" class="hover-trigger text-[10px] font-mono font-bold text-scarlet border border-scarlet px-4 py-2 hover:bg-scarlet hover:text-white transition uppercase tracking-widest">
+                    [ Enter_Terminal ]
+                </a>
+            </div>
         </nav>
 
-        <div class="flex-grow flex flex-col justify-center items-center text-center relative mt-[-50px]">
-            <h1 class="font-display text-6xl md:text-[9rem] font-black leading-none text-white tracking-tighter mix-blend-overlay opacity-80" data-text="VOID_ARCHITECT">
-                VOID<br>ARCHITECT
-            </h1>
-            <div class="mt-8 flex flex-col items-center gap-4">
-                <p class="font-mono text-sm md:text-base text-gray-400 max-w-xl">
-                    Inżynieria systemów XR, druk 3D i technologie orbitalne. <br>
-                    Tworzę fizyczną przyszłość za pomocą cyfrowych narzędzi.
+        <div class="flex-grow grid md:grid-cols-12 gap-12 items-center">
+            
+            <div class="md:col-span-7 relative z-10">
+                <div class="inline-block px-2 py-1 border border-white/10 bg-white/5 text-[9px] font-mono text-scarlet mb-6 tracking-widest">
+                    SYSTEM STATUS: ONLINE
+                </div>
+                <h1 class="font-display text-5xl md:text-8xl font-black leading-[0.9] text-white tracking-tighter mb-8">
+                    VOID <br>
+                    <span class="glitch-text text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500" data-text="ARCHITECT">ARCHITECT</span>
+                </h1>
+                <p class="font-mono text-sm md:text-base text-gray-400 max-w-xl leading-relaxed mb-8">
+                    // Inżynieria to sztuka przetrwania w chaosie.<br>
+                    Łączę surowy <span class="text-white">Druk 3D</span>, immersyjne systemy <span class="text-white">XR</span> oraz technologie <span class="text-white">Space Tech</span>, aby tworzyć narzędzia przyszłości.
                 </p>
-                <div class="flex gap-4 mt-4">
-                    <span class="px-3 py-1 bg-white/5 border border-white/10 text-[10px] font-display tracking-widest text-white rounded">3D PRINTING</span>
-                    <span class="px-3 py-1 bg-white/5 border border-white/10 text-[10px] font-display tracking-widest text-white rounded">SPACE TECH</span>
-                    <span class="px-3 py-1 bg-white/5 border border-white/10 text-[10px] font-display tracking-widest text-white rounded">IMMERSIVE UI</span>
+                <div class="flex flex-wrap gap-4">
+                    <button onclick="document.getElementById('projekty').scrollIntoView({behavior: 'smooth'})" class="hover-trigger bg-white text-black font-bold font-sans text-sm px-8 py-4 uppercase tracking-widest hover:bg-scarlet hover:text-white transition duration-300">
+                        Zobacz Projekty
+                    </button>
+                    <button onclick="toggleARModal()" class="hover-trigger border border-white/20 text-white font-bold font-sans text-sm px-8 py-4 uppercase tracking-widest hover:border-scarlet hover:text-scarlet transition duration-300 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path></svg>
+                        AR Preview
+                    </button>
+                </div>
+            </div>
+
+            <div class="md:col-span-5 relative h-[50vh] md:h-full flex items-center justify-center pointer-events-none">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent z-10"></div>
+                <div class="text-center z-0 opacity-50">
+                    <div class="text-[10px] font-mono text-scarlet tracking-[0.5em] animate-pulse">ORBITAL SCAN IN PROGRESS</div>
                 </div>
             </div>
         </div>
 
-        <div class="grid md:grid-cols-3 gap-6 pb-12">
-            <div class="holo-card p-6 rounded relative overflow-hidden group hover-trigger cursor-none">
-                <div class="absolute top-0 right-0 p-4 opacity-50 font-display text-4xl text-gray-800 font-bold">01</div>
-                <h3 class="font-display text-2xl text-white mb-2 group-hover:text-scarlet transition-colors">ORBITAL HABITAT</h3>
-                <p class="font-mono text-xs text-gray-500 mb-4">Modułowa stacja kosmiczna. Prototyp FDM 1:50.</p>
-                <div class="h-32 w-full bg-black/50 rounded overflow-hidden relative">
-                    <img src="https://images.unsplash.com/photo-1541873676-a18131494184?q=80&w=2518&auto=format&fit=crop" class="object-cover w-full h-full opacity-60 group-hover:scale-110 transition duration-700">
-                </div>
-            </div>
-
-            <div class="holo-card p-6 rounded relative overflow-hidden group hover-trigger cursor-none">
-                <div class="absolute top-0 right-0 p-4 opacity-50 font-display text-4xl text-gray-800 font-bold">02</div>
-                <h3 class="font-display text-2xl text-white mb-2 group-hover:text-scarlet transition-colors">XR GLOVE</h3>
-                <p class="font-mono text-xs text-gray-500 mb-4">Haptyczna rękawica do symulacji napraw w VR.</p>
-                <div class="h-32 w-full bg-black/50 rounded overflow-hidden relative">
-                    <img src="https://images.unsplash.com/photo-1626379953822-baec19c3accd?q=80&w=2070&auto=format&fit=crop" class="object-cover w-full h-full opacity-60 group-hover:scale-110 transition duration-700">
-                </div>
-            </div>
-
-            <div class="holo-card p-6 rounded relative overflow-hidden group hover-trigger cursor-none">
-                <div class="absolute top-0 right-0 p-4 opacity-50 font-display text-4xl text-gray-800 font-bold">03</div>
-                <h3 class="font-display text-2xl text-white mb-2 group-hover:text-scarlet transition-colors">MARS ROVER AI</h3>
-                <p class="font-mono text-xs text-gray-500 mb-4">Autonomiczna nawigacja w trudnym terenie.</p>
-                <div class="h-32 w-full bg-black/50 rounded overflow-hidden relative">
-                    <img src="https://images.unsplash.com/photo-1535295972055-1c762f4483e5?q=80&w=1887&auto=format&fit=crop" class="object-cover w-full h-full opacity-60 group-hover:scale-110 transition duration-700">
-                </div>
-            </div>
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 mix-blend-difference">
+            <div class="w-[1px] h-12 bg-gradient-to-b from-scarlet to-transparent"></div>
+            <span class="text-[9px] font-mono text-gray-500 tracking-widest">SCROLL_FOR_DATA</span>
         </div>
     </header>
 
-    <div id="terminal-breach" class="w-full h-24 bg-scarlet flex items-center justify-center overflow-hidden relative">
-        <div class="absolute inset-0 bg-black opacity-20" style="background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, #000 10px, #000 20px);"></div>
-        <div class="font-mono font-bold text-black tracking-[1em] text-lg md:text-2xl animate-pulse z-10">
-            /// ENTERING DEEP SYSTEMS ///
+    <section id="projekty" class="py-24 px-6 md:px-12 relative z-10 bg-gradient-to-b from-[#050505] to-[#0a0a0a]">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="font-display text-4xl text-white mb-16 flex items-center gap-4">
+                <span class="text-scarlet">01.</span> MISSION LOG
+                <div class="h-[1px] flex-grow bg-white/10"></div>
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-8 md:gap-16">
+                <div class="holo-card group rounded-sm p-1 hover-trigger cursor-none">
+                    <div class="relative aspect-video overflow-hidden bg-black">
+                        <img src="https://images.unsplash.com/photo-1541873676-a18131494184?q=80&w=2518&auto=format&fit=crop" class="object-cover w-full h-full opacity-60 group-hover:opacity-100 group-hover:scale-105 transition duration-700">
+                        <div class="absolute top-4 left-4 bg-black/80 border border-scarlet px-2 py-1 text-[9px] font-mono text-scarlet">
+                            CONFIDENTIAL
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-display text-2xl text-white mb-2 group-hover:text-scarlet transition">ORBITAL HABITAT</h3>
+                        <p class="font-mono text-xs text-gray-400 mb-4 line-clamp-2">Projekt modułowej stacji kosmicznej. Prototypowanie FDM, analiza ergonomii w mikrograwitacji, systemy podtrzymywania życia.</p>
+                        <div class="flex gap-2 mb-4">
+                            <span class="text-[9px] border border-white/10 px-2 py-1 text-gray-500">BLENDER</span>
+                            <span class="text-[9px] border border-white/10 px-2 py-1 text-gray-500">3D PRINT</span>
+                        </div>
+                        <a href="#" class="text-xs font-bold text-white uppercase tracking-widest flex items-center gap-2 group-hover:gap-4 transition-all">
+                            Explore Case Study <span>→</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="holo-card group rounded-sm p-1 hover-trigger cursor-none mt-0 md:mt-20">
+                    <div class="relative aspect-video overflow-hidden bg-black">
+                        <img src="https://images.unsplash.com/photo-1626379953822-baec19c3accd?q=80&w=2070&auto=format&fit=crop" class="object-cover w-full h-full opacity-60 group-hover:opacity-100 group-hover:scale-105 transition duration-700">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-display text-2xl text-white mb-2 group-hover:text-scarlet transition">XR MAINTENANCE GLOVE</h3>
+                        <p class="font-mono text-xs text-gray-400 mb-4 line-clamp-2">Haptyczna rękawica zintegrowana z Unity. Pozwala "poczuć" wirtualne obiekty podczas symulacji naprawczych.</p>
+                        <div class="flex gap-2 mb-4">
+                            <span class="text-[9px] border border-white/10 px-2 py-1 text-gray-500">UNITY</span>
+                            <span class="text-[9px] border border-white/10 px-2 py-1 text-gray-500">ARDUINO</span>
+                            <span class="text-[9px] border border-white/10 px-2 py-1 text-gray-500">C#</span>
+                        </div>
+                        <a href="#" class="text-xs font-bold text-white uppercase tracking-widest flex items-center gap-2 group-hover:gap-4 transition-all">
+                            Explore Case Study <span>→</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
+    </section>
+
+    <div id="terminal-breach" class="w-full h-32 bg-scarlet flex flex-col items-center justify-center overflow-hidden relative z-20">
+        <div class="absolute inset-0 bg-black opacity-30" style="background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, #000 10px, #000 20px);"></div>
+        <div class="font-display font-black text-black tracking-[0.5em] text-xl md:text-3xl animate-pulse z-10 text-center">
+            WARNING: ENTERING DEEP SYSTEMS
+        </div>
+        <div class="font-mono text-xs text-black font-bold mt-2 z-10">AUTHORIZATION CODE: 96-GRAEG-ROOT</div>
     </div>
 
-    <section class="terminal-section min-h-screen relative py-20 px-4 md:px-12 z-20 border-t-4 border-black">
-        <div class="retro-scanline"></div>
+    <section class="terminal-section min-h-screen relative py-20 px-4 md:px-12 z-20 border-t-8 border-black">
+        <div class="flashlight-overlay" id="flashlight"></div>
         
-        <div class="max-w-7xl mx-auto grid md:grid-cols-12 gap-12">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-12 gap-12 relative z-30">
             
-            <div class="md:col-span-3 space-y-4 sticky top-10 h-fit">
+            <div class="md:col-span-3 space-y-6 sticky top-10 h-fit">
                 <h3 class="font-mono text-scarlet text-xs font-bold mb-4 flex items-center gap-2">
                     <span class="w-2 h-2 bg-scarlet rounded-full animate-ping"></span>
                     LIVE TELEMETRY
                 </h3>
 
-                <div class="tech-widget border border-gray-800 bg-black/80 hover-trigger">
+                <div class="geek-widget hover-trigger">
                     <div class="flex justify-between items-center mb-2">
                         <span class="text-white font-bold">ISS TRACKER</span>
-                        <span class="text-[9px] text-gray-600">SAT-25544</span>
+                        <span class="text-[9px] text-gray-500">SAT-25544</span>
                     </div>
-                    <div id="iss-data" class="font-mono text-xs text-scarlet leading-relaxed">
-                        SIGNAL ACQUISITION...
+                    <div id="iss-data" class="text-scarlet font-bold leading-relaxed">
+                        SCANNING...
                     </div>
                 </div>
 
-                <div class="tech-widget border border-gray-800 bg-black/80 hover-trigger">
+                <div class="geek-widget hover-trigger">
                     <div class="text-white font-bold mb-1">MISSION TIMER</div>
-                    <div id="mission-clock" class="font-mono text-xl text-gray-300">00:00:00</div>
+                    <div id="mission-clock" class="text-xl text-gray-300">00:00:00</div>
                     <div class="text-[9px] text-gray-600 mt-1">UTC ZULU TIME</div>
                 </div>
 
-                <div class="tech-widget border border-gray-800 bg-black/80">
+                <div class="geek-widget">
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <span class="block text-xl text-white font-bold">45kg</span>
-                            <span class="text-[9px] uppercase">Filamentu</span>
+                            <span class="block text-xl text-white font-bold">45+</span>
+                            <span class="text-[9px] uppercase">Kg Filamentu</span>
                         </div>
                         <div>
                             <span class="block text-xl text-white font-bold">1.2k</span>
@@ -233,137 +325,258 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="geek-widget">
+                    <div class="flex justify-between mb-1">
+                        <span class="text-[9px] uppercase">O2 Level (Scroll)</span>
+                        <span id="scroll-percent" class="text-[9px] text-scarlet">0%</span>
+                    </div>
+                    <div class="w-full h-1 bg-gray-900">
+                        <div id="scroll-bar" class="h-full bg-scarlet w-0"></div>
+                    </div>
+                </div>
             </div>
 
-            <div class="md:col-span-6 space-y-8">
+            <div class="md:col-span-6 space-y-12">
                 <h3 class="font-mono text-gray-500 text-xs font-bold mb-6">// OPERATIONAL LOGS (DECRYPTED)</h3>
 
-                <div class="border-l border-gray-800 pl-6 pb-8 relative hover-trigger">
-                    <div class="absolute -left-[5px] top-0 w-2 h-2 bg-scarlet"></div>
-                    <div class="font-mono text-xs text-scarlet mb-2">2023 - PRESENT // LEAD ENGINEER</div>
-                    <h4 class="font-display text-2xl text-white mb-2">ADVANCED PROTOTYPING LAB</h4>
-                    <p class="font-mono text-sm text-gray-400 leading-relaxed">
-                        Nadzór nad procesem Rapid Prototyping. Zarządzanie farmą drukarek SLA/FDM. Implementacja środowiska testowego XR dla nowych komponentów. <br>
-                        <span class="text-gray-600">[ Kliknij, aby rozwinąć pełną dokumentację ]</span>
+                <div class="border-l border-gray-800 pl-8 pb-8 relative hover-trigger group">
+                    <div class="absolute -left-[5px] top-0 w-2 h-2 bg-scarlet group-hover:shadow-[0_0_10px_#FF0033] transition"></div>
+                    <div class="font-mono text-xs text-scarlet mb-2 opacity-70">2023 - PRESENT // LEAD ENGINEER</div>
+                    <h4 class="font-display text-3xl text-white mb-4">ADVANCED PROTOTYPING LAB</h4>
+                    <p class="font-mono text-sm text-gray-400 leading-relaxed mb-4">
+                        Nadzór nad procesem Rapid Prototyping. Zarządzanie farmą drukarek SLA/FDM (Prusa, Formlabs). Implementacja środowiska testowego XR dla nowych komponentów mechanicznych przed ich fizycznym wytworzeniem.
                     </p>
+                    <ul class="list-disc list-inside font-mono text-xs text-gray-500 space-y-1 ml-2">
+                        <li>Zredukowanie odpadów materiałowych o 40% dzięki symulacjom VR.</li>
+                        <li>Opracowanie hybrydowego potoku pracy: Fusion 360 -> Unity -> Druk.</li>
+                    </ul>
                 </div>
 
-                <div class="border-l border-gray-800 pl-6 pb-8 relative hover-trigger">
-                    <div class="absolute -left-[5px] top-0 w-2 h-2 bg-gray-600"></div>
-                    <div class="font-mono text-xs text-scarlet mb-2">2021 - 2023 // JUNIOR DEV</div>
-                    <h4 class="font-display text-2xl text-white mb-2">AI NAVIGATION SYSTEMS</h4>
-                    <p class="font-mono text-sm text-gray-400 leading-relaxed">
-                        Opracowanie algorytmów unikania przeszkód dla łazików autonomicznych. Praca w środowisku Python + ROS. <br>
-                        <span class="text-gray-600">[ DATA_CORRUPTED - PARTIAL RECOVERY ]</span>
+                <div class="border-l border-gray-800 pl-8 pb-8 relative hover-trigger group">
+                    <div class="absolute -left-[5px] top-0 w-2 h-2 bg-gray-600 group-hover:bg-scarlet transition"></div>
+                    <div class="font-mono text-xs text-gray-500 mb-2">2021 - 2023 // JUNIOR DEV</div>
+                    <h4 class="font-display text-3xl text-white mb-4">AI NAVIGATION SYSTEMS</h4>
+                    <p class="font-mono text-sm text-gray-400 leading-relaxed mb-4">
+                        Opracowanie algorytmów unikania przeszkód dla mini-łazików autonomicznych. Praca w środowisku Python + ROS 2 na platformie Raspberry Pi.
                     </p>
+                    <div class="font-mono text-xs text-scarlet bg-scarlet/10 inline-block px-2 py-1">
+                        [ DATA_CORRUPTED - PARTIAL RECOVERY ]
+                    </div>
                 </div>
 
-                <div class="border-l border-gray-800 pl-6 relative opacity-50 hover:opacity-100 transition">
+                <div class="border-l border-gray-800 pl-8 relative opacity-40 hover:opacity-100 transition duration-500 cursor-help hover-trigger" title="Top Secret">
                     <div class="absolute -left-[5px] top-0 w-2 h-2 bg-gray-800"></div>
-                    <div class="font-mono text-xs text-gray-500 mb-2">CLASSIFIED ERA</div>
-                    <h4 class="font-display text-2xl text-white mb-2 bg-white/10 inline-block px-1">████████████</h4>
-                    <p class="font-mono text-sm text-gray-500 mt-2">
+                    <div class="font-mono text-xs text-gray-600 mb-2">CLASSIFIED ERA</div>
+                    <h4 class="font-display text-3xl text-white mb-2 bg-white/10 inline-block px-1 select-none">████████████</h4>
+                    <p class="font-mono text-sm text-gray-600 mt-2">
                         // ACCESS DENIED. Wymagany poziom uprawnień: 5.<br>
-                        // Skontaktuj się z administratorem.
+                        // Skontaktuj się z administratorem sieci.
                     </p>
                 </div>
             </div>
 
-            <div class="md:col-span-3">
+            <div class="md:col-span-3 space-y-8">
                 <h3 class="font-mono text-gray-500 text-xs font-bold mb-6">// ARSENAL.JSON</h3>
                 
-                <div class="bg-black border border-gray-800 p-6 font-mono text-xs text-green-500 rounded relative overflow-hidden group hover-trigger">
-                    <div class="absolute inset-0 bg-green-500/5 opacity-0 group-hover:opacity-100 transition"></div>
-                    <pre class="whitespace-pre-wrap leading-6">
+                <div class="code-block hover-trigger">
+<pre>
 {
-  "hardware": [
+  <span class="text-white">"hardware"</span>: [
     "Prusa MK4",
     "Formlabs 3+",
     "Oculus Quest 3",
     "Raspberry Pi 5"
   ],
-  "software": [
+  <span class="text-white">"software"</span>: [
     "Fusion 360",
     "Blender",
     "Unity 3D",
-    "ROS 2"
+    "ROS 2",
+    "Figma"
   ],
-  "code": [
+  <span class="text-white">"code"</span>: [
     "Python",
     "C++",
     "C#",
-    "JavaScript"
+    "Three.js",
+    "Tailwind"
   ]
 }
-                    </pre>
+</pre>
                 </div>
 
-                <div class="mt-8 border-t border-gray-800 pt-6">
-                    <h4 class="text-white font-bold mb-2 font-display">DOKUMENTY</h4>
-                    <a href="#" class="block text-scarlet text-xs font-mono hover:underline mb-2">> POBIERZ CV.PDF</a>
-                    <a href="#" class="block text-scarlet text-xs font-mono hover:underline mb-2">> CERTYFIKATY BEZPIECZEŃSTWA</a>
-                    <a href="#" class="block text-scarlet text-xs font-mono hover:underline">> KLUCZ PGP</a>
+                <div class="border-t border-gray-800 pt-6">
+                    <h4 class="text-white font-bold mb-4 font-display">ENCRYPTED CHANNELS</h4>
+                    <div class="space-y-3 font-mono text-xs">
+                        <a href="https://discord.gg/PdmeSzZvB" class="block text-gray-500 hover:text-scarlet hover-trigger transition flex justify-between">
+                            <span>> DISCORD SERVER</span>
+                            <span>[ JOIN ]</span>
+                        </a>
+                        <a href="https://github.com/96Graeg" class="block text-gray-500 hover:text-scarlet hover-trigger transition flex justify-between">
+                            <span>> GITHUB REPO</span>
+                            <span>[ VIEW ]</span>
+                        </a>
+                        <a href="https://reddit.com" class="block text-gray-500 hover:text-scarlet hover-trigger transition flex justify-between">
+                            <span>> REDDIT THREADS</span>
+                            <span>[ READ ]</span>
+                        </a>
+                        <a href="#" class="block text-gray-500 hover:text-scarlet hover-trigger transition flex justify-between">
+                            <span>> PGP KEY</span>
+                            <span>[ DOWNLOAD ]</span>
+                        </a>
+                    </div>
                 </div>
             </div>
 
         </div>
     </section>
 
-    <footer class="bg-black border-t border-gray-900 py-12 text-center font-mono text-[10px] text-gray-600">
+    <footer class="bg-black border-t border-gray-900 py-12 text-center font-mono text-[10px] text-gray-600 relative z-20">
         <div class="mb-4">
             <span class="text-scarlet">SYSTEM STATUS:</span> STABLE // UPTIME: 99.9%
         </div>
-        <p>&copy; 2026 GRZEGORZ WOJTALCZYK. ALL RIGHTS RESERVED.</p>
+        <p>&copy; <span id="footer-year">2024</span> GRZEGORZ WOJTALCZYK. ALL RIGHTS RESERVED.</p>
+        <div class="mt-8 opacity-20 hover:opacity-100 transition duration-500">
+            <img src="logo2.png" class="h-8 mx-auto grayscale invert">
+        </div>
     </footer>
+
+    <div id="ar-modal" class="hidden fixed inset-0 z-[20000] bg-black/95 flex flex-col items-center justify-center p-4">
+        <button onclick="toggleARModal()" class="absolute top-6 right-6 z-[20010] text-white hover:text-scarlet transition p-2 border border-white/20 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+        <h2 class="text-white text-xl font-display tracking-widest mb-4 absolute top-6 left-6 z-[20010]">AR VIEWER // V.1.0</h2>
+        <model-viewer 
+            src="https://modelviewer.dev/shared-assets/models/Astronaut.glb" 
+            ar 
+            ar-modes="webxr scene-viewer quick-look" 
+            camera-controls 
+            auto-rotate 
+            class="w-full h-full"
+            ios-src="https://modelviewer.dev/shared-assets/models/Astronaut.usdz">
+            <button slot="ar-button" class="absolute bottom-12 left-1/2 -translate-x-1/2 bg-scarlet text-white px-8 py-3 rounded-full font-bold uppercase tracking-widest shadow-[0_0_20px_#FF0033] z-50 animate-pulse border border-white/20">
+                ACTIVATE AR (MOBILE)
+            </button>
+        </model-viewer>
+    </div>
 
     <script>
         // --- 1. BOOT LOADER ---
         const bootBar = document.getElementById('boot-bar');
         const bootScreen = document.getElementById('boot-screen');
         const bootLog = document.getElementById('boot-log');
-        const logs = ["KERNEL_INIT", "LOADING_ASSETS", "CONNECTING_SAT", "DECRYPTING_UI", "READY"];
+        const logs = [
+            "INITIALIZING KERNEL...", 
+            "LOADING ASSETS...", 
+            "CONNECTING SATELLITE UPLINK...", 
+            "DECRYPTING UI...", 
+            "RENDERING 3D ENVIRONMENT...",
+            "SYSTEM READY."
+        ];
         
         let i = 0;
         const interval = setInterval(() => {
-            if(i < logs.length) bootLog.innerText = "> " + logs[i++];
-        }, 300);
+            if(i < logs.length) {
+                bootLog.innerHTML += `<div>> ${logs[i]}</div>`;
+                bootLog.scrollTop = bootLog.scrollHeight;
+                i++;
+            }
+        }, 250);
 
         gsap.to(bootBar, { width: "100%", duration: 1.8, ease: "power2.inOut", onComplete: () => {
             clearInterval(interval);
             gsap.to(bootScreen, { y: "-100%", duration: 0.8, ease: "expo.inOut", delay: 0.2 });
         }});
 
-        // --- 2. CUSTOM CURSOR ---
+        // --- 2. CUSTOM CURSOR & SOUND ---
         const cursor = document.getElementById('cursor');
-        const triggers = document.querySelectorAll('.hover-trigger');
-        
+        const cursorDot = document.getElementById('cursor-dot');
+        const triggers = document.querySelectorAll('.hover-trigger, a, button');
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
         document.addEventListener('mousemove', e => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
+            cursorDot.style.left = e.clientX + 'px';
+            cursorDot.style.top = e.clientY + 'px';
+            // Smooth follow for outer ring
+            gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.15, ease: "power2.out" });
+            
+            // Flashlight effect in terminal
+            const flashlight = document.getElementById('flashlight');
+            if(flashlight) {
+                flashlight.style.setProperty('--x', e.clientX + 'px');
+                flashlight.style.setProperty('--y', e.clientY + 'px');
+            }
         });
+
+        function playClickSound() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.1);
+        }
 
         triggers.forEach(t => {
-            t.addEventListener('mouseenter', () => cursor.classList.add('active'));
-            t.addEventListener('mouseleave', () => cursor.classList.remove('active'));
+            t.addEventListener('mouseenter', () => { 
+                cursor.classList.add('hovered'); 
+                playClickSound(); // Sound on hover
+            });
+            t.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+            t.addEventListener('click', playClickSound);
         });
 
-        // --- 3. THREE.JS GLOBE (Background) ---
+        // --- 3. THREE.JS BACKGROUND (GLOBE) ---
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
 
+        // Globe
         const geometry = new THREE.IcosahedronGeometry(4, 2);
-        const material = new THREE.MeshBasicMaterial({ color: 0x222222, wireframe: true, transparent: true, opacity: 0.2 });
+        const material = new THREE.MeshBasicMaterial({ color: 0x222222, wireframe: true, transparent: true, opacity: 0.15 });
         const globe = new THREE.Mesh(geometry, material);
         scene.add(globe);
 
+        // Particles
+        const partGeo = new THREE.BufferGeometry();
+        const partCount = 500;
+        const posArray = new Float32Array(partCount * 3);
+        for(let j=0; j<partCount*3; j++) {
+            posArray[j] = (Math.random() - 0.5) * 15;
+        }
+        partGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const partMat = new THREE.PointsMaterial({ size: 0.02, color: 0xFF0033, transparent: true, opacity: 0.5 });
+        const particles = new THREE.Points(partGeo, partMat);
+        scene.add(particles);
+
         camera.position.z = 8;
+
+        let mouseX = 0, mouseY = 0;
+        document.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+            mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+        });
+
         function animate() {
             requestAnimationFrame(animate);
             globe.rotation.y += 0.001;
-            globe.rotation.x += 0.0005;
+            particles.rotation.y -= 0.0005;
+            
+            // Mouse Parallax
+            globe.rotation.x += (mouseY * 0.05 - globe.rotation.x) * 0.05;
+            globe.rotation.y += (mouseX * 0.05 - globe.rotation.y) * 0.05;
+
             renderer.render(scene, camera);
         }
         animate();
@@ -374,24 +587,53 @@
             camera.updateProjectionMatrix();
         });
 
-        // --- 4. GEEK DATA (ISS & CLOCK) ---
+        // --- 4. GEEK DATA WIDGETS ---
+        // Clock
         function updateClock() {
             const now = new Date();
             document.getElementById('mission-clock').innerText = now.toISOString().split('T')[1].split('.')[0] + " Z";
+            document.getElementById('footer-year').innerText = now.getFullYear();
         }
         setInterval(updateClock, 1000); updateClock();
 
+        // ISS Tracker API
         async function updateISS() {
             const el = document.getElementById('iss-data');
             try {
                 const res = await fetch('https://api.wheretheiss.at/v1/satellites/25544');
                 const data = await res.json();
-                el.innerHTML = `LAT: ${data.latitude.toFixed(4)}<br>LON: ${data.longitude.toFixed(4)}<br>ALT: ${data.altitude.toFixed(1)} km`;
+                el.innerHTML = `LAT: <span class="text-white">${data.latitude.toFixed(2)}°</span><br>LON: <span class="text-white">${data.longitude.toFixed(2)}°</span><br>ALT: ${data.altitude.toFixed(0)} km`;
             } catch {
                 el.innerText = "SIGNAL LOSS...";
             }
         }
         setInterval(updateISS, 5000); updateISS();
+
+        // Scroll Progress
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('scroll-bar').style.width = scrolled + "%";
+            document.getElementById('scroll-percent').innerText = Math.round(scrolled) + "%";
+        });
+
+        // --- 5. SCROLL TRIGGER (TERMINAL MODE) ---
+        gsap.registerPlugin(ScrollTrigger);
+        
+        ScrollTrigger.create({
+            trigger: ".terminal-section",
+            start: "top center",
+            onEnter: () => document.body.classList.add('terminal-active'),
+            onLeaveBack: () => document.body.classList.remove('terminal-active')
+        });
+
+        // --- 6. AR MODAL ---
+        function toggleARModal() {
+            const modal = document.getElementById('ar-modal');
+            modal.classList.toggle('hidden');
+            modal.classList.toggle('flex');
+        }
 
     </script>
 </body>
