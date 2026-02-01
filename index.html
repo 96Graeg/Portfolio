@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="pl" class="bg-[#050505] overflow-x-hidden scroll-smooth">
+<html lang="pl" class="bg-[#020202] overflow-x-hidden scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GRAEG // HYBRID PORTFOLIO SYSTEM</title>
-    <meta name="description" content="Grzegorz Wojtalczyk - Space Tech Engineer, XR Developer, 3D Print Specialist.">
+    <title>GRAEG // HYBRID SYSTEM v3.0</title>
+    <meta name="description" content="Grzegorz Wojtalczyk - Space Tech, XR & Additive Manufacturing.">
     <link rel="icon" type="image/png" href="logo2.png">
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -28,266 +28,270 @@
                     colors: { 
                         scarlet: '#FF0033', 
                         void: '#020202',
-                        terminal: '#0f0f0f',
-                        'glass-border': 'rgba(255, 255, 255, 0.1)',
-                        'glass-bg': 'rgba(255, 255, 255, 0.03)'
+                        terminal: '#0a0a0a',
+                        glass: 'rgba(255, 255, 255, 0.05)'
                     },
                     backgroundImage: {
-                        'grid': "linear-gradient(to right, #1a1a1a 1px, transparent 1px), linear-gradient(to bottom, #1a1a1a 1px, transparent 1px)",
-                        'scanline': "linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2))"
+                        'grid': "linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)"
                     },
-                    letterSpacing: { 'widest': '0.25em' },
-                    cursor: { 'none': 'none' }
+                    animation: {
+                        'spin-slow': 'spin 20s linear infinite',
+                    }
                 }
             }
         }
     </script>
 
     <style>
-        /* CORE RESET */
-        body { cursor: none; background-color: #050505; color: #e5e5e5; overflow-x: hidden; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #050505; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        /* --- CORE SYSTEM STYLES --- */
+        body { 
+            cursor: none; /* Ukrywamy systemowy kursor na rzecz Custom HUD */
+            background-color: #020202;
+            color: #e5e5e5;
+        }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
         ::-webkit-scrollbar-thumb:hover { background: #FF0033; }
 
-        /* VISUAL FX: NOISE */
+        /* --- VISUAL FX LAYER --- */
         .noise-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
-            pointer-events: none; z-index: 999; mix-blend-mode: overlay;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: 900; mix-blend-mode: overlay;
         }
 
-        /* VISUAL FX: FLASHLIGHT (Terminal Section) */
-        .flashlight-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10;
-            background: radial-gradient(circle 300px at var(--x, 50%) var(--y, 50%), transparent 0%, rgba(0,0,0,0.8) 100%);
-            mix-blend-mode: multiply; opacity: 0; transition: opacity 0.5s;
+        .scanlines {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
+            background-size: 100% 4px; z-index: 901; pointer-events: none; opacity: 0.2;
         }
-        .terminal-active .flashlight-overlay { opacity: 1; }
 
-        /* CUSTOM CURSOR */
+        /* --- CUSTOM CURSOR (HUD) --- */
         #cursor {
-            position: fixed; top: 0; left: 0; width: 24px; height: 24px;
-            border: 1px solid #FF0033; border-radius: 50%;
-            transform: translate(-50%, -50%); pointer-events: none; z-index: 10000;
-            transition: transform 0.1s, width 0.3s, height 0.3s, background 0.3s;
+            position: fixed; top: 0; left: 0; width: 30px; height: 30px;
+            border: 1px solid #FF0033; transform: translate(-50%, -50%) rotate(45deg);
+            pointer-events: none; z-index: 10000; transition: all 0.1s ease-out;
             mix-blend-mode: difference;
         }
         #cursor-dot {
             position: fixed; top: 0; left: 0; width: 4px; height: 4px; background: #FF0033;
-            border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; z-index: 10001;
+            transform: translate(-50%, -50%); border-radius: 50%; pointer-events: none; z-index: 10001;
         }
-        body:hover #cursor.hovered { width: 60px; height: 60px; background: rgba(255, 0, 51, 0.1); border-color: transparent; }
-
-        /* --- SECTION 1: COMMANDER (Visual) --- */
-        .holo-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            position: relative; overflow: hidden;
-        }
-        .holo-card::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transform: skewX(-25deg); transition: 0.5s; pointer-events: none;
-        }
-        .holo-card:hover::before { left: 150%; transition: 0.7s; }
-        .holo-card:hover { border-color: #FF0033; transform: translateY(-5px); box-shadow: 0 10px 30px -10px rgba(255, 0, 51, 0.3); }
-
-        .glitch-text { position: relative; display: inline-block; }
-        .glitch-text::before, .glitch-text::after {
-            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: #050505; opacity: 0.8;
-        }
-        .glitch-text::before { color: #0ff; clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%); transform: translate(-2px, 0); animation: glitch-anim 3s infinite linear alternate-reverse; }
-        .glitch-text::after { color: #f0f; clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%); transform: translate(2px, 0); animation: glitch-anim 2.5s infinite linear alternate-reverse; }
-        @keyframes glitch-anim {
-            0% { transform: translate(0) } 20% { transform: translate(-2px, 2px) } 40% { transform: translate(-2px, -2px) } 60% { transform: translate(2px, 2px) } 80% { transform: translate(2px, -2px) } 100% { transform: translate(0) }
+        body:hover #cursor.active {
+            width: 60px; height: 60px; background: rgba(255, 0, 51, 0.1);
+            transform: translate(-50%, -50%) rotate(0deg); border-radius: 50%;
         }
 
-        /* --- SECTION 2: TERMINAL (Geek) --- */
-        .terminal-section {
-            background-color: #0a0a0a;
-            background-image: linear-gradient(rgba(255, 0, 51, 0.03) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(255, 0, 51, 0.03) 1px, transparent 1px);
-            background-size: 30px 30px;
+        /* --- SECTION 1: COMMANDER MODE (Visual) --- */
+        .holo-text {
+            color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,0.3);
             position: relative;
         }
-        .scanline {
-            width: 100%; height: 4px; background: rgba(255, 0, 51, 0.1);
-            position: fixed; top: 0; left: 0; z-index: 50; animation: scan 6s linear infinite; pointer-events: none; opacity: 0;
+        .holo-text::before {
+            content: attr(data-text); position: absolute; left: 0; top: 0; width: 0; height: 100%;
+            color: #fff; overflow: hidden; transition: width 1s ease; white-space: nowrap; border-right: 2px solid #FF0033;
         }
-        .terminal-active .scanline { opacity: 1; }
-        @keyframes scan { 0% { top: 0%; } 100% { top: 100%; } }
+        .holo-text.animate::before { width: 100%; }
 
-        /* Geek Widgets */
-        .geek-widget {
-            background: rgba(0, 0, 0, 0.8); border: 1px solid #333;
-            border-left: 3px solid #FF0033; padding: 12px;
-            font-family: 'Space Mono', monospace; font-size: 11px; color: #888;
-            margin-bottom: 12px; transition: border-color 0.3s;
+        .project-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px); transition: all 0.4s ease;
+            position: relative; overflow: hidden;
         }
-        .geek-widget:hover { border-color: #FF0033; color: #ddd; }
+        .project-card:hover {
+            border-color: #FF0033; transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 10px 40px -10px rgba(255, 0, 51, 0.2);
+        }
+        .project-card::after {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            transition: 0.5s;
+        }
+        .project-card:hover::after { left: 100%; }
+
+        /* --- SECTION 2: TERMINAL MODE (Geek) --- */
+        .terminal-bg {
+            background-color: #050505;
+            background-image: 
+                linear-gradient(rgba(50, 50, 50, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(50, 50, 50, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
         
-        .code-block {
-            background: #000; border: 1px solid #333; padding: 20px;
-            font-family: 'Space Mono', monospace; font-size: 12px; color: #0f0;
-            overflow-x: auto; position: relative;
+        .flashlight {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5;
+            background: radial-gradient(circle 400px at var(--x, 50%) var(--y, 50%), transparent 0%, rgba(0,0,0,0.95) 100%);
+            mix-blend-mode: multiply;
         }
-        .code-block::before {
-            content: 'ARSENAL.JSON'; position: absolute; top: 0; right: 0;
-            background: #333; color: #fff; font-size: 10px; padding: 2px 8px;
+
+        .terminal-log {
+            font-family: 'Space Mono', monospace; border-left: 2px solid #333;
+            padding-left: 20px; position: relative; transition: all 0.3s;
         }
+        .terminal-log:hover { border-color: #FF0033; }
+        .terminal-log::before {
+            content: ''; position: absolute; left: -6px; top: 0; width: 10px; height: 10px;
+            background: #000; border: 2px solid #333; transition: 0.3s;
+        }
+        .terminal-log:hover::before { background: #FF0033; border-color: #FF0033; box-shadow: 0 0 10px #FF0033; }
+
+        /* --- WIDGETS & TOOLS --- */
+        .geek-widget {
+            background: #0a0a0a; border: 1px solid #333; padding: 15px; margin-bottom: 10px;
+            font-family: 'Space Mono', monospace; font-size: 11px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: 0.3s;
+        }
+        .geek-widget:hover { border-color: #FF0033; color: #fff; }
+
+        .social-icon {
+            transition: all 0.3s; fill: #666;
+        }
+        .social-link:hover .social-icon { fill: #FF0033; transform: scale(1.2); filter: drop-shadow(0 0 5px #FF0033); }
 
         /* --- BOOT SCREEN --- */
-        #boot-screen {
-            position: fixed; inset: 0; background: #000; z-index: 100000;
+        #boot-layer {
+            position: fixed; inset: 0; bg: #000; z-index: 99999; background: #000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             font-family: 'Space Mono', monospace; color: #FF0033;
         }
-
-        /* --- UTILS --- */
-        .hover-trigger { cursor: none; } /* Targets for custom cursor */
     </style>
 </head>
-<body class="antialiased">
+<body class="antialiased selection:bg-scarlet selection:text-white">
 
     <div class="noise-overlay"></div>
+    <div class="scanlines"></div>
     <div id="cursor"></div>
     <div id="cursor-dot"></div>
-    <div class="scanline"></div>
 
-    <div id="boot-screen">
-        <div class="flex flex-col items-center gap-4 w-full max-w-md px-8">
-            <div class="text-xs tracking-[0.5em] text-white">GRAEG.SYS // BOOTING</div>
-            <div class="w-full h-1 bg-gray-900 overflow-hidden relative">
-                <div id="boot-bar" class="absolute top-0 left-0 h-full bg-scarlet w-0"></div>
+    <div id="boot-layer">
+        <div class="text-center w-64">
+            <div class="flex justify-between text-[10px] mb-2 text-gray-500">
+                <span>BIOS: v3.0</span>
+                <span>MEM: 64TB</span>
             </div>
-            <div id="boot-log" class="text-[10px] text-gray-500 w-full text-left h-20 overflow-hidden border-l border-gray-800 pl-2"></div>
+            <div class="w-full h-1 bg-gray-900 overflow-hidden mb-4">
+                <div id="boot-bar" class="h-full bg-scarlet w-0"></div>
+            </div>
+            <div id="boot-text" class="text-xs tracking-widest animate-pulse">INITIALIZING...</div>
         </div>
     </div>
 
-    <div id="canvas-container" class="fixed inset-0 z-0 opacity-40 pointer-events-none"></div>
+    <div id="canvas-container" class="fixed inset-0 z-0 opacity-40 pointer-events-none transition-opacity duration-1000"></div>
 
     <header class="relative min-h-screen flex flex-col p-6 md:p-12 z-10">
         
-        <nav class="flex justify-between items-center mix-blend-difference mb-20">
-            <div class="flex items-center gap-3">
-                <div class="w-2 h-2 bg-scarlet animate-pulse"></div>
-                <span class="font-display font-bold text-xl tracking-widest text-white">GRAEG<span class="text-scarlet">.SYS</span></span>
-            </div>
-            
-            <div class="flex items-center gap-8">
-                <div class="hidden md:flex gap-6 text-xs font-mono font-bold text-gray-400">
-                    <a href="https://linkedin.com" class="hover:text-white hover-trigger transition">LINKEDIN</a>
-                    <a href="mailto:contact@graeg.com" class="hover:text-white hover-trigger transition">EMAIL</a>
+        <nav class="flex justify-between items-start mix-blend-difference z-50">
+            <div class="flex flex-col">
+                <div class="flex items-center gap-3">
+                    <div class="w-3 h-3 bg-scarlet animate-pulse"></div>
+                    <span class="font-display font-bold text-2xl tracking-widest text-white">GRAEG<span class="text-scarlet">.SYS</span></span>
                 </div>
-                <a href="#terminal-breach" class="hover-trigger text-[10px] font-mono font-bold text-scarlet border border-scarlet px-4 py-2 hover:bg-scarlet hover:text-white transition uppercase tracking-widest">
-                    [ Enter_Terminal ]
+                <span class="text-[9px] font-mono text-gray-500 tracking-[0.3em] mt-1">ENGINEERING PORTFOLIO</span>
+            </div>
+
+            <div class="flex flex-col items-end gap-2">
+                <div class="flex gap-6 text-xs font-mono font-bold text-gray-400 mb-2">
+                    <a href="https://linkedin.com/in/grzegorz-wojtalczyk-44845b280/" target="_blank" class="hover:text-white hover-trigger transition">[ LINKEDIN_PROFILE ]</a>
+                    <a href="mailto:kontakt@example.com" class="hover:text-white hover-trigger transition">[ DIRECT_EMAIL ]</a>
+                    <a href="#" class="hover:text-white hover-trigger transition text-scarlet">[ DOWNLOAD_CV.PDF ]</a>
+                </div>
+                <div class="h-[1px] w-full bg-white/20"></div>
+                <a href="#terminal-breach" class="text-[9px] font-mono text-gray-600 hover:text-scarlet transition hover-trigger">
+                    ▼ SKIP TO TERMINAL DATA
                 </a>
             </div>
         </nav>
 
-        <div class="flex-grow grid md:grid-cols-12 gap-12 items-center">
-            
-            <div class="md:col-span-7 relative z-10">
-                <div class="inline-block px-2 py-1 border border-white/10 bg-white/5 text-[9px] font-mono text-scarlet mb-6 tracking-widest">
-                    SYSTEM STATUS: ONLINE
+        <div class="flex-grow flex items-center justify-center relative">
+            <div class="text-center z-10">
+                <div class="mb-4 inline-flex items-center gap-2 border border-white/10 bg-white/5 px-3 py-1 rounded-full backdrop-blur-md">
+                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                    <span class="text-[10px] font-mono tracking-widest text-gray-300">AVAILABLE FOR COMMISSION</span>
                 </div>
-                <h1 class="font-display text-5xl md:text-8xl font-black leading-[0.9] text-white tracking-tighter mb-8">
-                    VOID <br>
-                    <span class="glitch-text text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500" data-text="ARCHITECT">ARCHITECT</span>
+                
+                <h1 class="font-display text-5xl md:text-9xl font-black text-white leading-none tracking-tighter mb-6 relative">
+                    <span class="holo-text" data-text="VOID">VOID</span><br>
+                    <span class="holo-text" data-text="ARCHITECT">ARCHITECT</span>
                 </h1>
-                <p class="font-mono text-sm md:text-base text-gray-400 max-w-xl leading-relaxed mb-8">
-                    // Inżynieria to sztuka przetrwania w chaosie.<br>
-                    Łączę surowy <span class="text-white">Druk 3D</span>, immersyjne systemy <span class="text-white">XR</span> oraz technologie <span class="text-white">Space Tech</span>, aby tworzyć narzędzia przyszłości.
-                </p>
-                <div class="flex flex-wrap gap-4">
-                    <button onclick="document.getElementById('projekty').scrollIntoView({behavior: 'smooth'})" class="hover-trigger bg-white text-black font-bold font-sans text-sm px-8 py-4 uppercase tracking-widest hover:bg-scarlet hover:text-white transition duration-300">
-                        Zobacz Projekty
-                    </button>
-                    <button onclick="toggleARModal()" class="hover-trigger border border-white/20 text-white font-bold font-sans text-sm px-8 py-4 uppercase tracking-widest hover:border-scarlet hover:text-scarlet transition duration-300 flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path></svg>
-                        AR Preview
-                    </button>
-                </div>
-            </div>
 
-            <div class="md:col-span-5 relative h-[50vh] md:h-full flex items-center justify-center pointer-events-none">
-                <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent z-10"></div>
-                <div class="text-center z-0 opacity-50">
-                    <div class="text-[10px] font-mono text-scarlet tracking-[0.5em] animate-pulse">ORBITAL SCAN IN PROGRESS</div>
+                <p class="font-mono text-sm md:text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed mb-10">
+                    Eksploracja granicy między kodem a materią. <br>
+                    <strong class="text-white">3D Printing</strong> // <strong class="text-white">XR Systems</strong> // <strong class="text-white">Space Tech</strong>
+                </p>
+
+                <div class="flex justify-center gap-6">
+                    <button onclick="document.getElementById('projekty').scrollIntoView({behavior: 'smooth'})" class="hover-trigger bg-white text-black font-display font-bold text-sm px-8 py-4 tracking-widest hover:bg-scarlet hover:text-white transition duration-300 clip-path-polygon">
+                        ZOBACZ PROJEKTY
+                    </button>
+                    <button onclick="toggleARModal()" class="hover-trigger border border-white/20 text-white font-display font-bold text-sm px-8 py-4 tracking-widest hover:border-scarlet hover:text-scarlet transition duration-300 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path></svg>
+                        AR VIEW
+                    </button>
                 </div>
             </div>
         </div>
 
-        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 mix-blend-difference">
-            <div class="w-[1px] h-12 bg-gradient-to-b from-scarlet to-transparent"></div>
-            <span class="text-[9px] font-mono text-gray-500 tracking-widest">SCROLL_FOR_DATA</span>
+        <div class="absolute bottom-10 left-6 text-[10px] font-mono text-gray-600 writing-vertical hidden md:block">
+            SCROLL_TO_INITIALIZE_BREACH
         </div>
     </header>
 
-    <section id="projekty" class="py-24 px-6 md:px-12 relative z-10 bg-gradient-to-b from-[#050505] to-[#0a0a0a]">
+    <section id="projekty" class="py-24 px-6 md:px-12 relative z-10 bg-gradient-to-b from-[#020202] to-[#0a0a0a]">
         <div class="max-w-7xl mx-auto">
-            <h2 class="font-display text-4xl text-white mb-16 flex items-center gap-4">
-                <span class="text-scarlet">01.</span> MISSION LOG
-                <div class="h-[1px] flex-grow bg-white/10"></div>
+            <h2 class="font-display text-4xl text-white mb-16 border-b border-white/10 pb-4 flex justify-between items-end">
+                <span>WYBRANE MISJE</span>
+                <span class="text-xs font-mono text-scarlet">SECURE_ACCESS</span>
             </h2>
 
-            <div class="grid md:grid-cols-2 gap-8 md:gap-16">
-                <div class="holo-card group rounded-sm p-1 hover-trigger cursor-none">
-                    <div class="relative aspect-video overflow-hidden bg-black">
-                        <img src="https://images.unsplash.com/photo-1541873676-a18131494184?q=80&w=2518&auto=format&fit=crop" class="object-cover w-full h-full opacity-60 group-hover:opacity-100 group-hover:scale-105 transition duration-700">
-                        <div class="absolute top-4 left-4 bg-black/80 border border-scarlet px-2 py-1 text-[9px] font-mono text-scarlet">
-                            CONFIDENTIAL
-                        </div>
+            <div class="grid md:grid-cols-2 gap-12">
+                <div class="project-card group rounded p-2 hover-trigger" onclick="openStory('3d')">
+                    <div class="relative aspect-video bg-black overflow-hidden mb-4">
+                        <img src="https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition duration-700">
+                        <div class="absolute top-2 right-2 bg-scarlet text-white text-[9px] font-bold px-2 py-1 font-mono">FDM / SLA</div>
                     </div>
-                    <div class="p-6">
+                    <div class="px-4 pb-4">
                         <h3 class="font-display text-2xl text-white mb-2 group-hover:text-scarlet transition">ORBITAL HABITAT</h3>
-                        <p class="font-mono text-xs text-gray-400 mb-4 line-clamp-2">Projekt modułowej stacji kosmicznej. Prototypowanie FDM, analiza ergonomii w mikrograwitacji, systemy podtrzymywania życia.</p>
-                        <div class="flex gap-2 mb-4">
-                            <span class="text-[9px] border border-white/10 px-2 py-1 text-gray-500">BLENDER</span>
-                            <span class="text-[9px] border border-white/10 px-2 py-1 text-gray-500">3D PRINT</span>
+                        <p class="font-mono text-xs text-gray-400 mb-4">Modularny system podtrzymywania życia. Prototypowanie w skali 1:50.</p>
+                        <div class="flex items-center gap-2 text-[10px] font-mono text-gray-500 uppercase">
+                            <span>>> Fusion 360</span>
+                            <span>>> Prusa Slicer</span>
                         </div>
-                        <a href="#" class="text-xs font-bold text-white uppercase tracking-widest flex items-center gap-2 group-hover:gap-4 transition-all">
-                            Explore Case Study <span>→</span>
-                        </a>
                     </div>
                 </div>
 
-                <div class="holo-card group rounded-sm p-1 hover-trigger cursor-none mt-0 md:mt-20">
-                    <div class="relative aspect-video overflow-hidden bg-black">
-                        <img src="https://images.unsplash.com/photo-1626379953822-baec19c3accd?q=80&w=2070&auto=format&fit=crop" class="object-cover w-full h-full opacity-60 group-hover:opacity-100 group-hover:scale-105 transition duration-700">
+                <div class="project-card group rounded p-2 hover-trigger mt-0 md:mt-20" onclick="openStory('xr')">
+                    <div class="relative aspect-video bg-black overflow-hidden mb-4">
+                        <img src="https://images.unsplash.com/photo-1626379953822-baec19c3accd?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition duration-700">
+                        <div class="absolute top-2 right-2 bg-blue-600 text-white text-[9px] font-bold px-2 py-1 font-mono">XR / VR</div>
                     </div>
-                    <div class="p-6">
-                        <h3 class="font-display text-2xl text-white mb-2 group-hover:text-scarlet transition">XR MAINTENANCE GLOVE</h3>
-                        <p class="font-mono text-xs text-gray-400 mb-4 line-clamp-2">Haptyczna rękawica zintegrowana z Unity. Pozwala "poczuć" wirtualne obiekty podczas symulacji naprawczych.</p>
-                        <div class="flex gap-2 mb-4">
-                            <span class="text-[9px] border border-white/10 px-2 py-1 text-gray-500">UNITY</span>
-                            <span class="text-[9px] border border-white/10 px-2 py-1 text-gray-500">ARDUINO</span>
-                            <span class="text-[9px] border border-white/10 px-2 py-1 text-gray-500">C#</span>
+                    <div class="px-4 pb-4">
+                        <h3 class="font-display text-2xl text-white mb-2 group-hover:text-scarlet transition">HAPTIC GLOVE</h3>
+                        <p class="font-mono text-xs text-gray-400 mb-4">Interfejs dotykowy do symulacji napraw w środowisku Unity.</p>
+                        <div class="flex items-center gap-2 text-[10px] font-mono text-gray-500 uppercase">
+                            <span>>> C#</span>
+                            <span>>> Arduino</span>
+                            <span>>> Oculus SDK</span>
                         </div>
-                        <a href="#" class="text-xs font-bold text-white uppercase tracking-widest flex items-center gap-2 group-hover:gap-4 transition-all">
-                            Explore Case Study <span>→</span>
-                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <div id="terminal-breach" class="w-full h-32 bg-scarlet flex flex-col items-center justify-center overflow-hidden relative z-20">
+    <div id="terminal-breach" class="w-full h-48 bg-scarlet flex flex-col items-center justify-center overflow-hidden relative z-20">
         <div class="absolute inset-0 bg-black opacity-30" style="background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, #000 10px, #000 20px);"></div>
-        <div class="font-display font-black text-black tracking-[0.5em] text-xl md:text-3xl animate-pulse z-10 text-center">
-            WARNING: ENTERING DEEP SYSTEMS
+        <div class="font-display font-black text-black tracking-[0.5em] text-center px-4 relative z-10">
+            <div class="text-3xl md:text-5xl mb-2">WARNING</div>
+            <div class="text-xs md:text-sm font-mono font-bold">ENTERING RESTRICTED TERMINAL LAYER</div>
         </div>
-        <div class="font-mono text-xs text-black font-bold mt-2 z-10">AUTHORIZATION CODE: 96-GRAEG-ROOT</div>
     </div>
 
-    <section class="terminal-section min-h-screen relative py-20 px-4 md:px-12 z-20 border-t-8 border-black">
-        <div class="flashlight-overlay" id="flashlight"></div>
+    <section class="terminal-bg min-h-screen relative py-20 px-4 md:px-12 z-20 border-t-8 border-black">
+        <div class="flashlight" id="flashlight"></div>
         
         <div class="max-w-7xl mx-auto grid md:grid-cols-12 gap-12 relative z-30">
             
@@ -302,28 +306,15 @@
                         <span class="text-white font-bold">ISS TRACKER</span>
                         <span class="text-[9px] text-gray-500">SAT-25544</span>
                     </div>
-                    <div id="iss-data" class="text-scarlet font-bold leading-relaxed">
-                        SCANNING...
+                    <div id="iss-data" class="text-scarlet font-bold leading-relaxed text-xs">
+                        ACQUIRING SIGNAL...
                     </div>
                 </div>
 
                 <div class="geek-widget hover-trigger">
                     <div class="text-white font-bold mb-1">MISSION TIMER</div>
-                    <div id="mission-clock" class="text-xl text-gray-300">00:00:00</div>
+                    <div id="mission-clock" class="text-lg text-gray-300">00:00:00</div>
                     <div class="text-[9px] text-gray-600 mt-1">UTC ZULU TIME</div>
-                </div>
-
-                <div class="geek-widget">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <span class="block text-xl text-white font-bold">45+</span>
-                            <span class="text-[9px] uppercase">Kg Filamentu</span>
-                        </div>
-                        <div>
-                            <span class="block text-xl text-white font-bold">1.2k</span>
-                            <span class="text-[9px] uppercase">Commity</span>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="geek-widget">
@@ -335,28 +326,36 @@
                         <div id="scroll-bar" class="h-full bg-scarlet w-0"></div>
                     </div>
                 </div>
+
+                <div class="geek-widget">
+                    <div class="text-white font-bold mb-2">TOOLBOX</div>
+                    <ul class="text-[10px] text-gray-500 space-y-1 font-mono">
+                        <li>> Notion [ORG]</li>
+                        <li>> Fusion 360 [CAD]</li>
+                        <li>> VS Code [DEV]</li>
+                        <li>> Cura [CAM]</li>
+                    </ul>
+                </div>
             </div>
 
             <div class="md:col-span-6 space-y-12">
-                <h3 class="font-mono text-gray-500 text-xs font-bold mb-6">// OPERATIONAL LOGS (DECRYPTED)</h3>
+                <h3 class="font-mono text-gray-500 text-xs font-bold mb-6">// DECRYPTED LOGS (EXPERIENCE)</h3>
 
-                <div class="border-l border-gray-800 pl-8 pb-8 relative hover-trigger group">
-                    <div class="absolute -left-[5px] top-0 w-2 h-2 bg-scarlet group-hover:shadow-[0_0_10px_#FF0033] transition"></div>
+                <div class="terminal-log hover-trigger group" onclick="openStory('3d')">
                     <div class="font-mono text-xs text-scarlet mb-2 opacity-70">2023 - PRESENT // LEAD ENGINEER</div>
-                    <h4 class="font-display text-3xl text-white mb-4">ADVANCED PROTOTYPING LAB</h4>
+                    <h4 class="font-display text-2xl text-white mb-3">ADVANCED PROTOTYPING LAB</h4>
                     <p class="font-mono text-sm text-gray-400 leading-relaxed mb-4">
-                        Nadzór nad procesem Rapid Prototyping. Zarządzanie farmą drukarek SLA/FDM (Prusa, Formlabs). Implementacja środowiska testowego XR dla nowych komponentów mechanicznych przed ich fizycznym wytworzeniem.
+                        Nadzór nad procesem Rapid Prototyping. Zarządzanie farmą drukarek SLA/FDM (Prusa, Formlabs). Implementacja środowiska testowego XR dla nowych komponentów mechanicznych.
                     </p>
-                    <ul class="list-disc list-inside font-mono text-xs text-gray-500 space-y-1 ml-2">
-                        <li>Zredukowanie odpadów materiałowych o 40% dzięki symulacjom VR.</li>
-                        <li>Opracowanie hybrydowego potoku pracy: Fusion 360 -> Unity -> Druk.</li>
-                    </ul>
+                    <div class="text-[10px] text-green-500 font-mono typing-effect">
+                        > Zredukowano odpady o 40%<br>
+                        > Wdrożono potok Fusion360 -> Unity
+                    </div>
                 </div>
 
-                <div class="border-l border-gray-800 pl-8 pb-8 relative hover-trigger group">
-                    <div class="absolute -left-[5px] top-0 w-2 h-2 bg-gray-600 group-hover:bg-scarlet transition"></div>
-                    <div class="font-mono text-xs text-gray-500 mb-2">2021 - 2023 // JUNIOR DEV</div>
-                    <h4 class="font-display text-3xl text-white mb-4">AI NAVIGATION SYSTEMS</h4>
+                <div class="terminal-log hover-trigger group" onclick="openStory('space')">
+                    <div class="font-mono text-xs text-gray-500 mb-2 opacity-70">2021 - 2023 // JUNIOR DEV</div>
+                    <h4 class="font-display text-2xl text-white mb-3">AI NAVIGATION SYSTEMS</h4>
                     <p class="font-mono text-sm text-gray-400 leading-relaxed mb-4">
                         Opracowanie algorytmów unikania przeszkód dla mini-łazików autonomicznych. Praca w środowisku Python + ROS 2 na platformie Raspberry Pi.
                     </p>
@@ -365,10 +364,9 @@
                     </div>
                 </div>
 
-                <div class="border-l border-gray-800 pl-8 relative opacity-40 hover:opacity-100 transition duration-500 cursor-help hover-trigger" title="Top Secret">
-                    <div class="absolute -left-[5px] top-0 w-2 h-2 bg-gray-800"></div>
+                <div class="terminal-log opacity-50 hover:opacity-100 transition cursor-help" title="Top Secret">
                     <div class="font-mono text-xs text-gray-600 mb-2">CLASSIFIED ERA</div>
-                    <h4 class="font-display text-3xl text-white mb-2 bg-white/10 inline-block px-1 select-none">████████████</h4>
+                    <h4 class="font-display text-2xl text-white mb-2 bg-white/10 inline-block px-1 select-none blur-[2px] hover:blur-0 transition">PROJECT: ORION</h4>
                     <p class="font-mono text-sm text-gray-600 mt-2">
                         // ACCESS DENIED. Wymagany poziom uprawnień: 5.<br>
                         // Skontaktuj się z administratorem sieci.
@@ -377,55 +375,72 @@
             </div>
 
             <div class="md:col-span-3 space-y-8">
-                <h3 class="font-mono text-gray-500 text-xs font-bold mb-6">// ARSENAL.JSON</h3>
                 
-                <div class="code-block hover-trigger">
+                <div>
+                    <h3 class="font-mono text-gray-500 text-xs font-bold mb-4">// ARSENAL.JSON</h3>
+                    <div class="bg-black border border-gray-800 p-4 font-mono text-[10px] text-green-500 rounded relative overflow-hidden hover-trigger">
+                        <div class="absolute inset-0 bg-green-500/5 opacity-0 hover:opacity-100 transition"></div>
 <pre>
 {
   <span class="text-white">"hardware"</span>: [
-    "Prusa MK4",
-    "Formlabs 3+",
-    "Oculus Quest 3",
-    "Raspberry Pi 5"
+    "Prusa MK4", "Formlabs 3+",
+    "Oculus Quest 3", "Raspberry Pi 5"
   ],
   <span class="text-white">"software"</span>: [
-    "Fusion 360",
-    "Blender",
-    "Unity 3D",
-    "ROS 2",
-    "Figma"
+    "Fusion 360", "Blender",
+    "Unity 3D", "ROS 2"
   ],
   <span class="text-white">"code"</span>: [
-    "Python",
-    "C++",
-    "C#",
-    "Three.js",
-    "Tailwind"
+    "Python", "C++", "C#",
+    "Three.js", "Tailwind"
   ]
 }
 </pre>
+                    </div>
                 </div>
 
-                <div class="border-t border-gray-800 pt-6">
-                    <h4 class="text-white font-bold mb-4 font-display">ENCRYPTED CHANNELS</h4>
-                    <div class="space-y-3 font-mono text-xs">
-                        <a href="https://discord.gg/PdmeSzZvB" class="block text-gray-500 hover:text-scarlet hover-trigger transition flex justify-between">
-                            <span>> DISCORD SERVER</span>
-                            <span>[ JOIN ]</span>
+                <div>
+                    <h3 class="font-mono text-white text-xs font-bold mb-4 flex items-center gap-2">
+                        <span class="text-scarlet">>></span> COMM ARRAY (ENCRYPTED)
+                    </h3>
+                    
+                    <div class="grid grid-cols-4 gap-4">
+                        <a href="https://www.facebook.com/96graeg/?locale=pl_PL" target="_blank" class="social-link p-2 border border-gray-800 bg-black hover:border-scarlet flex justify-center items-center hover-trigger" title="Facebook">
+                            <svg class="w-5 h-5 social-icon" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
                         </a>
-                        <a href="https://github.com/96Graeg" class="block text-gray-500 hover:text-scarlet hover-trigger transition flex justify-between">
-                            <span>> GITHUB REPO</span>
-                            <span>[ VIEW ]</span>
+                        <a href="https://www.instagram.com/96graeg" target="_blank" class="social-link p-2 border border-gray-800 bg-black hover:border-scarlet flex justify-center items-center hover-trigger" title="Instagram">
+                            <svg class="w-5 h-5 social-icon" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
                         </a>
-                        <a href="https://reddit.com" class="block text-gray-500 hover:text-scarlet hover-trigger transition flex justify-between">
-                            <span>> REDDIT THREADS</span>
-                            <span>[ READ ]</span>
+                        <a href="https://www.youtube.com/@96graeg" target="_blank" class="social-link p-2 border border-gray-800 bg-black hover:border-scarlet flex justify-center items-center hover-trigger" title="YouTube">
+                            <svg class="w-5 h-5 social-icon" viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
                         </a>
-                        <a href="#" class="block text-gray-500 hover:text-scarlet hover-trigger transition flex justify-between">
-                            <span>> PGP KEY</span>
-                            <span>[ DOWNLOAD ]</span>
+                        <a href="https://www.linkedin.com/in/grzegorz-wojtalczyk-44845b280/" target="_blank" class="social-link p-2 border border-gray-800 bg-black hover:border-scarlet flex justify-center items-center hover-trigger" title="LinkedIn">
+                            <svg class="w-5 h-5 social-icon" viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                        </a>
+                        <a href="https://pin.it/7BiCrw7Y6" target="_blank" class="social-link p-2 border border-gray-800 bg-black hover:border-scarlet flex justify-center items-center hover-trigger" title="Pinterest">
+                            <svg class="w-5 h-5 social-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        </a>
+                        <a href="https://www.reddit.com/u/Any_Trade_7108/s/k965o3YK5y" target="_blank" class="social-link p-2 border border-gray-800 bg-black hover:border-scarlet flex justify-center items-center hover-trigger" title="Reddit">
+                            <svg class="w-5 h-5 social-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M17 13c0 2-3 3-5 3s-5-1-5-3"></path><line x1="15" y1="9" x2="15.01" y2="9"></line><line x1="9" y1="9" x2="9.01" y2="9"></line></svg>
+                        </a>
+                        <a href="https://github.com/96Graeg" target="_blank" class="social-link p-2 border border-gray-800 bg-black hover:border-scarlet flex justify-center items-center hover-trigger" title="GitHub">
+                            <svg class="w-5 h-5 social-icon" viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                        </a>
+                        <a href="https://discord.gg/PdmeSzZvB" target="_blank" class="social-link p-2 border border-gray-800 bg-black hover:border-scarlet flex justify-center items-center hover-trigger" title="Discord">
+                            <svg class="w-5 h-5 social-icon" viewBox="0 0 24 24"><path d="M18.89 20.25l-1.69-1.68c.56-.46 1.08-1 1.54-1.59.1.13.2.27.31.41-.6.76-1.31 1.44-2.11 2.02l1.95 1.95-1.11 1.12-1.95-1.95c-.8.58-1.7 1.04-2.66 1.36v-2.3c.96-.32 1.86-.78 2.66-1.36l-1.95-1.95 1.11-1.12 1.95 1.95c.8-.58 1.51-1.26 2.11-2.02.11-.14.21-.28.31-.41-.46-.59-.98-1.13-1.54-1.59l1.69-1.68 1.11 1.12-1.69 1.68c.56.46 1.08 1 1.54 1.59.1.13.2.27.31.41-.6.76-1.31 1.44-2.11 2.02l1.95 1.95-1.11 1.12z"></path></svg>
+                        </a>
+                        <a href="https://x.com/96graeg" target="_blank" class="social-link p-2 border border-gray-800 bg-black hover:border-scarlet flex justify-center items-center hover-trigger" title="X">
+                            <svg class="w-5 h-5 social-icon" viewBox="0 0 24 24"><path d="M4 4l11.733 16h4.267l-11.733 -16z" /><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" /></svg>
+                        </a>
+                        <a href="https://www.threads.net/@96graeg" target="_blank" class="social-link p-2 border border-gray-800 bg-black hover:border-scarlet flex justify-center items-center hover-trigger" title="Threads">
+                            <svg class="w-5 h-5 social-icon" viewBox="0 0 24 24"><path d="M19 12c0-3.87-3.13-7-7-7s-7 3.13-7 7 3.13 7 7 7c1.33 0 2.58-.38 3.65-1.04l1.39 1.69C15.69 20.67 13.9 21 12 21c-4.97 0-9-4.03-9-9s4.03-9 9-9 9 4.03 9 9c0 3.03-1.07 5.79-2.85 7.94l-1.62-1.37C17.92 15.93 19 14.07 19 12z"/></svg>
                         </a>
                     </div>
+                </div>
+
+                <div class="mt-8 border-t border-gray-800 pt-6">
+                    <a href="#" class="block text-scarlet text-[10px] font-mono hover:underline mb-2">> POBIERZ KLUCZ PGP</a>
+                    <a href="#" class="block text-scarlet text-[10px] font-mono hover:underline">> CERTYFIKATY BEZPIECZEŃSTWA</a>
                 </div>
             </div>
 
@@ -436,74 +451,95 @@
         <div class="mb-4">
             <span class="text-scarlet">SYSTEM STATUS:</span> STABLE // UPTIME: 99.9%
         </div>
-        <p>&copy; <span id="footer-year">2024</span> GRZEGORZ WOJTALCZYK. ALL RIGHTS RESERVED.</p>
+        <p>&copy; <span id="footer-year">2026</span> GRZEGORZ WOJTALCZYK. ALL RIGHTS RESERVED.</p>
         <div class="mt-8 opacity-20 hover:opacity-100 transition duration-500">
             <img src="logo2.png" class="h-8 mx-auto grayscale invert">
         </div>
     </footer>
 
+    <div id="story-modal" class="hidden fixed inset-0 z-[20000] bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="relative w-full max-w-2xl bg-black border border-scarlet shadow-[0_0_50px_rgba(220,20,60,0.2)]">
+            <div class="bg-scarlet/10 border-b border-scarlet/30 p-4 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-2 h-2 bg-scarlet animate-pulse"></div>
+                    <h3 id="story-title" class="text-scarlet font-bold font-mono tracking-widest text-lg">SYSTEM LOG</h3>
+                </div>
+                <button onclick="closeStory()" class="text-gray-400 hover:text-white hover:rotate-90 transition duration-300 hover-trigger">
+                    ✕
+                </button>
+            </div>
+            <div class="p-8">
+                <div class="font-mono text-xs text-gray-500 mb-4">
+                    // DATA DECRYPTION: COMPLETE<br>
+                    // AUTHOR: G. WOJTALCZYK
+                </div>
+                <p id="story-content" class="text-gray-300 leading-relaxed font-sans font-light text-sm md:text-base border-l-2 border-scarlet pl-4"></p>
+            </div>
+        </div>
+    </div>
+
     <div id="ar-modal" class="hidden fixed inset-0 z-[20000] bg-black/95 flex flex-col items-center justify-center p-4">
-        <button onclick="toggleARModal()" class="absolute top-6 right-6 z-[20010] text-white hover:text-scarlet transition p-2 border border-white/20 rounded-full">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
+        <button onclick="toggleARModal()" class="absolute top-6 right-6 z-[20010] text-white hover:text-scarlet transition p-2 border border-white/20 rounded-full hover-trigger">
+            ✕
         </button>
         <h2 class="text-white text-xl font-display tracking-widest mb-4 absolute top-6 left-6 z-[20010]">AR VIEWER // V.1.0</h2>
         <model-viewer 
             src="https://modelviewer.dev/shared-assets/models/Astronaut.glb" 
-            ar 
-            ar-modes="webxr scene-viewer quick-look" 
-            camera-controls 
-            auto-rotate 
+            ar ar-modes="webxr scene-viewer quick-look" 
+            camera-controls auto-rotate 
             class="w-full h-full"
             ios-src="https://modelviewer.dev/shared-assets/models/Astronaut.usdz">
             <button slot="ar-button" class="absolute bottom-12 left-1/2 -translate-x-1/2 bg-scarlet text-white px-8 py-3 rounded-full font-bold uppercase tracking-widest shadow-[0_0_20px_#FF0033] z-50 animate-pulse border border-white/20">
-                ACTIVATE AR (MOBILE)
+                ACTIVATE AR
             </button>
         </model-viewer>
     </div>
 
     <script>
-        // --- 1. BOOT LOADER ---
+        // --- 1. SYSTEM BOOT SEQUENCE ---
         const bootBar = document.getElementById('boot-bar');
-        const bootScreen = document.getElementById('boot-screen');
-        const bootLog = document.getElementById('boot-log');
-        const logs = [
-            "INITIALIZING KERNEL...", 
-            "LOADING ASSETS...", 
-            "CONNECTING SATELLITE UPLINK...", 
-            "DECRYPTING UI...", 
-            "RENDERING 3D ENVIRONMENT...",
-            "SYSTEM READY."
-        ];
+        const bootLayer = document.getElementById('boot-layer');
+        const bootText = document.getElementById('boot-text');
         
-        let i = 0;
-        const interval = setInterval(() => {
-            if(i < logs.length) {
-                bootLog.innerHTML += `<div>> ${logs[i]}</div>`;
-                bootLog.scrollTop = bootLog.scrollHeight;
-                i++;
+        // Symulacja ładowania
+        gsap.to(bootBar, {
+            width: "100%", duration: 2, ease: "power2.inOut",
+            onUpdate: function() {
+                if(this.progress() > 0.5) bootText.innerText = "LOADING ASSETS...";
+                if(this.progress() > 0.8) bootText.innerText = "DECRYPTING UI...";
+            },
+            onComplete: () => {
+                gsap.to(bootLayer, { y: "-100%", duration: 0.8, ease: "expo.inOut", delay: 0.2 });
             }
-        }, 250);
+        });
 
-        gsap.to(bootBar, { width: "100%", duration: 1.8, ease: "power2.inOut", onComplete: () => {
-            clearInterval(interval);
-            gsap.to(bootScreen, { y: "-100%", duration: 0.8, ease: "expo.inOut", delay: 0.2 });
-        }});
-
-        // --- 2. CUSTOM CURSOR & SOUND ---
+        // --- 2. CUSTOM CURSOR & SOUND SYSTEM ---
         const cursor = document.getElementById('cursor');
         const cursorDot = document.getElementById('cursor-dot');
         const triggers = document.querySelectorAll('.hover-trigger, a, button');
+        
+        // Prosty AudioContext dla kliknięć
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playClickSound() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+        }
 
+        // Logika kursora i latarki
         document.addEventListener('mousemove', e => {
             cursorDot.style.left = e.clientX + 'px';
             cursorDot.style.top = e.clientY + 'px';
-            // Smooth follow for outer ring
             gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.15, ease: "power2.out" });
             
-            // Flashlight effect in terminal
+            // Latarka w terminalu
             const flashlight = document.getElementById('flashlight');
             if(flashlight) {
                 flashlight.style.setProperty('--x', e.clientX + 'px');
@@ -511,27 +547,9 @@
             }
         });
 
-        function playClickSound() {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.1);
-            gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.1);
-        }
-
         triggers.forEach(t => {
-            t.addEventListener('mouseenter', () => { 
-                cursor.classList.add('hovered'); 
-                playClickSound(); // Sound on hover
-            });
-            t.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+            t.addEventListener('mouseenter', () => { cursor.classList.add('active'); playClickSound(); });
+            t.addEventListener('mouseleave', () => cursor.classList.remove('active'));
             t.addEventListener('click', playClickSound);
         });
 
@@ -542,26 +560,22 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-        // Globe
         const geometry = new THREE.IcosahedronGeometry(4, 2);
-        const material = new THREE.MeshBasicMaterial({ color: 0x222222, wireframe: true, transparent: true, opacity: 0.15 });
+        const material = new THREE.MeshBasicMaterial({ color: 0x333333, wireframe: true, transparent: true, opacity: 0.1 });
         const globe = new THREE.Mesh(geometry, material);
         scene.add(globe);
 
-        // Particles
-        const partGeo = new THREE.BufferGeometry();
-        const partCount = 500;
-        const posArray = new Float32Array(partCount * 3);
-        for(let j=0; j<partCount*3; j++) {
-            posArray[j] = (Math.random() - 0.5) * 15;
-        }
-        partGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-        const partMat = new THREE.PointsMaterial({ size: 0.02, color: 0xFF0033, transparent: true, opacity: 0.5 });
-        const particles = new THREE.Points(partGeo, partMat);
+        // Cząsteczki
+        const pGeo = new THREE.BufferGeometry();
+        const pCount = 300;
+        const pPos = new Float32Array(pCount * 3);
+        for(let i=0; i<pCount*3; i++) pPos[i] = (Math.random() - 0.5) * 15;
+        pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+        const pMat = new THREE.PointsMaterial({ size: 0.03, color: 0xFF0033, transparent: true, opacity: 0.6 });
+        const particles = new THREE.Points(pGeo, pMat);
         scene.add(particles);
 
         camera.position.z = 8;
-
         let mouseX = 0, mouseY = 0;
         document.addEventListener('mousemove', (e) => {
             mouseX = (e.clientX / window.innerWidth) * 2 - 1;
@@ -572,23 +586,14 @@
             requestAnimationFrame(animate);
             globe.rotation.y += 0.001;
             particles.rotation.y -= 0.0005;
-            
-            // Mouse Parallax
             globe.rotation.x += (mouseY * 0.05 - globe.rotation.x) * 0.05;
             globe.rotation.y += (mouseX * 0.05 - globe.rotation.y) * 0.05;
-
             renderer.render(scene, camera);
         }
         animate();
+        window.addEventListener('resize', () => { renderer.setSize(window.innerWidth, window.innerHeight); camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); });
 
-        window.addEventListener('resize', () => {
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-        });
-
-        // --- 4. GEEK DATA WIDGETS ---
-        // Clock
+        // --- 4. DATA WIDGETS ---
         function updateClock() {
             const now = new Date();
             document.getElementById('mission-clock').innerText = now.toISOString().split('T')[1].split('.')[0] + " Z";
@@ -596,37 +601,56 @@
         }
         setInterval(updateClock, 1000); updateClock();
 
-        // ISS Tracker API
         async function updateISS() {
             const el = document.getElementById('iss-data');
             try {
                 const res = await fetch('https://api.wheretheiss.at/v1/satellites/25544');
                 const data = await res.json();
                 el.innerHTML = `LAT: <span class="text-white">${data.latitude.toFixed(2)}°</span><br>LON: <span class="text-white">${data.longitude.toFixed(2)}°</span><br>ALT: ${data.altitude.toFixed(0)} km`;
-            } catch {
-                el.innerText = "SIGNAL LOSS...";
-            }
+            } catch { el.innerText = "SIGNAL LOSS..."; }
         }
         setInterval(updateISS, 5000); updateISS();
 
-        // Scroll Progress
         window.addEventListener('scroll', () => {
-            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const scrolled = (winScroll / height) * 100;
+            const scrolled = (document.documentElement.scrollTop / (document.documentElement.scrollHeight - document.documentElement.clientHeight)) * 100;
             document.getElementById('scroll-bar').style.width = scrolled + "%";
             document.getElementById('scroll-percent').innerText = Math.round(scrolled) + "%";
         });
 
-        // --- 5. SCROLL TRIGGER (TERMINAL MODE) ---
-        gsap.registerPlugin(ScrollTrigger);
-        
-        ScrollTrigger.create({
-            trigger: ".terminal-section",
-            start: "top center",
-            onEnter: () => document.body.classList.add('terminal-active'),
-            onLeaveBack: () => document.body.classList.remove('terminal-active')
-        });
+        // --- 5. STORY MODAL LOGIC (Z v1) ---
+        const storyData = {
+            '3d': {
+                title: "PROTOKÓŁ: ADDITIVE MFG",
+                text: "Moja podróż w druku 3D to nieustanne zacieranie granicy między plikiem cyfrowym a fizycznym obiektem. Od szybkiego prototypowania części mechanicznych na Prusa MK4, przez skomplikowane wydruki żywiczne (SLA) o mikronowej precyzji, aż po inżynierię odwrotną uszkodzonych komponentów. Każda warstwa to krok naprzód. Tworzę nie tylko modele, ale funkcjonalne narzędzia, które rozwiązują realne problemy w czasie rzeczywistym."
+            },
+            'xr': {
+                title: "SYMULACJA: RZECZYWISTOŚĆ ROZSZERZONA",
+                text: "W świecie XR (VR/AR) jestem architektem niemożliwego. Projektuję środowiska w Unity, które pozwalają testować rozwiązania inżynieryjne bez ryzyka i kosztów w świecie fizycznym. Od wirtualnych spacerów po stacjach orbitalnych, po nakładki AR wspomagające serwisowanie elektroniki. Wierzę, że przyszłość interfejsów to nie klawiatura, a gest i przestrzeń."
+            },
+            'space': {
+                title: "MISJA: ORBITAL SYSTEMS",
+                text: "Traktuję inżynierię kosmiczną jako ostateczny test niezawodności. Tutaj nie ma miejsca na błąd, a każdy system musi być redundantny. Analizuję dane telemetryczne, zgłębiam tajniki mechaniki orbitalnej i projektuję koncepcyjne systemy podtrzymywania życia dla przyszłych habitatów. To podejście 'zero-failure' przenoszę do każdego projektu, który realizuję na Ziemi."
+            }
+        };
+
+        const storyModal = document.getElementById('story-modal');
+        const storyTitle = document.getElementById('story-title');
+        const storyContent = document.getElementById('story-content');
+
+        function openStory(type) {
+            const data = storyData[type];
+            if(data) {
+                storyTitle.innerText = data.title;
+                storyContent.innerHTML = data.text;
+                storyModal.classList.remove('hidden');
+                storyModal.classList.add('flex');
+            }
+        }
+
+        function closeStory() {
+            storyModal.classList.add('hidden');
+            storyModal.classList.remove('flex');
+        }
 
         // --- 6. AR MODAL ---
         function toggleARModal() {
@@ -634,6 +658,12 @@
             modal.classList.toggle('hidden');
             modal.classList.toggle('flex');
         }
+
+        // --- 7. ANIMACJA TEKSTU W HERO ---
+        const holoTexts = document.querySelectorAll('.holo-text');
+        setInterval(() => {
+            holoTexts.forEach(el => el.classList.toggle('animate'));
+        }, 3000);
 
     </script>
 </body>
