@@ -1,31 +1,32 @@
 <!DOCTYPE html>
-<html lang="pl" class="scroll-smooth overflow-x-hidden">
+<html lang="pl" class="bg-[#050505] overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Graeg | Engineering Portfolio</title>
-    <meta name="description" content="Portfolio Grzegorza Wojtalczyka - Space Tech & XR Engineer">
-    <link rel="icon" type="image/png" href="logo2.png">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRAEG // ORBITAL STATION</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: { 
                         sans: ['Space Grotesk', 'sans-serif'],
-                        mono: ['Space Mono', 'monospace'] 
+                        mono: ['Space Mono', 'monospace'],
+                        display: ['Orbitron', 'sans-serif']
                     },
-                    colors: { scarlet: '#DC143C', void: '#050505', paper: '#f0f0f0' },
-                    letterSpacing: { 'spectral': '0.25em', 'tightest': '-0.05em' },
+                    colors: { 
+                        scarlet: '#FF0033', 
+                        void: '#020202',
+                        glass: 'rgba(255, 255, 255, 0.03)'
+                    },
                     backgroundImage: {
-                        'grid-pattern': "linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)"
+                        'noise': "url('https://grainy-gradients.vercel.app/noise.svg')"
                     }
                 }
             }
@@ -33,467 +34,426 @@
     </script>
 
     <style>
-        /* --- CORE --- */
-        body { background-color: #050505; color: #e5e5e5; cursor: crosshair; transition: background 0.5s; overflow-x: hidden; }
+        /* --- CORE AESTHETICS --- */
+        body { cursor: none; } /* Ukrywamy systemowy kursor */
         
-        /* Light Mode Overrides */
-        body.light-mode { background-color: #e8e8e8; color: #111; }
-        body.light-mode .glass-panel { background: rgba(255,255,255,0.85); border-color: rgba(0,0,0,0.1); color: #000; box-shadow: 0 4px 30px rgba(0,0,0,0.05); }
-        body.light-mode .text-void { color: #fff !important; } /* Fix dla tekstów na ciemnych tłach w light mode */
-        body.light-mode .nav-dot { background-color: #ccc; }
-        body.light-mode .nav-dot.active { background-color: #DC143C; }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #DC143C; }
-
-        /* --- UI ELEMENTS --- */
-        .glass-panel {
-            background: rgba(20, 20, 20, 0.6);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
+        .noise-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: 999;
         }
+
+        /* --- CUSTOM CURSOR (HUD RETICLE) --- */
+        #cursor {
+            position: fixed; top: 0; left: 0; width: 40px; height: 40px;
+            border: 1px solid rgba(255, 0, 51, 0.5);
+            border-radius: 50%; pointer-events: none; z-index: 1000;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, background 0.3s;
+            mix-blend-mode: difference;
+        }
+        #cursor::after {
+            content: ''; position: absolute; top: 50%; left: 50%;
+            width: 4px; height: 4px; background: #FF0033;
+            transform: translate(-50%, -50%); border-radius: 50%;
+        }
+        body:hover #cursor.hovered {
+            width: 80px; height: 80px;
+            background: rgba(255, 0, 51, 0.1);
+            border-color: #FF0033;
+        }
+
+        /* --- GLITCH TEXT EFFECT --- */
+        .glitch-wrapper { position: relative; display: inline-block; }
+        .glitch { position: relative; color: white; mix-blend-mode: lighten; }
+        .glitch::before, .glitch::after {
+            content: attr(data-text); position: absolute; top: 0; width: 100%; height: 100%; background: #020202;
+        }
+        .glitch::before { left: 2px; text-shadow: -1px 0 #ff00c1; clip: rect(44px, 450px, 56px, 0); animation: glitch-anim 5s infinite linear alternate-reverse; }
+        .glitch::after { left: -2px; text-shadow: -1px 0 #00fff9; clip: rect(44px, 450px, 56px, 0); animation: glitch-anim2 5s infinite linear alternate-reverse; }
         
-        /* Project Hover Preview */
-        .project-preview {
-            position: fixed;
-            pointer-events: none;
-            width: 300px;
-            height: 200px;
-            z-index: 50;
-            opacity: 0;
-            transform: translate(-50%, -50%) scale(0.8);
-            transition: opacity 0.2s, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            border: 1px solid #DC143C;
-            background: #000;
+        @keyframes glitch-anim {
+            0% { clip: rect(38px, 9999px, 84px, 0); }
+            5% { clip: rect(31px, 9999px, 8px, 0); }
+            100% { clip: rect(13px, 9999px, 98px, 0); }
+        }
+        @keyframes glitch-anim2 {
+            0% { clip: rect(6px, 9999px, 49px, 0); }
+            5% { clip: rect(87px, 9999px, 12px, 0); }
+            100% { clip: rect(21px, 9999px, 66px, 0); }
+        }
+
+        /* --- HOLOGRAPHIC CARDS --- */
+        .holo-card {
+            background: rgba(10, 10, 10, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+            position: relative;
             overflow: hidden;
         }
-        .project-preview img, .project-preview video { width: 100%; height: 100%; object-fit: cover; }
-
-        /* Magnetic Buttons */
-        .magnetic-btn { display: inline-block; transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
-
-        /* Glowing Case Study Card */
-        .glow-card {
-            position: relative;
+        .holo-card::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 0, 51, 0.2), transparent);
+            transform: skewX(-25deg); transition: 0.5s; pointer-events: none;
         }
-        .glow-card::before {
-            content: '';
-            position: absolute;
-            inset: -2px;
-            background: linear-gradient(45deg, #DC143C, transparent, #8B0000);
-            z-index: -1;
-            filter: blur(10px);
-            opacity: 0.5;
-            transition: opacity 0.3s;
+        .holo-card:hover::before { left: 150%; transition: 0.7s; }
+        .holo-card:hover {
+            border-color: #FF0033;
+            box-shadow: 0 0 30px rgba(255, 0, 51, 0.15);
+            transform: scale(1.02);
         }
-        .glow-card:hover::before { opacity: 1; filter: blur(20px); }
 
-        /* Sticky Nav Dots */
-        .nav-dot {
-            width: 8px; height: 8px; border-radius: 50%; background: #333; transition: all 0.3s; cursor: pointer;
-            position: relative;
+        /* --- BOOT LOADER --- */
+        #boot-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 9999; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; color: #FF0033;
+            font-family: 'Space Mono', monospace;
         }
-        .nav-dot::after {
-            content: attr(data-label);
-            position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
-            opacity: 0; transition: opacity 0.3s; font-family: 'Space Mono'; font-size: 10px; white-space: nowrap; color: #DC143C;
-            pointer-events: none;
-        }
-        .nav-dot:hover::after { opacity: 1; }
-        .nav-dot.active { background: #DC143C; transform: scale(1.2); }
-
-        /* Utility */
-        .text-stroke { -webkit-text-stroke: 1px rgba(255,255,255,0.2); color: transparent; }
-        body.light-mode .text-stroke { -webkit-text-stroke: 1px rgba(0,0,0,0.2); }
-        .clip-text-image { background-clip: text; -webkit-background-clip: text; color: transparent; background-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2070&auto=format&fit=crop'); background-size: cover; background-position: center; }
-
-        /* Mobile Accordion */
-        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-out; }
-        .accordion-open { max-height: 500px; }
     </style>
 </head>
-<body class="selection:bg-scarlet selection:text-white">
+<body class="text-gray-300 antialiased">
 
-    <div class="fixed right-4 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-4 items-end hidden md:flex mix-blend-difference">
-        <a href="#hero" class="nav-dot active" data-label="START"></a>
-        <a href="#projekty" class="nav-dot" data-label="PROJEKTY"></a>
-        <a href="#case-study" class="nav-dot" data-label="FLAGOWIEC"></a>
-        <a href="#o-mnie" class="nav-dot" data-label="PROFIL"></a>
-        <a href="#stack" class="nav-dot" data-label="ARSENAŁ"></a>
-        <a href="#kontakt" class="nav-dot" data-label="KONTAKT"></a>
+    <div class="noise-overlay"></div>
+    
+    <div id="cursor"></div>
+
+    <div id="boot-screen">
+        <div class="text-xs md:text-sm tracking-widest mb-4">INITIALIZING NEURAL LINK...</div>
+        <div class="w-64 h-1 bg-gray-900 rounded overflow-hidden">
+            <div id="boot-bar" class="h-full bg-scarlet w-0"></div>
+        </div>
+        <div id="boot-log" class="mt-2 text-[10px] text-gray-500 font-mono h-20 overflow-hidden text-center"></div>
     </div>
 
-    <div id="cursor-preview" class="project-preview hidden md:block">
-        <img id="preview-image" src="" alt="Project Preview">
-    </div>
+    <div id="canvas-container" class="fixed inset-0 z-0 opacity-40 pointer-events-none"></div>
 
-    <nav class="fixed top-0 left-0 w-full z-40 p-6 flex justify-between items-center mix-blend-difference">
-        <img src="logo2.png" alt="GRAEG" class="h-8 md:h-10 opacity-80">
-        <div class="hidden md:flex gap-8">
-            <button id="theme-toggle" class="text-xs font-mono uppercase tracking-widest hover:text-scarlet transition">[ LIGHT / DARK ]</button>
-            <span class="text-xs font-mono text-scarlet animate-pulse">SYS: ONLINE</span>
+    <nav class="fixed top-0 left-0 w-full z-50 p-6 flex justify-between items-start pointer-events-none mix-blend-difference">
+        <div class="pointer-events-auto">
+            <div class="flex items-center gap-3">
+                <div class="w-3 h-3 bg-scarlet animate-pulse"></div>
+                <span class="font-display font-bold text-xl tracking-widest text-white">GRAEG<span class="text-scarlet">.SYS</span></span>
+            </div>
+            <div class="text-[9px] font-mono text-scarlet mt-1 tracking-[0.3em]">OPERATIONAL STATUS: ACTIVE</div>
+        </div>
+
+        <div class="pointer-events-auto flex flex-col items-end gap-2">
+            <button onclick="scrollToSection('projekty')" class="hover-target text-xs font-mono font-bold hover:text-scarlet transition-colors">[ MISSION_LOG ]</button>
+            <button onclick="scrollToSection('stack')" class="hover-target text-xs font-mono font-bold hover:text-scarlet transition-colors">[ ARMORY ]</button>
+            <button onclick="scrollToSection('kontakt')" class="hover-target text-xs font-mono font-bold hover:text-scarlet transition-colors">[ COMMS ]</button>
         </div>
     </nav>
 
-    <section id="hero" class="h-screen w-full flex flex-col justify-center items-center relative overflow-hidden">
-        <div id="canvas-container" class="absolute inset-0 z-0 opacity-40"></div>
-        <div class="z-10 text-center px-4">
-            <p class="font-mono text-xs md:text-sm text-scarlet tracking-[0.5em] mb-4 uppercase">System Inżynierii Przyszłości</p>
-            <h1 class="text-5xl md:text-9xl font-bold tracking-tighter mb-2 md:mb-6 leading-none">
-                GRAEG<span class="text-scarlet">.</span>SYS
+    <div class="fixed left-6 bottom-6 hidden md:flex flex-col gap-4 z-40 font-mono text-[9px] text-gray-600 pointer-events-none writing-vertical">
+        <span>COORDS: 52.2297° N, 21.0122° E</span>
+        <span>SECTOR: 3D_PRINTING // XR</span>
+        <span>ID: 96-GRAEG</span>
+    </div>
+
+    <section class="relative h-screen flex flex-col justify-center items-center px-4 z-10">
+        <div class="relative">
+            <h1 class="glitch-wrapper font-display text-6xl md:text-[10rem] font-black leading-none text-white tracking-tighter text-center" data-text="ARCHITECT">
+                <span class="glitch" data-text="ARCHITECT">ARCHITECT</span>
             </h1>
-            <p class="font-sans text-gray-400 text-sm md:text-xl max-w-xl mx-auto tracking-wide">
-                Materializuję kod w fizycznej przestrzeni. <br>
-                <span class="text-white font-bold">3D Printing</span> // <span class="text-white font-bold">XR Systems</span> // <span class="text-white font-bold">Space Tech</span>
-            </p>
+            <h1 class="font-display text-6xl md:text-[10rem] font-black leading-none text-transparent stroke-text text-center opacity-30" style="-webkit-text-stroke: 1px #fff;">
+                OF THE VOID
+            </h1>
         </div>
         
-        <a href="#projekty" class="absolute bottom-10 left-1/2 -translate-x-1/2 text-xs font-mono tracking-widest animate-bounce">
-            SCROLL_DOWN
-        </a>
-    </section>
+        <p class="mt-8 font-mono text-sm md:text-base text-scarlet tracking-widest max-w-2xl text-center uppercase">
+            // Przekraczanie granic fizyczności poprzez kod i polimery.<br>
+            <span class="text-white">Inżynieria Kosmiczna & Rzeczywistość Rozszerzona.</span>
+        </p>
 
-    <section id="projekty" class="min-h-screen py-24 px-4 md:px-20 relative bg-black/20">
-        <div class="max-w-7xl mx-auto">
-            <h2 class="text-xs font-mono text-gray-500 mb-12 uppercase tracking-widest border-b border-gray-800 pb-4">
-                01. Dziennik Projektowy
-            </h2>
-
-            <div class="flex flex-col">
-                <div class="project-item border-b border-gray-800 py-8 md:py-12 group relative cursor-pointer" 
-                     data-image="https://images.unsplash.com/photo-1614728853913-1e22ba8b8351?q=80&w=2070&auto=format&fit=crop"
-                     onclick="toggleAccordion(this)">
-                    <div class="flex flex-col md:flex-row md:items-baseline justify-between z-10 relative">
-                        <h3 class="text-3xl md:text-7xl font-bold group-hover:text-scarlet transition-colors duration-300 font-sans tracking-tight">
-                            Orbital Habitat
-                        </h3>
-                        <div class="flex gap-4 mt-2 md:mt-0 font-mono text-xs md:text-sm text-gray-500">
-                            <span>BLENDER</span>
-                            <span>/</span>
-                            <span>3D PRINT</span>
-                        </div>
-                    </div>
-                    <div class="accordion-content md:hidden mt-4">
-                        <img src="https://images.unsplash.com/photo-1614728853913-1e22ba8b8351?q=80&w=2070&auto=format&fit=crop" class="w-full h-48 object-cover rounded mb-4" alt="Detail">
-                        <p class="text-sm text-gray-300 mb-4">Prototyp modułowej stacji orbitalnej wydrukowany w skali 1:100. Analiza ergonomii i systemów podtrzymywania życia.</p>
-                        <a href="#" class="text-scarlet text-xs font-bold uppercase tracking-widest">>> Zobacz dokumentację</a>
-                    </div>
-                </div>
-
-                <div class="project-item border-b border-gray-800 py-8 md:py-12 group relative cursor-pointer" 
-                     data-image="https://images.unsplash.com/photo-1592478411213-61535fdd2802?q=80&w=2069&auto=format&fit=crop"
-                     onclick="toggleAccordion(this)">
-                    <div class="flex flex-col md:flex-row md:items-baseline justify-between z-10 relative">
-                        <h3 class="text-3xl md:text-7xl font-bold group-hover:text-scarlet transition-colors duration-300 font-sans tracking-tight">
-                            Exo-Glove XR
-                        </h3>
-                        <div class="flex gap-4 mt-2 md:mt-0 font-mono text-xs md:text-sm text-gray-500">
-                            <span>UNITY</span>
-                            <span>/</span>
-                            <span>ARDUINO</span>
-                        </div>
-                    </div>
-                     <div class="accordion-content md:hidden mt-4">
-                        <img src="https://images.unsplash.com/photo-1592478411213-61535fdd2802?q=80&w=2069&auto=format&fit=crop" class="w-full h-48 object-cover rounded mb-4" alt="Detail">
-                        <p class="text-sm text-gray-300 mb-4">Rękawica haptyczna zintegrowana z Unity. Pozwala "poczuć" wirtualne obiekty podczas symulacji naprawczych.</p>
-                        <a href="#" class="text-scarlet text-xs font-bold uppercase tracking-widest">>> Zobacz demo</a>
-                    </div>
-                </div>
-
-                <div class="project-item border-b border-gray-800 py-8 md:py-12 group relative cursor-pointer" 
-                     data-image="https://images.unsplash.com/photo-1535295972055-1c762f4483e5?q=80&w=1887&auto=format&fit=crop"
-                     onclick="toggleAccordion(this)">
-                    <div class="flex flex-col md:flex-row md:items-baseline justify-between z-10 relative">
-                        <h3 class="text-3xl md:text-7xl font-bold group-hover:text-scarlet transition-colors duration-300 font-sans tracking-tight">
-                            Rover AI Nav
-                        </h3>
-                        <div class="flex gap-4 mt-2 md:mt-0 font-mono text-xs md:text-sm text-gray-500">
-                            <span>PYTHON</span>
-                            <span>/</span>
-                            <span>ROS</span>
-                        </div>
-                    </div>
-                     <div class="accordion-content md:hidden mt-4">
-                         <img src="https://images.unsplash.com/photo-1535295972055-1c762f4483e5?q=80&w=1887&auto=format&fit=crop" class="w-full h-48 object-cover rounded mb-4" alt="Detail">
-                        <p class="text-sm text-gray-300 mb-4">Algorytm autonomicznego unikania przeszkód dla mini-łazika marsjańskiego. Testowany w środowisku piaszczystym.</p>
-                        <a href="#" class="text-scarlet text-xs font-bold uppercase tracking-widest">>> Zobacz kod</a>
-                    </div>
-                </div>
-            </div>
+        <div class="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+            <div class="w-[1px] h-16 bg-gradient-to-b from-scarlet to-transparent"></div>
+            <span class="text-[9px] font-mono tracking-widest text-gray-500 animate-pulse">SCROLL_TO_BREACH</span>
         </div>
     </section>
 
-    <section id="case-study" class="py-20 px-4 md:px-20 relative bg-neutral-900/30">
-        <div class="max-w-7xl mx-auto">
-             <h2 class="text-xs font-mono text-gray-500 mb-8 uppercase tracking-widest">
-                02. Flagowy Projekt
-            </h2>
+    <section id="projekty" class="relative py-32 px-4 md:px-12 z-20">
+        <div class="flex items-center gap-4 mb-20">
+            <div class="w-12 h-[1px] bg-scarlet"></div>
+            <h2 class="font-display text-2xl md:text-4xl text-white uppercase">Active Missions</h2>
+        </div>
+
+        <div class="space-y-32">
             
-            <div class="glow-card glass-panel rounded-2xl p-1 md:p-2 overflow-hidden group">
-                <div class="relative bg-black rounded-xl overflow-hidden grid md:grid-cols-2">
-                    <div class="h-64 md:h-auto relative">
-                        <img src="https://images.unsplash.com/photo-1576174464184-fb78fe882bfd?q=80&w=1887&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition duration-700" alt="Helmet">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+            <div class="group relative grid md:grid-cols-12 gap-8 items-center hover-target">
+                <div class="md:col-span-7 relative h-[60vh] holo-card rounded-sm overflow-hidden border-l-4 border-l-scarlet">
+                    <img src="https://images.unsplash.com/photo-1541873676-a18131494184?q=80&w=2518&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-100 transition duration-700 scale-105 group-hover:scale-100 grayscale group-hover:grayscale-0" alt="Space">
+                    <div class="absolute inset-0 bg-gradient-to-r from-black via-transparent to-transparent"></div>
+                    
+                    <div class="absolute top-4 right-4 border border-scarlet/50 p-2 bg-black/50 backdrop-blur-sm">
+                        <span class="font-mono text-[10px] text-scarlet block">STATUS: DEPLOYED</span>
+                        <span class="font-mono text-[10px] text-white block">IMG_8492.RAW</span>
                     </div>
-                    <div class="p-8 md:p-16 flex flex-col justify-center items-start z-10">
-                        <span class="text-scarlet font-bold tracking-widest text-xs mb-4 animate-pulse">● CONCEPT LAB</span>
-                        <h3 class="text-4xl md:text-6xl font-bold text-white mb-6 font-sans">AETHER HELMET UI</h3>
-                        <p class="text-gray-400 mb-8 leading-relaxed">
-                            System HUD nowej generacji dla skafandrów kosmicznych. Wykorzystuje eye-tracking do minimalizacji ruchów dłoni. Zaprojektowany w Figma, prototypowany w Unreal Engine.
+                </div>
+
+                <div class="md:col-span-5 relative z-10">
+                    <h3 class="font-display text-5xl md:text-8xl font-bold text-white mb-4 -ml-20 mix-blend-difference z-20">
+                        ORBITAL <br> <span class="text-scarlet">HABITAT</span>
+                    </h3>
+                    <div class="pl-0 md:pl-8 border-l border-gray-800 space-y-6">
+                        <p class="font-mono text-sm text-gray-400 leading-relaxed">
+                            Modularna stacja orbitalna. Zaprojektowana pod kątem ergonomii w mikrograwitacji. Pełny prototyp 3D (FDM) w skali 1:50.
                         </p>
-                        <button onclick="document.getElementById('cs-modal').classList.remove('hidden')" class="magnetic-btn px-8 py-3 bg-white text-black font-bold uppercase tracking-widest text-xs hover:bg-scarlet hover:text-white transition-colors">
-                            Otwórz Case Study
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 border border-gray-700 text-[10px] uppercase font-mono hover:bg-white hover:text-black transition">Blender</span>
+                            <span class="px-3 py-1 border border-gray-700 text-[10px] uppercase font-mono hover:bg-white hover:text-black transition">3D Print</span>
+                            <span class="px-3 py-1 border border-gray-700 text-[10px] uppercase font-mono hover:bg-white hover:text-black transition">Physics Sims</span>
+                        </div>
+                        <button class="flex items-center gap-4 text-scarlet font-bold tracking-widest uppercase text-xs group-hover:translate-x-4 transition-transform">
+                            [ ACCESS_DATA ] <span class="text-xl">→</span>
                         </button>
                     </div>
                 </div>
             </div>
+
+            <div class="group relative grid md:grid-cols-12 gap-8 items-center hover-target">
+                <div class="md:col-span-5 order-2 md:order-1 relative z-10 text-right">
+                    <h3 class="font-display text-5xl md:text-8xl font-bold text-white mb-4 -mr-20 mix-blend-difference z-20 relative">
+                        NEURAL <br> <span class="text-scarlet">INTERFACE</span>
+                    </h3>
+                    <div class="pr-0 md:pr-8 border-r border-gray-800 space-y-6">
+                        <p class="font-mono text-sm text-gray-400 leading-relaxed">
+                            System XR dla techników serwisowych. Nakłada schematy elektryczne bezpośrednio na fizyczne komponenty w czasie rzeczywistym.
+                        </p>
+                        <div class="flex flex-wrap gap-2 justify-end">
+                            <span class="px-3 py-1 border border-gray-700 text-[10px] uppercase font-mono hover:bg-white hover:text-black transition">Unity 3D</span>
+                            <span class="px-3 py-1 border border-gray-700 text-[10px] uppercase font-mono hover:bg-white hover:text-black transition">C#</span>
+                            <span class="px-3 py-1 border border-gray-700 text-[10px] uppercase font-mono hover:bg-white hover:text-black transition">Oculus SDK</span>
+                        </div>
+                        <button class="flex items-center gap-4 text-scarlet font-bold tracking-widest uppercase text-xs justify-end group-hover:-translate-x-4 transition-transform">
+                            <span class="text-xl">←</span> [ RUN_SIMULATION ] 
+                        </button>
+                    </div>
+                </div>
+
+                <div class="md:col-span-7 order-1 md:order-2 relative h-[60vh] holo-card rounded-sm overflow-hidden border-r-4 border-r-scarlet">
+                    <img src="https://images.unsplash.com/photo-1626379953822-baec19c3accd?q=80&w=2070&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-100 transition duration-700 scale-105 group-hover:scale-100 grayscale group-hover:grayscale-0" alt="VR">
+                    <div class="absolute inset-0 bg-gradient-to-l from-black via-transparent to-transparent"></div>
+                </div>
+            </div>
+
         </div>
     </section>
 
-    <div id="cs-modal" class="hidden fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex justify-center overflow-y-auto">
-        <div class="max-w-4xl w-full p-4 md:p-12 relative min-h-screen">
-            <button onclick="document.getElementById('cs-modal').classList.add('hidden')" class="fixed top-6 right-6 text-white hover:text-scarlet z-50 p-2 glass-panel rounded-full">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-            </button>
-            
-            <div class="space-y-16 py-12">
-                <div class="text-center">
-                    <h2 class="text-5xl md:text-7xl font-bold text-white mb-4">AETHER UI</h2>
-                    <p class="text-scarlet font-mono">AUGMENTED REALITY INTERFACE</p>
-                </div>
-
-                <div class="grid md:grid-cols-2 gap-12">
-                    <div>
-                        <h4 class="text-white font-bold uppercase tracking-widest mb-4 border-l-2 border-scarlet pl-4">Problem</h4>
-                        <p class="text-gray-400 text-sm leading-relaxed">W tradycyjnych skafandrach astronauci muszą używać manualnych przełączników na przedramieniu, co w rękawicach ciśnieniowych jest trudne i męczące.</p>
-                    </div>
-                    <div>
-                        <h4 class="text-white font-bold uppercase tracking-widest mb-4 border-l-2 border-scarlet pl-4">Rozwiązanie</h4>
-                        <p class="text-gray-400 text-sm leading-relaxed">Interfejs rzutowany na szybę hełmu, sterowany śledzeniem wzroku. Skupienie wzroku na ikonie przez 0.5s aktywuje funkcję.</p>
-                    </div>
-                </div>
-
-                <div class="w-full h-64 md:h-96 bg-gray-900 rounded-lg flex items-center justify-center border border-white/10">
-                    <p class="text-gray-500 font-mono">[ WIDEO PROTOTYPU - PLACEHOLDER ]</p>
-                </div>
-
-                <div>
-                    <h4 class="text-white font-bold uppercase tracking-widest mb-4 border-l-2 border-scarlet pl-4">Proces (Wireframes)</h4>
-                    <div class="grid grid-cols-3 gap-4">
-                        <div class="bg-gray-800 h-32 rounded border border-white/5"></div>
-                        <div class="bg-gray-800 h-32 rounded border border-white/5"></div>
-                        <div class="bg-gray-800 h-32 rounded border border-white/5"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <section id="o-mnie" class="py-24 px-4 md:px-20 bg-black">
-        <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
-            <div class="order-2 md:order-1">
-                <h2 class="text-xs font-mono text-gray-500 mb-8 uppercase tracking-widest">03. Profil Operatora</h2>
-                <h3 class="text-3xl md:text-4xl font-bold text-white mb-6 leading-tight">
-                    Inżynieria to dla mnie sztuka <br> <span class="text-scarlet">przetrwania w chaosie.</span>
-                </h3>
-                <p class="text-gray-400 leading-relaxed mb-8">
-                    Łączę surową inżynierię mechaniczną z finezją projektowania cyfrowego. Moim celem nie jest tylko budowanie rzeczy, które działają, ale systemów, które są niezawodne w warunkach krytycznych - czy to w VR, czy na niskiej orbicie okołoziemskiej.
+    <section id="o-mnie" class="py-24 px-4 md:px-12 bg-void relative border-y border-gray-900">
+        <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-16">
+            <div>
+                <h2 class="font-display text-4xl text-white mb-8">OPERATOR <span class="text-scarlet">PROFILE</span></h2>
+                <p class="font-mono text-gray-400 text-sm leading-loose mb-8">
+                    // Nie jestem designerem. Jestem inżynierem z obsesją na punkcie estetyki. <br><br>
+                    Tworzę systemy, które muszą działać w warunkach krytycznych. Mój kod steruje dronami, moje wydruki 3D są częścią funkcjonalnych maszyn, a moje środowiska VR szkolą przyszłych specjalistów. Nie szukam poklasku, szukam wydajności i innowacji.
                 </p>
-
-                <div class="grid grid-cols-3 gap-6 border-t border-gray-800 pt-8">
-                    <div>
-                        <span class="block text-3xl font-bold text-white">45+</span>
-                        <span class="text-[10px] text-gray-500 font-mono uppercase tracking-wider">Kg Filamentu</span>
+                <div class="grid grid-cols-2 gap-8">
+                    <div class="border border-gray-800 p-4 hover:border-scarlet transition bg-black">
+                        <div class="text-3xl font-display font-bold text-white mb-1">2.4k</div>
+                        <div class="text-[10px] font-mono text-scarlet uppercase">Prototyping Hours</div>
                     </div>
-                    <div>
-                        <span class="block text-3xl font-bold text-white">1.2k</span>
-                        <span class="text-[10px] text-gray-500 font-mono uppercase tracking-wider">Commity Github</span>
-                    </div>
-                    <div>
-                        <span class="block text-3xl font-bold text-white">∞</span>
-                        <span class="text-[10px] text-gray-500 font-mono uppercase tracking-wider">Kaw Wypitych</span>
+                    <div class="border border-gray-800 p-4 hover:border-scarlet transition bg-black">
+                        <div class="text-3xl font-display font-bold text-white mb-1">Lvl. 9</div>
+                        <div class="text-[10px] font-mono text-scarlet uppercase">Security Clearance</div>
                     </div>
                 </div>
             </div>
-            <div class="order-1 md:order-2 relative">
-                <div class="glass-panel p-2 rounded-lg transform rotate-3 hover:rotate-0 transition duration-500">
-                    <img src="https://images.unsplash.com/photo-1517420704952-d9f39e95b43e?q=80&w=2070&auto=format&fit=crop" alt="Workshop" class="rounded grayscale hover:grayscale-0 transition duration-500">
+            <div class="relative">
+                <div class="w-full h-full min-h-[400px] border border-gray-800 bg-black/50 relative holo-card">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="text-center">
+                            <div class="w-16 h-16 border-2 border-scarlet rounded-full animate-spin border-t-transparent mx-auto mb-4"></div>
+                            <span class="font-mono text-xs text-scarlet tracking-widest">RENDERING BIOMETRICS...</span>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1531297461136-82lw33a2072e?q=80&w=2690&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover opacity-50 mix-blend-overlay" alt="Profile">
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="stack" class="py-24 px-4 md:px-20 relative">
-        <div class="max-w-7xl mx-auto">
-             <h2 class="text-xs font-mono text-gray-500 mb-12 uppercase tracking-widest">04. Tech in Action</h2>
-             
-             <div class="grid md:grid-cols-3 gap-4">
-                 <div class="group relative h-96 overflow-hidden rounded-lg cursor-default border border-white/10">
-                     <img src="https://images.unsplash.com/photo-1631553127870-d29813c93245?q=80&w=1965&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 transition duration-700 scale-100 group-hover:scale-110" alt="Design">
-                     <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
-                     
-                     <div class="absolute bottom-0 left-0 p-8">
-                         <h3 class="text-2xl font-bold text-white mb-2">DESIGN & CAD</h3>
-                         <ul class="text-xs font-mono text-gray-400 space-y-1">
-                             <li>> Fusion 360</li>
-                             <li>> Blender 3D</li>
-                             <li>> Figma</li>
-                         </ul>
-                     </div>
-                 </div>
+    <section id="stack" class="py-24 px-4 md:px-12 z-20">
+        <h2 class="font-display text-4xl text-white text-center mb-16">WEAPON <span class="text-scarlet">SYSTEMS</span></h2>
+        
+        <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="holo-card p-6 flex flex-col items-center justify-center text-center gap-4 hover-target h-48">
+                <svg class="w-8 h-8 text-scarlet" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path></svg>
+                <h3 class="font-display text-white">FUSION 360</h3>
+                <span class="text-[9px] font-mono text-gray-500">CAD MODELING</span>
+            </div>
+            
+            <div class="holo-card p-6 flex flex-col items-center justify-center text-center gap-4 hover-target h-48">
+                <svg class="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                <h3 class="font-display text-white">PYTHON</h3>
+                <span class="text-[9px] font-mono text-gray-500">AUTOMATION</span>
+            </div>
 
-                 <div class="group relative h-96 overflow-hidden rounded-lg cursor-default border border-white/10">
-                     <img src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=2070&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 transition duration-700 scale-100 group-hover:scale-110" alt="Code">
-                     <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
-                     
-                     <div class="absolute bottom-0 left-0 p-8">
-                         <h3 class="text-2xl font-bold text-white mb-2">CODE & LOGIC</h3>
-                         <ul class="text-xs font-mono text-gray-400 space-y-1">
-                             <li>> Python / C++</li>
-                             <li>> Unity (C#)</li>
-                             <li>> Web Technologies</li>
-                         </ul>
-                     </div>
-                 </div>
+            <div class="holo-card p-6 flex flex-col items-center justify-center text-center gap-4 hover-target h-48">
+                <svg class="w-8 h-8 text-scarlet" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                <h3 class="font-display text-white">SLA PRINT</h3>
+                <span class="text-[9px] font-mono text-gray-500">RESIN MFG</span>
+            </div>
 
-                 <div class="group relative h-96 overflow-hidden rounded-lg cursor-default border border-white/10">
-                     <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=2070&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 transition duration-700 scale-100 group-hover:scale-110" alt="Build">
-                     <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
-                     
-                     <div class="absolute bottom-0 left-0 p-8">
-                         <h3 class="text-2xl font-bold text-white mb-2">MANUFACTURING</h3>
-                         <ul class="text-xs font-mono text-gray-400 space-y-1">
-                             <li>> FDM / SLA Printing</li>
-                             <li>> Electronics Soldering</li>
-                             <li>> Prototyping</li>
-                         </ul>
-                     </div>
-                 </div>
-             </div>
+            <div class="holo-card p-6 flex flex-col items-center justify-center text-center gap-4 hover-target h-48">
+                <svg class="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                <h3 class="font-display text-white">UNITY</h3>
+                <span class="text-[9px] font-mono text-gray-500">INTERACTION</span>
+            </div>
         </div>
     </section>
 
-    <footer id="kontakt" class="py-20 border-t border-white/10 text-center">
-        <h2 class="text-4xl md:text-6xl font-bold text-white mb-8">LET'S BUILD <br> <span class="text-stroke">IMPOSSIBLE THINGS</span></h2>
-        <div class="flex justify-center gap-6">
-            <a href="https://linkedin.com" class="text-scarlet font-mono hover:text-white transition">LINKEDIN</a>
-            <a href="https://github.com" class="text-scarlet font-mono hover:text-white transition">GITHUB</a>
-            <a href="mailto:kontakt@example.com" class="text-scarlet font-mono hover:text-white transition">EMAIL</a>
+    <footer id="kontakt" class="py-12 border-t border-gray-900 bg-black text-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-scarlet/5 animate-pulse"></div>
+        <div class="relative z-10">
+            <h2 class="font-display text-6xl text-white mb-8 tracking-tighter">END TRANSMISSION</h2>
+            <div class="flex justify-center gap-8 mb-8">
+                <a href="#" class="text-scarlet font-mono text-sm hover:underline hover-target">LINKEDIN</a>
+                <a href="#" class="text-scarlet font-mono text-sm hover:underline hover-target">GITHUB</a>
+                <a href="#" class="text-scarlet font-mono text-sm hover:underline hover-target">DISCORD</a>
+            </div>
+            <p class="font-mono text-[9px] text-gray-600">SYSTEM ARCHITECT: GRAEG // 2026</p>
         </div>
-        <p class="text-gray-600 text-xs mt-12 font-mono">&copy; 2026 GRAEG SYSTEM. ALL RIGHTS RESERVED.</p>
     </footer>
 
     <script>
-        // --- 3D BACKGROUND (THREE.JS) ---
+        // --- 1. BOOT SEQUENCE ---
+        const bootScreen = document.getElementById('boot-screen');
+        const bootBar = document.getElementById('boot-bar');
+        const bootLog = document.getElementById('boot-log');
+        
+        const logs = [
+            "INITIALIZING KERNEL...",
+            "LOADING ASSETS...",
+            "DECRYPTING SECURE FILES...",
+            "ESTABLISHING UPLINK...",
+            "SYSTEM READY."
+        ];
+
+        let logIndex = 0;
+        
+        // Symulacja ładowania
+        gsap.to(bootBar, {
+            width: "100%",
+            duration: 2.5,
+            ease: "power2.inOut",
+            onUpdate: function() {
+                if(Math.random() > 0.9 && logIndex < logs.length) {
+                    const p = document.createElement('div');
+                    p.innerText = logs[logIndex++];
+                    bootLog.appendChild(p);
+                    bootLog.scrollTop = bootLog.scrollHeight;
+                }
+            },
+            onComplete: () => {
+                gsap.to(bootScreen, {
+                    y: "-100%",
+                    duration: 0.8,
+                    ease: "power4.inOut",
+                    delay: 0.5
+                });
+            }
+        });
+
+        // --- 2. CUSTOM CURSOR LOGIC ---
+        const cursor = document.getElementById('cursor');
+        const hoverTargets = document.querySelectorAll('.hover-target, a, button');
+
+        document.addEventListener('mousemove', (e) => {
+            gsap.to(cursor, {
+                x: e.clientX,
+                y: e.clientY,
+                duration: 0.1,
+                ease: "power2.out"
+            });
+        });
+
+        hoverTargets.forEach(target => {
+            target.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+            target.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+        });
+
+        // --- 3. THREE.JS WIREFRAME GLOBE ---
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-        // Grid/Particles
-        const geometry = new THREE.BufferGeometry();
-        const count = 1000;
-        const positions = new Float32Array(count * 3);
-        for(let i=0; i<count*3; i++) { positions[i] = (Math.random() - 0.5) * 10; }
-        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        const material = new THREE.PointsMaterial({ size: 0.02, color: 0xDC143C });
-        const particles = new THREE.Points(geometry, material);
+        // Globe Geometry
+        const geometry = new THREE.IcosahedronGeometry(3, 2);
+        const material = new THREE.MeshBasicMaterial({ 
+            color: 0x1a1a1a, 
+            wireframe: true,
+            transparent: true,
+            opacity: 0.15
+        });
+        const globe = new THREE.Mesh(geometry, material);
+        scene.add(globe);
+
+        // Floating Particles
+        const particlesGeo = new THREE.BufferGeometry();
+        const pCount = 200;
+        const pPos = new Float32Array(pCount * 3);
+        for(let i=0; i<pCount*3; i++) {
+            pPos[i] = (Math.random() - 0.5) * 10;
+        }
+        particlesGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+        const pMat = new THREE.PointsMaterial({ size: 0.03, color: 0xFF0033 });
+        const particles = new THREE.Points(particlesGeo, pMat);
         scene.add(particles);
 
-        camera.position.z = 2;
+        camera.position.z = 6;
+
+        // Mouse interaction for 3D
+        let mouseX = 0;
+        let mouseY = 0;
+        document.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+            mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+        });
 
         function animate() {
             requestAnimationFrame(animate);
-            particles.rotation.y += 0.001;
-            particles.rotation.x += 0.0005;
+            
+            // Subtle Rotation
+            globe.rotation.y += 0.002;
+            particles.rotation.y -= 0.001;
+
+            // Mouse Parallax
+            globe.rotation.x += mouseY * 0.001;
+            globe.rotation.y += mouseX * 0.001;
+
             renderer.render(scene, camera);
         }
         animate();
+
+        window.addEventListener('resize', () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+        });
+
+        // --- 4. SCROLL ANIMATIONS ---
+        gsap.registerPlugin(ScrollTrigger);
         
-        window.addEventListener('resize', () => { 
-            renderer.setSize(window.innerWidth, window.innerHeight); 
-            camera.aspect = window.innerWidth / window.innerHeight; 
-            camera.updateProjectionMatrix(); 
-        });
-
-        // --- HOVER PREVIEW LOGIC (Desktop) ---
-        const preview = document.getElementById('cursor-preview');
-        const previewImg = document.getElementById('preview-image');
-        const projectItems = document.querySelectorAll('.project-item');
-
-        document.addEventListener('mousemove', (e) => {
-            const x = e.clientX;
-            const y = e.clientY;
-            
-            // Move preview
-            gsap.to(preview, { x: x, y: y, duration: 0.5, ease: "power2.out" });
-        });
-
-        projectItems.forEach(item => {
-            item.addEventListener('mouseenter', () => {
-                const img = item.getAttribute('data-image');
-                previewImg.src = img;
-                preview.style.opacity = '1';
-                preview.style.transform = 'translate(-50%, -50%) scale(1)';
-            });
-            item.addEventListener('mouseleave', () => {
-                preview.style.opacity = '0';
-                preview.style.transform = 'translate(-50%, -50%) scale(0.8)';
+        gsap.utils.toArray('.holo-card').forEach(card => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 85%",
+                    toggleActions: "play none none reverse"
+                },
+                y: 50,
+                opacity: 0,
+                duration: 0.8,
+                ease: "power3.out"
             });
         });
 
-        // --- MOBILE ACCORDION LOGIC ---
-        function toggleAccordion(element) {
-            if(window.innerWidth >= 768) return; // Disable on desktop
-            const content = element.querySelector('.accordion-content');
-            
-            // Close others
-            document.querySelectorAll('.accordion-content').forEach(el => {
-                if(el !== content) el.style.maxHeight = null;
-            });
-
-            if (content.style.maxHeight) {
-                content.style.maxHeight = null;
-            } else {
-                content.style.maxHeight = content.scrollHeight + "px";
-            }
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
         }
-
-        // --- STICKY NAV OBSERVER ---
-        const sections = document.querySelectorAll('section');
-        const navDots = document.querySelectorAll('.nav-dot');
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    navDots.forEach(dot => {
-                        dot.classList.remove('active');
-                        if (dot.getAttribute('href') === '#' + entry.target.id) {
-                            dot.classList.add('active');
-                        }
-                    });
-                }
-            });
-        }, { threshold: 0.5 });
-
-        sections.forEach(section => observer.observe(section));
-
-        // --- LIGHT/DARK MODE TOGGLE ---
-        const themeBtn = document.getElementById('theme-toggle');
-        themeBtn.addEventListener('click', () => {
-            document.body.classList.toggle('light-mode');
-            if(document.body.classList.contains('light-mode')) {
-                material.color.setHex(0x333333); // Dark particles in light mode
-                renderer.setClearColor(0xe8e8e8, 0); 
-            } else {
-                material.color.setHex(0xDC143C); // Scarlet particles in dark mode
-            }
-        });
-
     </script>
 </body>
 </html>
