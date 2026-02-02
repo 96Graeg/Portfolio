@@ -165,7 +165,10 @@
             <a href="#repos" onclick="toggleSidebar()" class="flex items-center gap-3 p-3 rounded hover:bg-white/5 hover:text-scarlet transition group">
                 <span class="text-gray-600 group-hover:text-scarlet">02.</span> Projekty (Repos)
             </a>
-            </nav>
+            <a href="#stack" onclick="toggleSidebar()" class="flex items-center gap-3 p-3 rounded hover:bg-white/5 hover:text-scarlet transition group">
+                <span class="text-gray-600 group-hover:text-scarlet">03.</span> Arsenał (Stack)
+            </a>
+        </nav>
 
         <div class="flex-1 overflow-y-auto custom-scroll px-4 border-t border-white/10 pt-4">
             <p class="font-mono text-[10px] text-gray-500 uppercase tracking-widest mb-3 px-2">Data Links</p>
@@ -208,17 +211,14 @@
                     <svg class="w-4 h-4 text-scarlet" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
                     Pełny Ekran
                 </button>
-
                 <button onclick="window.location.reload()" class="w-full text-left text-xs font-bold text-gray-300 hover:text-white hover:bg-white/10 p-3 rounded transition flex items-center gap-3">
                     <svg class="w-4 h-4 text-scarlet" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                     Restart Systemu
                 </button>
-
                 <button onclick="toggle3D()" class="w-full text-left text-xs font-bold text-gray-300 hover:text-white hover:bg-white/10 p-3 rounded transition flex items-center gap-3">
                     <svg class="w-4 h-4 text-scarlet" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path></svg>
                     Wł/Wył Tło 3D
                 </button>
-
                 <button onclick="window.print()" class="w-full text-left text-xs font-bold text-gray-300 hover:text-white hover:bg-white/10 p-3 rounded transition flex items-center gap-3">
                     <svg class="w-4 h-4 text-scarlet" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                     Zapisz PDF / Drukuj
@@ -337,22 +337,46 @@
             </div>
         </section>
 
-    </main>
+        <section id="stack" class="mb-12">
+            <h2 class="text-xs font-mono text-gray-500 uppercase tracking-widest mb-6 border-b border-white/10 pb-2">
+                Tech Stack (Arsenał)
+            </h2>
+            
+            <div class="glass-panel rounded-lg overflow-hidden font-mono text-sm">
+                <div class="bg-white/5 px-4 py-2 border-b border-white/5 text-xs text-gray-500">
+                    root/skills/
+                </div>
+                
+                <div class="divide-y divide-white/5">
+                    <div class="flex items-center px-4 py-3 hover:bg-scarlet/10 transition cursor-default group">
+                        <span class="text-scarlet mr-3">></span>
+                        <span class="text-gray-300 group-hover:text-white">AutoCAD / Fusion 360</span>
+                        <span class="ml-auto text-xs text-gray-600">Advanced</span>
+                    </div>
+                    <div class="flex items-center px-4 py-3 hover:bg-scarlet/10 transition cursor-default group">
+                        <span class="text-scarlet mr-3">></span>
+                        <span class="text-gray-300 group-hover:text-white">Python Scripting</span>
+                        <span class="ml-auto text-xs text-gray-600">Intermediate</span>
+                    </div>
+                    <div class="flex items-center px-4 py-3 hover:bg-scarlet/10 transition cursor-default group">
+                        <span class="text-scarlet mr-3">></span>
+                        <span class="text-gray-300 group-hover:text-white">Blender 3D</span>
+                        <span class="ml-auto text-xs text-gray-600">Mid</span>
+                    </div>
+                    <div class="flex items-center px-4 py-3 hover:bg-scarlet/10 transition cursor-default group">
+                        <span class="text-scarlet mr-3">></span>
+                        <span class="text-gray-300 group-hover:text-white">Unity / C#</span>
+                        <span class="ml-auto text-xs text-gray-600">Learning</span>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <footer id="kontakt" class="border-t border-white/10 bg-black pt-16 pb-12 relative overflow-hidden glass-panel">
-        <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
-            <h2 class="text-2xl font-bold text-white mb-8 uppercase tracking-widest">Centrum Połączeń</h2>
-            <div class="flex flex-wrap justify-center gap-6 mb-12">
-                <a href="https://linktr.ee/96graeg" target="_blank" class="px-6 py-3 border border-scarlet bg-scarlet/10 text-white rounded-full hover:bg-scarlet transition uppercase text-xs font-bold tracking-widest">Linktree</a>
-                <a href="https://discord.gg/PdmeSzZvB" target="_blank" class="px-6 py-3 border border-scarlet bg-scarlet/10 text-white rounded-full hover:bg-scarlet transition uppercase text-xs font-bold tracking-widest">Discord</a>
-                <a href="https://github.com/96Graeg" target="_blank" class="px-6 py-3 border border-scarlet bg-scarlet/10 text-white rounded-full hover:bg-scarlet transition uppercase text-xs font-bold tracking-widest">GitHub</a>
-            </div>
-            <div class="text-[10px] text-gray-600 font-mono">
-                // END OF LINE <br>
-                &copy; 2026 GRZEGORZ WOJTALCZYK
-            </div>
+        <div class="text-center text-[10px] text-gray-700 font-mono pt-12 pb-4">
+            // GRAEG SYSTEMS &copy; 2026
         </div>
-    </footer>
+
+    </main>
 
     <script>
         // 1. THEME TOGGLE
@@ -400,10 +424,7 @@
         // 4. GLOBAL ESCAPE LISTENER (Zamknij wszystko)
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                // Zamknij Sidebar
                 if (isSidebarOpen) toggleSidebar();
-                
-                // Zamknij Panel Narzędzi
                 if (isToolsOpen) {
                     isToolsOpen = false;
                     toolsPanel.classList.add('hidden');
@@ -483,10 +504,6 @@
         
         function updateMissionTimer() {
             const now = new Date();
-            // Obliczamy różnicę. Jeśli data jest w przyszłości, będzie ujemna (odliczanie), jeśli w przeszłości - dodatnia (czas trwania).
-            // Skoro napisałeś "T+ 1110d", zakładam, że chcesz liczyć czas OD tej daty.
-            // Jeśli jednak jesteśmy PRZED tą datą (a mamy luty 2026, więc jesteśmy PO), to czas leci do przodu.
-            
             const diff = Math.abs(now - startDate);
             
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
