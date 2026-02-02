@@ -5,8 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Portfolio | Grzegorz "Graeg" Wojtalczyk</title>
     <meta name="description" content="Portfolio Grzegorza Wojtalczyka - 3D Printing, XR & Space Tech">
+    
     <meta name="theme-color" content="#141414">
     <link rel="icon" type="image/png" href="logo2.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="logo2.png">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -14,21 +17,6 @@
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
-    <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#141414">
-<link rel="apple-touch-icon" href="logo2.png">
-
-<script>
-  // Rejestracja Service Workera
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then(reg => console.log('Service Worker zarejestrowany:', reg.scope))
-        .catch(err => console.log('Błąd Service Workera:', err));
-    });
-  }
-</script>
-    
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -60,28 +48,25 @@
             color: var(--text-color);
             cursor: crosshair;
             transition: background-color 0.5s ease, color 0.5s ease;
-            overscroll-behavior: none; /* Zapobiega "bouncowaniu" strony na mac/mobile */
+            overscroll-behavior: none;
         }
 
-        /* --- LIGHT MODE REPAIRED --- */
+        /* --- LIGHT MODE FIXES --- */
         body.light-mode { 
             --bg-color: #e8e8e8;
             --text-color: #1a1a1a;
         }
 
-        /* Tło siatki dla light mode */
         body.light-mode .tech-grid-overlay {
             opacity: 0.15;
             background-image: linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px);
             background-size: 40px 40px;
-            mask-image: none; 
-            -webkit-mask-image: none;
+            mask-image: none; -webkit-mask-image: none;
         }
         
         body.light-mode .galaxy-container { opacity: 0; } 
         body.light-mode .scanlines { opacity: 0.03; mix-blend-mode: multiply; }
 
-        /* Karty w light mode - poprawiona czytelność */
         body.light-mode .glass-dark { 
             background: rgba(255, 255, 255, 0.85); 
             backdrop-filter: blur(12px);
@@ -90,31 +75,25 @@
             color: #000; 
         }
 
-        /* FIX: Wymuszenie czarnego tekstu na białym tle, ALE zachowanie białego na czerwonych guzikach */
+        /* Critical: Force dark text on light background, but keep buttons white */
         body.light-mode .text-white { color: #111 !important; }
-        
-        /* WYJĄTKI DLA LIGHT MODE - Elementy, które muszą mieć jasny tekst */
         body.light-mode .bg-scarlet .text-white,
         body.light-mode .btn-filled,
         body.light-mode .btn-filled:hover,
-        body.light-mode nav .glass-dark .text-white, /* Zachowanie loga/menu */
+        body.light-mode nav .glass-dark .text-white, 
         body.light-mode .group:hover .group-hover\:text-white { 
             color: #fff !important; 
         }
 
-        /* Teksty szare w light mode */
         body.light-mode .text-gray-300, 
         body.light-mode .text-gray-400, 
         body.light-mode .text-gray-500 { color: #4b5563 !important; }
 
-        /* Widgety w light mode */
         body.light-mode .tech-widget { 
-            background: rgba(255, 255, 255, 0.95); 
-            color: #000; 
+            background: rgba(255, 255, 255, 0.95); color: #000; 
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
-        /* Scrollbar w light mode */
         body.light-mode ::-webkit-scrollbar-track { background: #d1d5db; }
         body.light-mode ::-webkit-scrollbar-thumb { background: #9ca3af; }
 
@@ -150,23 +129,16 @@
         }
 
         @keyframes glitch-anim {
-            0% { transform: translate(0) }
-            20% { transform: translate(-2px, 2px) }
-            40% { transform: translate(-2px, -2px) }
-            60% { transform: translate(2px, 2px) }
-            80% { transform: translate(2px, -2px) }
-            100% { transform: translate(0) }
+            0% { transform: translate(0) } 20% { transform: translate(-2px, 2px) }
+            40% { transform: translate(-2px, -2px) } 60% { transform: translate(2px, 2px) }
+            80% { transform: translate(2px, -2px) } 100% { transform: translate(0) }
         }
         .hover-glitch:hover {
             animation: glitch-anim 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
-            color: #DC143C !important;
-            text-shadow: 2px 0 rgba(255,255,255,0.5), -2px 0 rgba(139,0,0,0.5);
+            color: #DC143C !important; text-shadow: 2px 0 rgba(255,255,255,0.5), -2px 0 rgba(139,0,0,0.5);
             border-color: #DC143C !important;
         }
-        
-        body.light-mode .hover-glitch:hover {
-            text-shadow: 2px 0 rgba(0,0,0,0.2), -2px 0 rgba(220,20,60,0.2);
-        }
+        body.light-mode .hover-glitch:hover { text-shadow: 2px 0 rgba(0,0,0,0.2), -2px 0 rgba(220,20,60,0.2); }
 
         /* --- UI UTILS --- */
         .glass-dark { background: rgba(30, 30, 30, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(220, 20, 60, 0.3); box-shadow: 0 0 15px rgba(220, 20, 60, 0.05); transition: all 0.3s ease; }
@@ -190,11 +162,19 @@
         .toggle-checkbox:checked + .toggle-label { background-color: #DC143C; }
 
         #ar-modal, #story-modal { transition: opacity 0.3s ease-in-out; }
-
-        /* Custom scroll for tools panel */
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #555; border-radius: 4px; }
     </style>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker Ready (PWA enabled)', reg.scope))
+                    .catch(err => console.log('Service Worker Failed', err));
+            });
+        }
+    </script>
 </head>
 <body class="antialiased selection:bg-scarlet selection:text-white relative">
 
@@ -428,7 +408,7 @@
             </div>
 
             <div class="text-[9px] text-gray-500 mt-2 text-center font-mono">
-                SYSTEM VER. 3.7 // <span id="current-year-mini"></span>
+                SYSTEM VER. 4.0 // <span id="current-year-mini"></span>
             </div>
         </div>
     </div>
@@ -802,11 +782,11 @@
             
             // Update 3D Model Colors for Light Mode
             if(document.body.classList.contains('light-mode')) {
-                material.color.setHex(0x333333); // Ciemny grafit
-                coreMat.color.setHex(0xDC143C); // Czerwony rdzeń
+                if(material) material.color.setHex(0x333333); // Ciemny grafit
+                if(coreMat) coreMat.color.setHex(0xDC143C); // Czerwony rdzeń
             } else {
-                material.color.setHex(0xDC143C); // Oryginalny czerwony
-                coreMat.color.setHex(0xffffff); // Biały rdzeń
+                if(material) material.color.setHex(0xDC143C); // Oryginalny czerwony
+                if(coreMat) coreMat.color.setHex(0xffffff); // Biały rdzeń
             }
         });
 
@@ -908,11 +888,12 @@
             btn.addEventListener("mouseleave", () => { gsap.to(btn, { duration: 0.3, x: 0, y: 0, ease: "power2.out" }); });
         });
 
-        // MISSION TIMER LOGIC - Fixed to start from past (Launch Date)
-        const startDate = new Date('2023-01-01T00:00:00'); // Changed to past date for "Runtime"
+        // MISSION TIMER LOGIC (SYSTEM RUNTIME)
+        const startDate = new Date('2023-01-19T00:00:00'); // Data "Uruchomienia" (np. data urodzin lub ważnego wydarzenia)
         function updateMissionTimer() {
             const now = new Date();
-            const diff = now - startDate;
+            const diff = now - startDate; // Oblicz różnicę od daty przeszłej (Runtime)
+            
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
             const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
