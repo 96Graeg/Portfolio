@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Graeg | Portfolio</title>
+    <title>Graeg | Systems Architect</title>
     
     <link rel="icon" type="image/svg+xml" href="logo_portfolio.svg">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <script>
         tailwind.config = {
@@ -17,30 +18,16 @@
             theme: {
                 extend: {
                     fontFamily: { 
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'] 
+                        sans: ['Space Grotesk', 'sans-serif'],
+                        mono: ['Space Mono', 'monospace'] 
                     },
                     colors: { 
-                        gh: {
-                            bg: '#0d1117',
-                            bgSec: '#161b22',
-                            border: '#30363d',
-                            text: '#c9d1d9',
-                            textSec: '#8b949e',
-                            link: '#58a6ff',
-                            btn: '#21262d',
-                            btnHover: '#30363d',
-                            green: '#238636'
-                        },
-                        ghLight: {
-                            bg: '#ffffff',
-                            bgSec: '#f6f8fa',
-                            border: '#d0d7de',
-                            text: '#24292f',
-                            textSec: '#57606a',
-                            btn: '#f6f8fa',
-                            btnHover: '#ebf0f4'
-                        }
+                        scarlet: '#DC143C', 
+                        void: '#0a0a0a',
+                        glass: 'rgba(20, 20, 20, 0.7)'
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                     }
                 }
             }
@@ -48,272 +35,265 @@
     </script>
 
     <style>
-        /* BASE STYLES */
+        /* --- CORE STYLES --- */
+        :root {
+            --bg-color: #0a0a0a;
+            --text-main: #e5e5e5;
+            --text-muted: #a3a3a3;
+            --accent: #DC143C;
+            --glass-border: rgba(220, 20, 60, 0.2);
+            --glass-bg: rgba(10, 10, 10, 0.8);
+        }
+
         body {
-            background-color: #0d1117;
-            color: #c9d1d9;
-            font-family: 'Inter', sans-serif;
-            transition: background-color 0.3s, color 0.3s;
+            background-color: var(--bg-color);
+            color: var(--text-main);
             overflow-x: hidden;
+            transition: background-color 0.5s ease;
         }
 
-        /* LIGHT MODE OVERRIDES */
+        /* --- LIGHT MODE (LABORATORY STYLE) --- */
         body.light-mode {
-            background-color: #ffffff;
-            color: #24292f;
+            --bg-color: #eef2f6;
+            --text-main: #1a1a1a;
+            --text-muted: #555;
+            --glass-border: rgba(220, 20, 60, 0.4);
+            --glass-bg: rgba(255, 255, 255, 0.85);
         }
-        
-        body.light-mode .gh-border { border-color: #d0d7de; }
-        body.light-mode .gh-bg-sec { background-color: #f6f8fa; }
-        body.light-mode .gh-text-sec { color: #57606a; }
-        body.light-mode .gh-btn { background-color: #f6f8fa; border-color: rgba(27,31,36,0.15); color: #24292f; }
-        body.light-mode .gh-btn:hover { background-color: #ebf0f4; }
-        body.light-mode .sidebar-bg { background-color: #f6f8fa; border-right: 1px solid #d0d7de; }
 
-        /* DARK MODE DEFAULTS */
-        .gh-border { border-color: #30363d; }
-        .gh-bg-sec { background-color: #161b22; }
-        .gh-text-sec { color: #8b949e; }
-        .gh-btn { background-color: #21262d; border-color: #30363d; color: #c9d1d9; }
-        .gh-btn:hover { background-color: #30363d; border-color: #8b949e; }
-        .sidebar-bg { background-color: #0d1117; border-right: 1px solid #30363d; }
+        /* --- COMPONENTS --- */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
 
-        /* TOGGLE SWITCH */
-        .toggle-checkbox:checked {
-            right: 0;
-            border-color: #238636;
-        }
-        .toggle-checkbox:checked + .toggle-label {
-            background-color: #238636;
-        }
-        
-        /* SIDEBAR TRANSITION */
-        #sidebar { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        
-        /* BACKGROUND 3D (Subtle) */
-        #canvas-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.15; pointer-events: none;
-        }
-        body.light-mode #canvas-container { opacity: 0.05; }
+        .text-glow { text-shadow: 0 0 15px rgba(220, 20, 60, 0.5); }
+        body.light-mode .text-glow { text-shadow: none; }
 
-        .markdown-body h2 { border-bottom: 1px solid #30363d; padding-bottom: 0.3em; margin-top: 24px; margin-bottom: 16px; font-weight: 600; font-size: 1.5em; }
-        body.light-mode .markdown-body h2 { border-bottom: 1px solid #d0d7de; }
+        .scanlines {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
+            background-size: 100% 4px;
+            z-index: 9999; pointer-events: none; opacity: 0.2;
+        }
+
+        /* --- SIDEBAR TRANSITION --- */
+        #sidebar { transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
+        
+        /* --- TOGGLE SWITCH --- */
+        .toggle-checkbox:checked { right: 0; border-color: #DC143C; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #DC143C; }
+
+        /* --- 3D CANVAS --- */
+        #canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.4; pointer-events: none; }
     </style>
 </head>
-<body class="flex flex-col min-h-screen">
+<body class="flex flex-col min-h-screen font-sans selection:bg-scarlet selection:text-white">
 
+    <div class="scanlines"></div>
     <div id="canvas-container"></div>
 
-    <header class="fixed top-0 left-0 w-full z-50 bg-[#161b22] border-b border-[#30363d] h-16 flex items-center justify-between px-4 transition-colors duration-300" id="main-header">
+    <header class="fixed top-0 left-0 w-full z-50 h-16 glass-panel border-b border-scarlet/20 flex items-center justify-between px-6 transition-all duration-300">
         
-        <div class="flex items-center gap-4">
-            <button id="sidebar-toggle" class="p-2 rounded-md hover:bg-gray-700/50 text-gray-400 transition border border-transparent hover:border-gray-600">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        <div class="flex items-center gap-6">
+            <button id="sidebar-toggle" class="group p-2 -ml-2 rounded-md hover:bg-scarlet/10 transition">
+                <div class="space-y-1.5 w-6">
+                    <span class="block w-full h-0.5 bg-gray-400 group-hover:bg-scarlet transition-colors"></span>
+                    <span class="block w-3/4 h-0.5 bg-gray-400 group-hover:bg-scarlet transition-colors group-hover:w-full"></span>
+                    <span class="block w-full h-0.5 bg-gray-400 group-hover:bg-scarlet transition-colors"></span>
+                </div>
             </button>
             
-            <a href="#" class="flex items-center gap-2 group">
-                <img src="logo_portfolio.svg" alt="Graeg Logo" class="w-8 h-8 group-hover:opacity-80 transition">
-                <span class="font-bold text-lg tracking-tight group-hover:text-blue-400 transition">Graeg</span>
+            <a href="#" onclick="window.location.reload(); return false;" class="flex items-center gap-3 group">
+                <img src="logo_portfolio.svg" alt="G" class="w-8 h-8 group-hover:rotate-90 transition duration-500">
+                <span class="font-mono font-bold text-lg tracking-widest group-hover:text-scarlet transition text-glow">GRAEG<span class="text-scarlet">.SYS</span></span>
             </a>
         </div>
 
-        <div class="flex items-center gap-3">
-            <span class="text-xs font-mono text-gray-500 uppercase hidden md:block">Display Mode</span>
-            <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
-                <input type="checkbox" name="toggle" id="theme-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer left-0 transition-all duration-300"/>
-                <label for="theme-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-700 cursor-pointer border border-gray-600"></label>
+        <div class="flex items-center gap-4">
+            <span class="text-[10px] font-mono text-gray-500 uppercase tracking-widest hidden md:block">System Mode</span>
+            <div class="relative inline-block w-12 mr-2 align-middle select-none">
+                <input type="checkbox" id="theme-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer left-0 transition-all duration-300 border-gray-900"/>
+                <label for="theme-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-800 cursor-pointer border border-white/10"></label>
             </div>
         </div>
     </header>
 
-    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden backdrop-blur-sm transition-opacity"></div>
-    <aside id="sidebar" class="fixed top-0 left-0 h-full w-80 sidebar-bg z-50 transform -translate-x-full pt-20 px-6 overflow-y-auto flex flex-col gap-6 shadow-2xl">
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/80 z-40 hidden backdrop-blur-sm transition-opacity duration-300"></div>
+    <aside id="sidebar" class="fixed top-0 left-0 h-full w-80 glass-panel z-50 transform -translate-x-full pt-20 px-6 flex flex-col gap-8 shadow-[0_0_50px_rgba(220,20,60,0.1)] border-r border-scarlet/30">
         
-        <div class="flex flex-col items-start gap-4 pb-6 border-b gh-border">
-            <div class="w-full flex items-center gap-4">
-                <div class="relative">
-                    <img src="logo_portfolio.svg" class="w-16 h-16 rounded-full border-2 gh-border bg-gray-800 p-1">
-                    <div class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-[#0d1117]"></div>
+        <div class="flex flex-col gap-4 pb-6 border-b border-white/10">
+            <div class="relative w-fit">
+                <div class="w-20 h-20 rounded-full border-2 border-scarlet p-1 bg-black/50">
+                    <img src="logo_portfolio.svg" class="w-full h-full object-cover">
                 </div>
-                <div>
-                    <h2 class="text-xl font-bold">Grzegorz</h2>
-                    <p class="text-sm gh-text-sec">@96Graeg</p>
-                </div>
+                <div class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-black animate-pulse"></div>
             </div>
-            <p class="text-sm">Inżynier Mechatronik. Druk 3D, XR, Space Tech. Tworzę rzeczy, które działają.</p>
-            
-            <button class="w-full py-1.5 text-sm font-medium bg-[#21262d] border border-[#30363d] rounded-md hover:bg-[#30363d] hover:border-gray-400 transition text-[#c9d1d9] shadow-sm">
-                Follow
-            </button>
-            
-            <div class="flex items-center gap-1 text-xs gh-text-sec mt-2">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 16 16"><path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M12.5 7a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0zM8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0z"/></svg>
-                <span>Łódź, PL</span>
+            <div>
+                <h2 class="text-2xl font-bold uppercase tracking-wide">Grzegorz</h2>
+                <p class="font-mono text-xs text-scarlet tracking-widest">>> ENGINEERING_LEAD</p>
             </div>
+            <p class="text-sm text-gray-400 font-light leading-relaxed">
+                Łączę inżynierię mechaniczną z kodem. Specjalista od druku 3D, XR i systemów kosmicznych.
+            </p>
         </div>
 
-        <nav class="flex flex-col gap-1">
-            <a href="#readme" class="flex items-center gap-3 px-2 py-2 rounded-md hover:bg-gray-800/50 hover:text-blue-400 transition text-sm font-medium">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 16 16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"/></svg>
-                Overview (README)
+        <nav class="flex flex-col gap-2 font-mono text-sm">
+            <a href="#readme" onclick="toggleSidebar()" class="flex items-center gap-3 p-3 rounded hover:bg-scarlet/10 hover:text-scarlet transition group border border-transparent hover:border-scarlet/30">
+                <span class="text-gray-600 group-hover:text-scarlet">01.</span> O mnie (ReadMe)
             </a>
-            <a href="#repos" class="flex items-center gap-3 px-2 py-2 rounded-md hover:bg-gray-800/50 hover:text-blue-400 transition text-sm font-medium">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 16 16"><path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 1 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 0 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 0 1 1-1h8zM5 12.25v3.25a.25.25 0 0 0 .4.2l1.45-1.087a.25.25 0 0 1 .3 0L8.6 15.7a.25.25 0 0 0 .4-.2v-3.25a.25.25 0 0 0-.25-.25h-3.5a.25.25 0 0 0-.25.25z"/></svg>
-                Repositories (Projekty)
+            <a href="#repos" onclick="toggleSidebar()" class="flex items-center gap-3 p-3 rounded hover:bg-scarlet/10 hover:text-scarlet transition group border border-transparent hover:border-scarlet/30">
+                <span class="text-gray-600 group-hover:text-scarlet">02.</span> Projekty (Repos)
             </a>
-            <a href="#stack" class="flex items-center gap-3 px-2 py-2 rounded-md hover:bg-gray-800/50 hover:text-blue-400 transition text-sm font-medium">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 16 16"><path d="M7.48 8.134c.36.175.77.295 1.2.342v5.274a2.25 2.25 0 0 1-1.2.25h-.251A2.251 2.251 0 0 1 5 11.75V6.23a3.75 3.75 0 0 1 2.48 1.904zm4.27 1.904a3.751 3.751 0 0 1 2.48-1.904v5.619a2.251 2.251 0 0 1-2.229 2.247h-.251a2.25 2.25 0 0 1-1.2-.25v-5.274c.43-.047.84-.167 1.2-.342zM8 4a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg>
-                Tech Stack (Arsenał)
+            <a href="#stack" onclick="toggleSidebar()" class="flex items-center gap-3 p-3 rounded hover:bg-scarlet/10 hover:text-scarlet transition group border border-transparent hover:border-scarlet/30">
+                <span class="text-gray-600 group-hover:text-scarlet">03.</span> Arsenał (Stack)
             </a>
         </nav>
 
-        <div class="mt-auto pb-6 text-xs gh-text-sec border-t gh-border pt-4">
-            &copy; 2026 Graeg Systems.<br>Inspired by GitHub UI.
+        <div class="mt-auto pb-8 text-[10px] text-gray-600 font-mono text-center">
+            SYSTEM STATUS: ONLINE <br>
+            &copy; 2026 GRAEG INDUSTRIES
         </div>
     </aside>
 
-    <main class="flex-1 w-full max-w-5xl mx-auto pt-24 px-4 pb-12 markdown-body">
+    <main class="flex-1 w-full max-w-5xl mx-auto pt-28 px-4 pb-20">
         
-        <div id="readme" class="mb-8">
-            <div class="flex items-center justify-between mb-4">
-                <span class="text-xs font-mono gh-text-sec uppercase">graeg / README.md</span>
+        <section id="readme" class="mb-12">
+            <div class="flex items-center justify-between mb-2 px-1">
+                <span class="text-xs font-mono text-scarlet uppercase tracking-widest animate-pulse">/// user_profile / readme.md</span>
             </div>
             
-            <div class="border gh-border rounded-md bg-[#0d1117] gh-bg-sec overflow-hidden">
-                <div class="p-3 border-b gh-border bg-[#161b22] flex items-center gap-2 text-sm">
-                    <svg class="w-4 h-4" viewBox="0 0 16 16" fill="currentColor"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"/></svg>
-                    <span class="font-bold">Hi there, I'm Graeg 👋</span>
+            <div class="glass-panel rounded-lg overflow-hidden relative group">
+                <div class="bg-black/40 p-3 border-b border-white/5 flex items-center gap-2 text-xs font-mono text-gray-400">
+                    <div class="w-3 h-3 rounded-full bg-red-500/20 border border-red-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-500/20 border border-yellow-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-500/20 border border-green-500"></div>
+                    <span class="ml-4 opacity-50">preview_mode</span>
                 </div>
-                <div class="p-6 md:p-10 font-sans leading-relaxed">
-                    <h1 class="text-3xl font-bold mb-6 pb-2 border-b gh-border">Inżynier Mechatronik & Architekt Systemów</h1>
+
+                <div class="p-6 md:p-10">
+                    <h1 class="text-3xl md:text-4xl font-bold mb-2 uppercase tracking-tight">Cześć, tu <span class="text-scarlet text-glow">Graeg</span></h1>
+                    <div class="h-1 w-20 bg-scarlet mb-8"></div>
                     
-                    <p class="mb-4">
-                        Nie interesuje mnie zwykłe pisanie kodu. Fascynuje mnie <strong>materializowanie pomysłów</strong>.
-                        Łączę świat fizyczny z cyfrowym poprzez inżynierię kosmiczną, druk 3D i systemy XR.
+                    <p class="text-lg text-gray-300 font-light mb-6 leading-relaxed">
+                        Nie interesuje mnie samo pisanie kodu. Interesuje mnie <strong class="text-white">materializowanie idei</strong>.
+                        Jako inżynier mechatronik zacieram granice między światem cyfrowym a fizycznym.
                     </p>
 
-                    <h2 class="text-xl font-bold mt-8 mb-4">🔭 Current Focus</h2>
-                    <ul class="list-disc pl-6 space-y-2 gh-text-sec">
-                        <li>Rozwój systemów <strong>Additive Manufacturing</strong> (SLA/FDM).</li>
-                        <li>Projektowanie środowisk symulacyjnych w <strong>Unity/XR</strong>.</li>
-                        <li>Analiza telemetrii orbitalnej i systemy podtrzymywania życia (ECLSS).</li>
-                    </ul>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-                        <div class="p-4 border gh-border rounded-md bg-[#161b22]">
-                            <div class="font-bold text-blue-400 mb-1">3D Printing</div>
-                            <div class="text-xs gh-text-sec">Prototyping & Engineering</div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                        <div class="border-l-2 border-scarlet pl-4">
+                            <h3 class="font-bold text-white mb-1">Additive Manufacturing</h3>
+                            <p class="text-sm text-gray-400">Zaawansowany druk 3D, SLA/FDM, prototypowanie części funkcjonalnych.</p>
                         </div>
-                        <div class="p-4 border gh-border rounded-md bg-[#161b22]">
-                            <div class="font-bold text-green-400 mb-1">Space Tech</div>
-                            <div class="text-xs gh-text-sec">Orbital Systems</div>
-                        </div>
-                        <div class="p-4 border gh-border rounded-md bg-[#161b22]">
-                            <div class="font-bold text-purple-400 mb-1">XR / VR</div>
-                            <div class="text-xs gh-text-sec">Immersive Simulations</div>
+                        <div class="border-l-2 border-gray-700 pl-4 group-hover:border-scarlet transition duration-500">
+                            <h3 class="font-bold text-white mb-1">XR & Simulation</h3>
+                            <p class="text-sm text-gray-400">Wirtualne środowiska treningowe i cyfrowe bliźniaki w Unity.</p>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div id="repos" class="mb-8">
-            <h2 class="text-sm font-bold mb-4 flex items-center gap-2">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 16 16"><path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 1 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 0 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 0 1 1-1h8zM5 12.25v3.25a.25.25 0 0 0 .4.2l1.45-1.087a.25.25 0 0 1 .3 0L8.6 15.7a.25.25 0 0 0 .4-.2v-3.25a.25.25 0 0 0-.25-.25h-3.5a.25.25 0 0 0-.25.25z"/></svg>
-                Popular Repositories
+        <section id="repos" class="mb-12">
+            <h2 class="text-xs font-mono text-gray-500 uppercase tracking-widest mb-6 border-b border-white/10 pb-2">
+                Public Repositories (Projekty)
             </h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 
-                <div class="border gh-border rounded-md p-4 bg-[#0d1117] hover:border-gray-400 transition cursor-pointer flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="font-bold text-blue-400">addtive-mfg-core</span>
-                            <span class="text-xs border gh-border px-2 rounded-full gh-text-sec">Public</span>
-                        </div>
-                        <p class="text-sm gh-text-sec mb-4">Zaawansowane profile druku dla materiałów inżynieryjnych (PEEK, ASA, TPU). Optymalizacja G-Code.</p>
+                <div class="glass-panel p-5 rounded-lg hover:border-scarlet/60 transition group cursor-pointer relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-2 opacity-50 group-hover:opacity-100 transition">
+                        <svg class="w-5 h-5 text-gray-500 group-hover:text-scarlet" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                     </div>
-                    <div class="flex items-center gap-4 text-xs gh-text-sec mt-2">
-                        <div class="flex items-center gap-1"><div class="w-3 h-3 rounded-full bg-yellow-400"></div> Python</div>
-                        <div class="flex items-center gap-1"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25z"/></svg> 12</div>
+                    <h3 class="text-scarlet font-bold font-mono mb-2 group-hover:text-glow">additive-mfg-core</h3>
+                    <p class="text-sm text-gray-400 mb-4">Optymalizacja G-Code dla materiałów wysokotemperaturowych (PEEK, ASA). Skrypty Pythona do analizy warstw.</p>
+                    <div class="flex items-center gap-4 text-xs font-mono text-gray-500">
+                        <span class="flex items-center gap-1"><div class="w-2 h-2 bg-yellow-400 rounded-full"></div> Python</span>
+                        <span>Updated 2 days ago</span>
                     </div>
                 </div>
 
-                <div class="border gh-border rounded-md p-4 bg-[#0d1117] hover:border-gray-400 transition cursor-pointer flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="font-bold text-blue-400">xr-simulation-unity</span>
-                            <span class="text-xs border gh-border px-2 rounded-full gh-text-sec">Public</span>
-                        </div>
-                        <p class="text-sm gh-text-sec mb-4">Środowisko szkoleniowe VR dla procedur serwisowych ISS. Integracja z Oculus Quest 2.</p>
+                <div class="glass-panel p-5 rounded-lg hover:border-scarlet/60 transition group cursor-pointer relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-2 opacity-50 group-hover:opacity-100 transition">
+                        <svg class="w-5 h-5 text-gray-500 group-hover:text-scarlet" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                     </div>
-                    <div class="flex items-center gap-4 text-xs gh-text-sec mt-2">
-                        <div class="flex items-center gap-1"><div class="w-3 h-3 rounded-full bg-blue-600"></div> C#</div>
-                        <div class="flex items-center gap-1"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25z"/></svg> 8</div>
+                    <h3 class="text-scarlet font-bold font-mono mb-2 group-hover:text-glow">iss-telemetry-ui</h3>
+                    <p class="text-sm text-gray-400 mb-4">Dashboard wizualizujący dane orbitalne w czasie rzeczywistym. WebGL + Three.js.</p>
+                    <div class="flex items-center gap-4 text-xs font-mono text-gray-500">
+                        <span class="flex items-center gap-1"><div class="w-2 h-2 bg-blue-400 rounded-full"></div> JavaScript</span>
+                        <span>Updated 1 week ago</span>
                     </div>
                 </div>
 
-                 <div class="border gh-border rounded-md p-4 bg-[#0d1117] hover:border-gray-400 transition cursor-pointer flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="font-bold text-blue-400">orbital-mechanics-calc</span>
-                            <span class="text-xs border gh-border px-2 rounded-full gh-text-sec">Public</span>
-                        </div>
-                        <p class="text-sm gh-text-sec mb-4">Kalkulator manewrów transferowych Hohmanna. Analiza delta-v.</p>
+                <div class="glass-panel p-5 rounded-lg hover:border-scarlet/60 transition group cursor-pointer relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-2 opacity-50 group-hover:opacity-100 transition">
+                        <svg class="w-5 h-5 text-gray-500 group-hover:text-scarlet" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                     </div>
-                    <div class="flex items-center gap-4 text-xs gh-text-sec mt-2">
-                        <div class="flex items-center gap-1"><div class="w-3 h-3 rounded-full bg-yellow-400"></div> Python</div>
-                        <div class="flex items-center gap-1"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25z"/></svg> 4</div>
+                    <h3 class="text-scarlet font-bold font-mono mb-2 group-hover:text-glow">xr-maintenance-sim</h3>
+                    <p class="text-sm text-gray-400 mb-4">Symulator naprawy elektroniki w VR (Oculus Quest). Trening procedur inżynierskich.</p>
+                    <div class="flex items-center gap-4 text-xs font-mono text-gray-500">
+                        <span class="flex items-center gap-1"><div class="w-2 h-2 bg-purple-400 rounded-full"></div> C# / Unity</span>
+                        <span>Archived</span>
                     </div>
                 </div>
 
             </div>
-        </div>
+        </section>
 
-        <div id="stack" class="mb-8">
-            <h2 class="text-sm font-bold mb-4">Arsenał (Stack)</h2>
-            <div class="border gh-border rounded-md overflow-hidden bg-[#0d1117]">
-                <div class="bg-[#161b22] px-4 py-2 border-b gh-border text-xs gh-text-sec font-mono">
+        <section id="stack" class="mb-12">
+            <h2 class="text-xs font-mono text-gray-500 uppercase tracking-widest mb-6 border-b border-white/10 pb-2">
+                Tech Stack (Arsenał)
+            </h2>
+            
+            <div class="glass-panel rounded-lg overflow-hidden font-mono text-sm">
+                <div class="bg-white/5 px-4 py-2 border-b border-white/5 text-xs text-gray-500">
                     root/skills/
                 </div>
                 
-                <div class="divide-y gh-border">
-                    <div class="flex items-center px-4 py-2 hover:bg-gray-800/20 transition cursor-default">
-                        <svg class="w-4 h-4 mr-3 text-blue-400" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"></path></svg>
-                        <span class="text-sm">AutoCAD / Fusion 360</span>
-                        <span class="ml-auto text-xs gh-text-sec">Advanced</span>
+                <div class="divide-y divide-white/5">
+                    <div class="flex items-center px-4 py-3 hover:bg-scarlet/10 transition cursor-default group">
+                        <span class="text-scarlet mr-3">></span>
+                        <span class="text-gray-300 group-hover:text-white">AutoCAD / Fusion 360</span>
+                        <span class="ml-auto text-xs text-gray-600">Advanced</span>
                     </div>
-                    <div class="flex items-center px-4 py-2 hover:bg-gray-800/20 transition cursor-default">
-                        <svg class="w-4 h-4 mr-3 text-yellow-400" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"></path></svg>
-                        <span class="text-sm">Python Scripting</span>
-                        <span class="ml-auto text-xs gh-text-sec">Intermediate</span>
+                    <div class="flex items-center px-4 py-3 hover:bg-scarlet/10 transition cursor-default group">
+                        <span class="text-scarlet mr-3">></span>
+                        <span class="text-gray-300 group-hover:text-white">Python Scripting</span>
+                        <span class="ml-auto text-xs text-gray-600">Intermediate</span>
                     </div>
-                    <div class="flex items-center px-4 py-2 hover:bg-gray-800/20 transition cursor-default">
-                        <svg class="w-4 h-4 mr-3 text-purple-400" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"></path></svg>
-                        <span class="text-sm">Blender 3D</span>
-                        <span class="ml-auto text-xs gh-text-sec">Basic/Mid</span>
+                    <div class="flex items-center px-4 py-3 hover:bg-scarlet/10 transition cursor-default group">
+                        <span class="text-scarlet mr-3">></span>
+                        <span class="text-gray-300 group-hover:text-white">Blender 3D</span>
+                        <span class="ml-auto text-xs text-gray-600">Mid</span>
+                    </div>
+                    <div class="flex items-center px-4 py-3 hover:bg-scarlet/10 transition cursor-default group">
+                        <span class="text-scarlet mr-3">></span>
+                        <span class="text-gray-300 group-hover:text-white">Unity / C#</span>
+                        <span class="ml-auto text-xs text-gray-600">Learning</span>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
     </main>
 
     <script>
-        // 1. THEME TOGGLE LOGIC (Slider)
+        // 1. THEME TOGGLE (Obsługa koloru i tła 3D)
         const themeToggle = document.getElementById('theme-toggle');
-        const header = document.getElementById('main-header');
         
         themeToggle.addEventListener('change', () => {
             document.body.classList.toggle('light-mode');
             
-            // Adjust header style for light mode
-            if(document.body.classList.contains('light-mode')) {
-                header.classList.remove('bg-[#161b22]', 'border-[#30363d]');
-                header.classList.add('bg-[#f6f8fa]', 'border-[#d0d7de]', 'text-black');
-            } else {
-                header.classList.add('bg-[#161b22]', 'border-[#30363d]');
-                header.classList.remove('bg-[#f6f8fa]', 'border-[#d0d7de]', 'text-black');
+            // Zmiana koloru modelu 3D w zależności od trybu
+            if(material) {
+                if(document.body.classList.contains('light-mode')) {
+                    material.color.setHex(0x333333); // Ciemny w jasnym trybie
+                } else {
+                    material.color.setHex(0xDC143C); // Szkarłat w ciemnym
+                }
             }
         });
 
@@ -337,25 +317,33 @@
         sidebarToggle.addEventListener('click', toggleSidebar);
         overlay.addEventListener('click', toggleSidebar);
 
-        // 3. BACKGROUND 3D (Subtle Planet)
+        // 3. 3D BACKGROUND (Powrót do IcoSphere)
+        let material; 
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
         
-        // Use a simple wireframe sphere
-        const geometry = new THREE.IcosahedronGeometry(2, 2);
-        const material = new THREE.MeshBasicMaterial({ color: 0x58a6ff, wireframe: true, transparent: true, opacity: 0.1 });
+        const geometry = new THREE.IcosahedronGeometry(2, 1);
+        material = new THREE.MeshBasicMaterial({ color: 0xDC143C, wireframe: true, transparent: true, opacity: 0.15 });
         const planet = new THREE.Mesh(geometry, material);
         scene.add(planet);
         
         camera.position.z = 5;
         
+        // Myszka wpływa na rotację
+        let mouseX = 0;
+        let mouseY = 0;
+        document.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+            mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+        });
+
         function animate() {
             requestAnimationFrame(animate);
-            planet.rotation.x += 0.001;
-            planet.rotation.y += 0.001;
+            planet.rotation.x += 0.001 + (mouseY * 0.002);
+            planet.rotation.y += 0.001 + (mouseX * 0.002);
             renderer.render(scene, camera);
         }
         animate();
