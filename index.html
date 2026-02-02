@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pl" class="scroll-smooth overflow-x-hidden">
+<html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -41,14 +41,21 @@
             --scarlet: #DC143C;
         }
 
+        html {
+            scroll-behavior: smooth;
+            height: 100%;
+        }
+
         body {
             background-color: var(--bg-color); 
+            min-height: 100vh;
+            width: 100%;
             overflow-x: hidden;
-            width: 100vw;
+            overflow-y: auto;
             color: var(--text-color);
             cursor: crosshair;
             transition: background-color 0.5s ease, color 0.5s ease;
-            overscroll-behavior: none;
+            position: relative;
         }
 
         /* --- LIGHT MODE FIXES --- */
@@ -75,7 +82,6 @@
             color: #000; 
         }
 
-        /* Critical: Force dark text on light background, but keep buttons white */
         body.light-mode .text-white { color: #111 !important; }
         body.light-mode .bg-scarlet .text-white,
         body.light-mode .btn-filled,
@@ -98,7 +104,7 @@
         body.light-mode ::-webkit-scrollbar-thumb { background: #9ca3af; }
 
         /* --- STANDARD STYLES --- */
-        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar { width: 10px; }
         ::-webkit-scrollbar-track { background: rgba(20,20,20,0.5); }
         ::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #DC143C; }
@@ -379,8 +385,13 @@
         <div id="settings-panel" class="hidden absolute bottom-16 right-0 w-64 glass-dark border border-scarlet/30 p-5 rounded-lg flex-col gap-4 transform transition-all duration-300 origin-bottom-right shadow-2xl">
             <h3 class="text-scarlet text-xs font-bold uppercase tracking-widest mb-1 border-b border-white/10 pb-2">Panel Sterowania</h3>
 
-            <button onclick="toggleARModal()" class="w-full text-left text-xs font-bold text-white hover:bg-white/10 p-2 rounded transition uppercase tracking-wider flex items-center gap-2 border border-white/10 btn-filled">
-                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path></svg>
+            <button id="install-btn" class="hidden w-full text-left text-xs font-bold text-white hover:bg-white/10 p-2 rounded transition uppercase tracking-wider items-center gap-2 border border-white/10 btn-filled">
+                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                ZAINSTALUJ APLIKACJĘ
+            </button>
+
+            <button onclick="toggleARModal()" class="w-full text-left text-xs font-bold text-white hover:bg-white/10 p-2 rounded transition uppercase tracking-wider flex items-center gap-2 border border-white/10">
+                <svg class="w-4 h-4 text-scarlet" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path></svg>
                 Uruchom Podgląd AR
             </button>
 
@@ -408,7 +419,7 @@
             </div>
 
             <div class="text-[9px] text-gray-500 mt-2 text-center font-mono">
-                SYSTEM VER. 4.0 // <span id="current-year-mini"></span>
+                SYSTEM VER. 4.2 // <span id="current-year-mini"></span>
             </div>
         </div>
     </div>
@@ -979,6 +990,45 @@
                 settingsPanel.classList.remove('flex');
             }
         }
+
+        // --- LOGIKA INSTALACJI PWA ---
+        let deferredPrompt;
+        const installBtn = document.getElementById('install-btn');
+
+        // 1. Nasłuchuj, czy przeglądarka pozwala na instalację
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault(); // Zatrzymaj domyślny pasek przeglądarki
+            deferredPrompt = e; // Zapisz zdarzenie na później
+            
+            // Pokaż nasz własny przycisk w ustawieniach
+            installBtn.classList.remove('hidden');
+            installBtn.classList.add('flex');
+        });
+
+        // 2. Obsługa kliknięcia w przycisk instalacji
+        installBtn.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            
+            deferredPrompt.prompt(); // Pokaż natywne okno instalacji
+            
+            const { outcome } = await deferredPrompt.userChoice; // Czekaj na decyzję usera
+            console.log(`User response to install prompt: ${outcome}`);
+            
+            deferredPrompt = null; // Wyzeruj zmienną
+            
+            // Jeśli zainstalowano, ukryj przycisk
+            if (outcome === 'accepted') {
+                installBtn.classList.add('hidden');
+                installBtn.classList.remove('flex');
+            }
+        });
+
+        // 3. Jeśli aplikacja już działa jako PWA (jest zainstalowana), ukryj przycisk
+        window.addEventListener('appinstalled', () => {
+            installBtn.classList.add('hidden');
+            installBtn.classList.remove('flex');
+            console.log('PWA was installed');
+        });
     </script>
 </body>
 </html>
